@@ -53,7 +53,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Enable Corepack and pnpm
         run: |
@@ -94,3 +93,4 @@ jobs:
             test-results/
             coverage/
           retention-days: 7
+          
