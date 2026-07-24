@@ -28,7 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Enable Corepack and pnpm
         run: |
@@ -54,7 +53,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Enable Corepack and pnpm
         run: |
@@ -83,7 +81,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Enable Corepack and pnpm
         run: |
@@ -109,7 +106,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Enable Corepack and pnpm
         run: |
@@ -135,7 +131,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Enable Corepack and pnpm
         run: |
@@ -150,3 +145,4 @@ jobs:
 
       - name: Run build validation
         run: pnpm build:validate
+        
