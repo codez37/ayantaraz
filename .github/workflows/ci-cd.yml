@@ -32,16 +32,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
           run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
 
       - name: Enable Corepack
         run: corepack enable
@@ -51,10 +52,14 @@ jobs:
           pnpm install --frozen-lockfile --shamefully-hoist
 
       - name: Validate Prisma schema
+        env:
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
         run: |
           npx prisma validate --schema=prisma/schema.prisma
 
       - name: Generate Prisma client
+        env:
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
         run: |
           npx prisma generate --schema=prisma/schema.prisma
 
@@ -124,16 +129,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
           run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
 
       - name: Enable Corepack
         run: corepack enable
@@ -143,6 +149,8 @@ jobs:
           pnpm install --frozen-lockfile --shamefully-hoist
 
       - name: Generate Prisma client
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
         run: |
           npx prisma generate --schema=prisma/schema.prisma
 
@@ -195,8 +203,9 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}
           tags: |
             type=ref,event=branch
+            type=ref,event=pr
             type=ref,event=tag
-            type=sha,prefix={{branch}}-
+            type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Extract metadata for Web
@@ -206,8 +215,9 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_WEB }}
           tags: |
             type=ref,event=branch
+            type=ref,event=pr
             type=ref,event=tag
-            type=sha,prefix={{branch}}-
+            type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push API image
@@ -264,7 +274,7 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
         run: |
           ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_HOST} "
-            cd /opt/Ayantaraz- || exit 1
+            cd /opt/ayantaraz || exit 1
             git fetch origin main
             git checkout main
             git pull origin main
@@ -276,8 +286,8 @@ jobs:
             docker compose -f docker-compose.yml -f docker-compose.production.yml up -d --build
             
             sleep 30
-            docker compose -f docker-compose.yml -f docker-compose.production.yml exec api npx prisma migrate deploy --schema=/app/prisma/schema.prisma
-            docker compose -f docker-compose.yml -f docker-compose.production.yml exec api node /app/prisma/seed.js
+            docker compose -f docker-compose.yml -f docker-compose.production.yml exec -T api npx prisma migrate deploy --schema=/app/prisma/schema.prisma
+            docker compose -f docker-compose.yml -f docker-compose.production.yml exec -T api node /app/prisma/seed.js
           "
 
       - name: Verify deployment
