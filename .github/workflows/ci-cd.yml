@@ -24,6 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
