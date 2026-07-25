@@ -9,11 +9,7 @@ interface SkeletonProps {
 }
 
 export function Skeleton({ className = '', children }: SkeletonProps) {
-  return (
-    <div className={`animate-pulse bg-gray-700/50 rounded-lg ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`animate-pulse bg-gray-700/50 rounded-lg ${className}`}>{children}</div>;
 }
 
 // Text skeleton
@@ -104,7 +100,9 @@ export function DashboardStatsSkeleton() {
 export function ChatMessageSkeleton({ isUser = false }: { isUser?: boolean }) {
   return (
     <div className={`flex ${isUser ? 'justify-start' : 'justify-end'}`}>
-      <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed relative ${isUser ? 'bg-[#0B0B0C] text-gray-200 rounded-br-md border border-[#C9A227]/10' : 'bg-[#C9A227]/10 border border-[#C9A227]/20 text-gray-200 rounded-bl-md'}`}>
+      <div
+        className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed relative ${isUser ? 'bg-[#0B0B0C] text-gray-200 rounded-br-md border border-[#C9A227]/10' : 'bg-[#C9A227]/10 border border-[#C9A227]/20 text-gray-200 rounded-bl-md'}`}
+      >
         <div className="space-y-1">
           <div className="h-3 bg-gray-600/50 rounded w-full" />
           <div className="h-3 bg-gray-600/50 rounded w-3/4" />
@@ -130,23 +128,17 @@ export function ListSkeleton({ items = 5 }: { items?: number }) {
 
 // Avatar skeleton
 export function AvatarSkeleton({ className = '' }: { className?: string }) {
-  return (
-    <div className={`w-10 h-10 rounded-full bg-gray-700/50 animate-pulse ${className}`} />
-  );
+  return <div className={`w-10 h-10 rounded-full bg-gray-700/50 animate-pulse ${className}`} />;
 }
 
 // Button skeleton
 export function ButtonSkeleton({ className = '' }: { className?: string }) {
-  return (
-    <div className={`h-10 bg-gray-700/50 rounded-lg animate-pulse ${className}`} />
-  );
+  return <div className={`h-10 bg-gray-700/50 rounded-lg animate-pulse ${className}`} />;
 }
 
 // Input skeleton
 export function InputSkeleton({ className = '' }: { className?: string }) {
-  return (
-    <div className={`h-10 bg-gray-700/50 rounded-lg animate-pulse ${className}`} />
-  );
+  return <div className={`h-10 bg-gray-700/50 rounded-lg animate-pulse ${className}`} />;
 }
 
 // Full page loading skeleton

@@ -53,7 +53,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className={`min-h-screen ${mainBg} ${textColor}`} dir="rtl">
       {/* Desktop Sidebar */}
-      <aside 
+      <aside
         className={`hidden lg:flex fixed right-0 top-0 z-50 h-full ${sidebarBorder} ${sidebarBg} transition-all duration-300 ${sidebarOpen ? 'w-72' : 'w-20'}`}
       >
         <div className="flex h-16 items-center justify-between border-b ${headerBorder} px-4">
@@ -63,8 +63,8 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             </div>
             {sidebarOpen && <span className="text-sm font-black text-gold-400">پنل مدیریت آیان تراز</span>}
           </div>
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)} 
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
             className="rounded-lg p-2 text-gold-400 hover:bg-gold-400/10 transition-colors"
             aria-label="تغییر منو"
           >
@@ -73,8 +73,8 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         </div>
         <nav className="space-y-1 p-3">
           {adminItems.map((item) => (
-            <Link 
-              key={item.path} 
+            <Link
+              key={item.path}
               href={item.path}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text-secondary transition-colors hover:bg-gold-400/10 hover:text-gold-400"
             >
@@ -120,7 +120,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main 
+      <main
         className={`min-h-screen transition-all duration-300 ${sidebarOpen ? 'pr-72' : 'pr-20'} lg:${mobileSidebarOpen ? 'pr-0' : 'pr-20'}`}
       >
         {/* Header */}
@@ -144,14 +144,14 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <span className="rounded-full border border-gold-400/30 px-3 py-1 text-gold-400">مدیر</span>
           </div>
         </header>
-        
+
         {/* Page Content */}
         <div className="p-4 sm:p-6">{children}</div>
       </main>
 
       {/* Overlay for mobile sidebar */}
       {mobileSidebarOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setMobileSidebarOpen(false)}
           aria-hidden="true"

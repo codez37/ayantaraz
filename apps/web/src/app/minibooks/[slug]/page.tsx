@@ -17,7 +17,8 @@ export default function MinibookDetailPage() {
 
   useEffect(() => {
     if (!slug) return;
-    api.get<Content>(`/content/${slug}`)
+    api
+      .get<Content>(`/content/${slug}`)
       .then((d) => {
         setMinibook(d);
 
@@ -39,9 +40,7 @@ export default function MinibookDetailPage() {
           image: d.thumbnailUrl || undefined,
           numberOfPages: d.pageCount || undefined,
           author: { '@type': 'Organization', name: 'آیان تراز' },
-          datePublished: d.publishedAt
-            ? new Date(d.publishedAt).toISOString()
-            : undefined,
+          datePublished: d.publishedAt ? new Date(d.publishedAt).toISOString() : undefined,
           inLanguage: 'fa',
         });
 
@@ -59,14 +58,21 @@ export default function MinibookDetailPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
 
   if (!minibook) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">📖</div>
         <h1 className="text-2xl font-black text-white mb-4">مینی‌بوک یافت نشد</h1>
-        <Link href="/minibooks" className="btn-gold inline-block mt-4">بازگشت به مینی‌بوک‌ها</Link>
+        <Link href="/minibooks" className="btn-gold inline-block mt-4">
+          بازگشت به مینی‌بوک‌ها
+        </Link>
       </div>
     );
   }
@@ -86,32 +92,21 @@ export default function MinibookDetailPage() {
           </div>
         )}
 
-        {minibook.summary && (
-          <p className="text-gray-400 text-lg mb-6 leading-relaxed">{minibook.summary}</p>
-        )}
+        {minibook.summary && <p className="text-gray-400 text-lg mb-6 leading-relaxed">{minibook.summary}</p>}
 
         {minibook.body && (
-          <div className="prose-dark text-gray-300 leading-relaxed whitespace-pre-wrap">
-            {minibook.body}
-          </div>
+          <div className="prose-dark text-gray-300 leading-relaxed whitespace-pre-wrap">{minibook.body}</div>
         )}
 
         {minibook.mediaUrl && (
           <div className="mt-8">
-            <a
-              href={minibook.mediaUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold inline-block"
-            >
+            <a href={minibook.mediaUrl} target="_blank" rel="noopener noreferrer" className="btn-gold inline-block">
               📥 دانلود مینی‌بوک
             </a>
           </div>
         )}
 
-        {minibook.pageCount && (
-          <p className="text-sm text-gray-500 mt-4">{minibook.pageCount} صفحه</p>
-        )}
+        {minibook.pageCount && <p className="text-sm text-gray-500 mt-4">{minibook.pageCount} صفحه</p>}
       </article>
     </div>
   );

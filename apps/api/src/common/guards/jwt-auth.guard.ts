@@ -27,7 +27,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       const errorMessage = err instanceof Error ? err.message : 'No user';
       this.logger.warn(`Authentication failed: ${errorMessage}`);
-      throw err instanceof Error ? err : new UnauthorizedException('Invalid token');
+      throw err instanceof Error
+        ? err
+        : new UnauthorizedException('Invalid token');
     }
     if (!(user as { id?: unknown }).id) {
       this.logger.warn('Authenticated user missing ID');

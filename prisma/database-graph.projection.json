@@ -2,85 +2,42 @@
   {
     "type": "enum",
     "name": "UserRole",
-    "values": [
-      "user",
-      "consultant",
-      "content_manager",
-      "admin"
-    ]
+    "values": ["user", "consultant", "content_manager", "admin"]
   },
   {
     "type": "enum",
     "name": "OTPStatus",
-    "values": [
-      "active",
-      "expired",
-      "used",
-      "blocked"
-    ]
+    "values": ["active", "expired", "used", "blocked"]
   },
   {
     "type": "enum",
     "name": "ContentType",
-    "values": [
-      "article",
-      "video",
-      "minibook",
-      "static_page",
-      "faq"
-    ]
+    "values": ["article", "video", "minibook", "static_page", "faq"]
   },
   {
     "type": "enum",
     "name": "ContentStatus",
-    "values": [
-      "draft",
-      "review",
-      "published",
-      "archived"
-    ]
+    "values": ["draft", "review", "published", "archived"]
   },
   {
     "type": "enum",
     "name": "ContentVisibility",
-    "values": [
-      "public",
-      "authenticated",
-      "course_only",
-      "admin_only"
-    ]
+    "values": ["public", "authenticated", "course_only", "admin_only"]
   },
   {
     "type": "enum",
     "name": "CourseStatus",
-    "values": [
-      "draft",
-      "review",
-      "published",
-      "archived"
-    ]
+    "values": ["draft", "review", "published", "archived"]
   },
   {
     "type": "enum",
     "name": "ConsultationType",
-    "values": [
-      "accounting",
-      "tax",
-      "general"
-    ]
+    "values": ["accounting", "tax", "general"]
   },
   {
     "type": "enum",
     "name": "ConsultationStatus",
-    "values": [
-      "pending",
-      "contacted",
-      "scheduled",
-      "completed",
-      "canceled",
-      "no_response",
-      "rejected"
-    ]
+    "values": ["pending", "contacted", "scheduled", "completed", "canceled", "no_response", "rejected"]
   },
   {
     "type": "enum",
@@ -99,30 +56,17 @@
   {
     "type": "enum",
     "name": "OrderItemType",
-    "values": [
-      "course",
-      "consultation"
-    ]
+    "values": ["course", "consultation"]
   },
   {
     "type": "enum",
     "name": "RiskLevel",
-    "values": [
-      "low",
-      "medium",
-      "high",
-      "forbidden"
-    ]
+    "values": ["low", "medium", "high", "forbidden"]
   },
   {
     "type": "enum",
     "name": "EscalationStatus",
-    "values": [
-      "open",
-      "assigned",
-      "resolved",
-      "closed"
-    ]
+    "values": ["open", "assigned", "resolved", "closed"]
   },
   {
     "type": "model",
@@ -133,115 +77,84 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "phone",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@unique"
-        ]
+        "attributes": ["@unique"]
       },
       {
         "name": "firstName",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"first_name\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"first_name\")"]
       },
       {
         "name": "lastName",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"last_name\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"last_name\")"]
       },
       {
         "name": "role",
         "type": "UserRole",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(user)"
-        ]
+        "attributes": ["@default(user)"]
       },
       {
         "name": "isActive",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(true)",
-          "@map(\"is_active\")"
-        ]
+        "attributes": ["@default(true)", "@map(\"is_active\")"]
       },
       {
         "name": "isStaff",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(false)",
-          "@map(\"is_staff\")"
-        ]
+        "attributes": ["@default(false)", "@map(\"is_staff\")"]
       },
       {
         "name": "lastLoginAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"last_login_at\")"
-        ]
+        "attributes": ["@map(\"last_login_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "authoredContents",
         "type": "Content",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"ContentAuthor\")"
-        ]
+        "attributes": ["@relation(\"ContentAuthor\")"]
       },
       {
         "name": "reviewedContents",
         "type": "Content",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"ContentReviewer\")"
-        ]
+        "attributes": ["@relation(\"ContentReviewer\")"]
       },
       {
         "name": "courses",
@@ -262,45 +175,35 @@
         "type": "ConsultationRequest",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"UserConsultations\")"
-        ]
+        "attributes": ["@relation(\"UserConsultations\")"]
       },
       {
         "name": "assignedConsults",
         "type": "ConsultationRequest",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"AssignedConsultations\")"
-        ]
+        "attributes": ["@relation(\"AssignedConsultations\")"]
       },
       {
         "name": "orders",
         "type": "Order",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"UserOrders\")"
-        ]
+        "attributes": ["@relation(\"UserOrders\")"]
       },
       {
         "name": "assignedOrders",
         "type": "Order",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"AssignedOrders\")"
-        ]
+        "attributes": ["@relation(\"AssignedOrders\")"]
       },
       {
         "name": "verifiedOrders",
         "type": "Order",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"VerifiedOrders\")"
-        ]
+        "attributes": ["@relation(\"VerifiedOrders\")"]
       },
       {
         "name": "chatMessages",
@@ -335,18 +238,14 @@
         "type": "EscalationTicket",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"EscalationRequester\")"
-        ]
+        "attributes": ["@relation(\"EscalationRequester\")"]
       },
       {
         "name": "assignedEscalations",
         "type": "EscalationTicket",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"EscalationAssignee\")"
-        ]
+        "attributes": ["@relation(\"EscalationAssignee\")"]
       },
       {
         "name": "chatConversations",
@@ -360,9 +259,7 @@
         "type": "SystemSetting",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@relation(\"SystemSettings\")"
-        ]
+        "attributes": ["@relation(\"SystemSettings\")"]
       },
       {
         "name": "taxSessions",
@@ -375,15 +272,11 @@
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[role]"
-        ]
+        "args": ["[role]"]
       },
       {
         "name": "map",
-        "args": [
-          "users"
-        ]
+        "args": ["users"]
       }
     ]
   },
@@ -396,10 +289,7 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "phone",
@@ -413,85 +303,63 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"code_hash\")"
-        ]
+        "attributes": ["@map(\"code_hash\")"]
       },
       {
         "name": "attempts",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "status",
         "type": "OTPStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(active)"
-        ]
+        "attributes": ["@default(active)"]
       },
       {
         "name": "expiresAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"expires_at\")"
-        ]
+        "attributes": ["@map(\"expires_at\")"]
       },
       {
         "name": "sentAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"sent_at\")"
-        ]
+        "attributes": ["@map(\"sent_at\")"]
       },
       {
         "name": "verifiedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"verified_at\")"
-        ]
+        "attributes": ["@map(\"verified_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[phone",
-          "status]"
-        ]
+        "args": ["[phone", "status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[createdAt]"
-        ]
+        "args": ["[createdAt]"]
       },
       {
         "name": "map",
-        "args": [
-          "otps"
-        ]
+        "args": ["otps"]
       }
     ]
   },
@@ -504,10 +372,7 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "name",
@@ -521,28 +386,21 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@unique"
-        ]
+        "attributes": ["@unique"]
       },
       {
         "name": "contentType",
         "type": "ContentType",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"content_type\")"
-        ]
+        "attributes": ["@map(\"content_type\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "contents",
@@ -555,9 +413,7 @@
     "attributes": [
       {
         "name": "map",
-        "args": [
-          "categories"
-        ]
+        "args": ["categories"]
       }
     ]
   },
@@ -570,19 +426,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "contentType",
         "type": "ContentType",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"content_type\")"
-        ]
+        "attributes": ["@map(\"content_type\")"]
       },
       {
         "name": "title",
@@ -596,248 +447,183 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@unique"
-        ]
+        "attributes": ["@unique"]
       },
       {
         "name": "summary",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "body",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "metaDescription",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"meta_description\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"meta_description\")"]
       },
       {
         "name": "tags",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "mediaUrl",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"media_url\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"media_url\")"]
       },
       {
         "name": "thumbnailUrl",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"thumbnail_url\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"thumbnail_url\")"]
       },
       {
         "name": "duration",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "fileSize",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)",
-          "@map(\"file_size\")"
-        ]
+        "attributes": ["@default(0)", "@map(\"file_size\")"]
       },
       {
         "name": "pageCount",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)",
-          "@map(\"page_count\")"
-        ]
+        "attributes": ["@default(0)", "@map(\"page_count\")"]
       },
       {
         "name": "authorId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"author_id\")"
-        ]
+        "attributes": ["@map(\"author_id\")"]
       },
       {
         "name": "reviewedBy",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"reviewed_by\")"
-        ]
+        "attributes": ["@map(\"reviewed_by\")"]
       },
       {
         "name": "categoryId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"category_id\")"
-        ]
+        "attributes": ["@map(\"category_id\")"]
       },
       {
         "name": "status",
         "type": "ContentStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(draft)"
-        ]
+        "attributes": ["@default(draft)"]
       },
       {
         "name": "visibility",
         "type": "ContentVisibility",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(public)"
-        ]
+        "attributes": ["@default(public)"]
       },
       {
         "name": "publishedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"published_at\")"
-        ]
+        "attributes": ["@map(\"published_at\")"]
       },
       {
         "name": "archivedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"archived_at\")"
-        ]
+        "attributes": ["@map(\"archived_at\")"]
       },
       {
         "name": "reviewedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"reviewed_at\")"
-        ]
+        "attributes": ["@map(\"reviewed_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "author",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"ContentAuthor\", fields: [authorId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"ContentAuthor\", fields: [authorId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "reviewer",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"ContentReviewer\", fields: [reviewedBy], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"ContentReviewer\", fields: [reviewedBy], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "category",
         "type": "Category",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [categoryId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [categoryId], references: [id], onDelete: SetNull)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[contentType",
-          "status",
-          "visibility]"
-        ]
+        "args": ["[contentType", "status", "visibility]"]
       },
       {
         "name": "index",
-        "args": [
-          "[slug]"
-        ]
+        "args": ["[slug]"]
       },
       {
         "name": "index",
-        "args": [
-          "[tags]"
-        ]
+        "args": ["[tags]"]
       },
       {
         "name": "index",
-        "args": [
-          "[authorId]"
-        ]
+        "args": ["[authorId]"]
       },
       {
         "name": "map",
-        "args": [
-          "contents"
-        ]
+        "args": ["contents"]
       }
     ]
   },
@@ -850,10 +636,7 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "title",
@@ -867,83 +650,63 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@unique"
-        ]
+        "attributes": ["@unique"]
       },
       {
         "name": "description",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "price",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "status",
         "type": "CourseStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(draft)"
-        ]
+        "attributes": ["@default(draft)"]
       },
       {
         "name": "authorId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"author_id\")"
-        ]
+        "attributes": ["@map(\"author_id\")"]
       },
       {
         "name": "publishedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"published_at\")"
-        ]
+        "attributes": ["@map(\"published_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "author",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [authorId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [authorId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "videos",
@@ -963,21 +726,15 @@
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[status]"
-        ]
+        "args": ["[status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[authorId]"
-        ]
+        "args": ["[authorId]"]
       },
       {
         "name": "map",
-        "args": [
-          "courses"
-        ]
+        "args": ["courses"]
       }
     ]
   },
@@ -990,19 +747,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "courseId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"course_id\")"
-        ]
+        "attributes": ["@map(\"course_id\")"]
       },
       {
         "name": "title",
@@ -1023,72 +775,52 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "isSample",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(false)",
-          "@map(\"is_sample\")"
-        ]
+        "attributes": ["@default(false)", "@map(\"is_sample\")"]
       },
       {
         "name": "sortOrder",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)",
-          "@map(\"sort_order\")"
-        ]
+        "attributes": ["@default(0)", "@map(\"sort_order\")"]
       },
       {
         "name": "status",
         "type": "CourseStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(draft)"
-        ]
+        "attributes": ["@default(draft)"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "course",
         "type": "Course",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(fields: [courseId], references: [id], onDelete: Cascade)"
-        ]
+        "attributes": ["@relation(fields: [courseId], references: [id], onDelete: Cascade)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[courseId",
-          "status]"
-        ]
+        "args": ["[courseId", "status]"]
       },
       {
         "name": "map",
-        "args": [
-          "course_videos"
-        ]
+        "args": ["course_videos"]
       }
     ]
   },
@@ -1101,105 +833,77 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "userId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"user_id\")"
-        ]
+        "attributes": ["@map(\"user_id\")"]
       },
       {
         "name": "courseId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"course_id\")"
-        ]
+        "attributes": ["@map(\"course_id\")"]
       },
       {
         "name": "orderId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"order_id\")"
-        ]
+        "attributes": ["@map(\"order_id\")"]
       },
       {
         "name": "isActive",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(true)",
-          "@map(\"is_active\")"
-        ]
+        "attributes": ["@default(true)", "@map(\"is_active\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(fields: [userId], references: [id], onDelete: Restrict)"
-        ]
+        "attributes": ["@relation(fields: [userId], references: [id], onDelete: Restrict)"]
       },
       {
         "name": "course",
         "type": "Course",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(fields: [courseId], references: [id], onDelete: Cascade)"
-        ]
+        "attributes": ["@relation(fields: [courseId], references: [id], onDelete: Cascade)"]
       },
       {
         "name": "order",
         "type": "Order",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [orderId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [orderId], references: [id], onDelete: SetNull)"]
       }
     ],
     "attributes": [
       {
         "name": "unique",
-        "args": [
-          "[userId",
-          "courseId]"
-        ]
+        "args": ["[userId", "courseId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[orderId]"
-        ]
+        "args": ["[orderId]"]
       },
       {
         "name": "map",
-        "args": [
-          "enrollments"
-        ]
+        "args": ["enrollments"]
       }
     ]
   },
@@ -1212,28 +916,21 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "userId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"user_id\")"
-        ]
+        "attributes": ["@map(\"user_id\")"]
       },
       {
         "name": "requestType",
         "type": "ConsultationType",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"request_type\")"
-        ]
+        "attributes": ["@map(\"request_type\")"]
       },
       {
         "name": "description",
@@ -1247,124 +944,91 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"first_name\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"first_name\")"]
       },
       {
         "name": "lastName",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"last_name\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"last_name\")"]
       },
       {
         "name": "phoneNumber",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"phone_number\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"phone_number\")"]
       },
       {
         "name": "preferredTime",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"preferred_time\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"preferred_time\")"]
       },
       {
         "name": "status",
         "type": "ConsultationStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(pending)"
-        ]
+        "attributes": ["@default(pending)"]
       },
       {
         "name": "assignedToId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"assigned_to_id\")"
-        ]
+        "attributes": ["@map(\"assigned_to_id\")"]
       },
       {
         "name": "internalNotes",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"internal_notes\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"internal_notes\")"]
       },
       {
         "name": "contactedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"contacted_at\")"
-        ]
+        "attributes": ["@map(\"contacted_at\")"]
       },
       {
         "name": "completedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"completed_at\")"
-        ]
+        "attributes": ["@map(\"completed_at\")"]
       },
       {
         "name": "canceledAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"canceled_at\")"
-        ]
+        "attributes": ["@map(\"canceled_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(\"UserConsultations\", fields: [userId], references: [id], onDelete: Restrict)"
-        ]
+        "attributes": ["@relation(\"UserConsultations\", fields: [userId], references: [id], onDelete: Restrict)"]
       },
       {
         "name": "assignedTo",
@@ -1379,34 +1043,23 @@
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[userId",
-          "status]"
-        ]
+        "args": ["[userId", "status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[status]"
-        ]
+        "args": ["[status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[assignedToId]"
-        ]
+        "args": ["[assignedToId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[phoneNumber]"
-        ]
+        "args": ["[phoneNumber]"]
       },
       {
         "name": "map",
-        "args": [
-          "consultation_requests"
-        ]
+        "args": ["consultation_requests"]
       }
     ]
   },
@@ -1419,215 +1072,161 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "userId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"user_id\")"
-        ]
+        "attributes": ["@map(\"user_id\")"]
       },
       {
         "name": "itemType",
         "type": "OrderItemType",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"item_type\")"
-        ]
+        "attributes": ["@map(\"item_type\")"]
       },
       {
         "name": "itemId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"item_id\")"
-        ]
+        "attributes": ["@map(\"item_id\")"]
       },
       {
         "name": "amount",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "status",
         "type": "OrderStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(pending)"
-        ]
+        "attributes": ["@default(pending)"]
       },
       {
         "name": "paymentReference",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"payment_reference\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"payment_reference\")"]
       },
       {
         "name": "internalNotes",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"internal_notes\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"internal_notes\")"]
       },
       {
         "name": "firstName",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"first_name\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"first_name\")"]
       },
       {
         "name": "lastName",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"last_name\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"last_name\")"]
       },
       {
         "name": "phoneNumber",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"phone_number\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"phone_number\")"]
       },
       {
         "name": "assignedToId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"assigned_to_id\")"
-        ]
+        "attributes": ["@map(\"assigned_to_id\")"]
       },
       {
         "name": "verifiedById",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"verified_by_id\")"
-        ]
+        "attributes": ["@map(\"verified_by_id\")"]
       },
       {
         "name": "verifiedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"verified_at\")"
-        ]
+        "attributes": ["@map(\"verified_at\")"]
       },
       {
         "name": "confirmedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"confirmed_at\")"
-        ]
+        "attributes": ["@map(\"confirmed_at\")"]
       },
       {
         "name": "rejectedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"rejected_at\")"
-        ]
+        "attributes": ["@map(\"rejected_at\")"]
       },
       {
         "name": "canceledAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"canceled_at\")"
-        ]
+        "attributes": ["@map(\"canceled_at\")"]
       },
       {
         "name": "expiredAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"expired_at\")"
-        ]
+        "attributes": ["@map(\"expired_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(\"UserOrders\", fields: [userId], references: [id], onDelete: Restrict)"
-        ]
+        "attributes": ["@relation(\"UserOrders\", fields: [userId], references: [id], onDelete: Restrict)"]
       },
       {
         "name": "assignedTo",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"AssignedOrders\", fields: [assignedToId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"AssignedOrders\", fields: [assignedToId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "verifiedBy",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"VerifiedOrders\", fields: [verifiedById], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"VerifiedOrders\", fields: [verifiedById], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "enrollments",
@@ -1640,34 +1239,23 @@
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[userId",
-          "status]"
-        ]
+        "args": ["[userId", "status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[status]"
-        ]
+        "args": ["[status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[assignedToId]"
-        ]
+        "args": ["[assignedToId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[phoneNumber]"
-        ]
+        "args": ["[phoneNumber]"]
       },
       {
         "name": "map",
-        "args": [
-          "orders"
-        ]
+        "args": ["orders"]
       }
     ]
   },
@@ -1680,10 +1268,7 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "question",
@@ -1704,75 +1289,56 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "riskLevel",
         "type": "RiskLevel",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(low)"
-        ]
+        "attributes": ["@default(low)"]
       },
       {
         "name": "confidence",
         "type": "Float",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0.5) // 0.0 to 1.0"
-        ]
+        "attributes": ["@default(0.5) // 0.0 to 1.0"]
       },
       {
         "name": "isActive",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(true)"
-        ]
+        "attributes": ["@default(true)"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())"
-        ]
+        "attributes": ["@default(now())"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt"
-        ]
+        "attributes": ["@updatedAt"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[isActive",
-          "riskLevel]"
-        ]
+        "args": ["[isActive", "riskLevel]"]
       },
       {
         "name": "index",
-        "args": [
-          "[category]"
-        ]
+        "args": ["[category]"]
       },
       {
         "name": "map",
-        "args": [
-          "knowledge_base"
-        ]
+        "args": ["knowledge_base"]
       }
     ]
   },
@@ -1785,28 +1351,21 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "conversationId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"conversation_id\")"
-        ]
+        "attributes": ["@map(\"conversation_id\")"]
       },
       {
         "name": "sessionId",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"session_id\")"
-        ]
+        "attributes": ["@map(\"session_id\")"]
       },
       {
         "name": "userId",
@@ -1834,48 +1393,35 @@
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [userId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [userId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "conversation",
         "type": "ChatConversation",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [conversationId], references: [id], onDelete: Cascade)"
-        ]
+        "attributes": ["@relation(fields: [conversationId], references: [id], onDelete: Cascade)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[sessionId]"
-        ]
+        "args": ["[sessionId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[conversationId]"
-        ]
+        "args": ["[conversationId]"]
       },
       {
         "name": "map",
-        "args": [
-          "chat_messages"
-        ]
+        "args": ["chat_messages"]
       }
     ]
   },
@@ -1888,20 +1434,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "sessionId",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@unique",
-          "@map(\"session_id\")"
-        ]
+        "attributes": ["@unique", "@map(\"session_id\")"]
       },
       {
         "name": "userId",
@@ -1915,38 +1455,28 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"active\")"
-        ]
+        "attributes": ["@default(\"active\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [userId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [userId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "messages",
@@ -1959,15 +1489,11 @@
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[userId]"
-        ]
+        "args": ["[userId]"]
       },
       {
         "name": "map",
-        "args": [
-          "chat_conversations"
-        ]
+        "args": ["chat_conversations"]
       }
     ]
   },
@@ -1980,19 +1506,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "conversationId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"conversation_id\")"
-        ]
+        "attributes": ["@map(\"conversation_id\")"]
       },
       {
         "name": "userId",
@@ -2013,75 +1534,56 @@
         "type": "EscalationStatus",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(open)"
-        ]
+        "attributes": ["@default(open)"]
       },
       {
         "name": "assignedToId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"assigned_to_id\")"
-        ]
+        "attributes": ["@map(\"assigned_to_id\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "resolvedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"resolved_at\")"
-        ]
+        "attributes": ["@map(\"resolved_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"EscalationRequester\", fields: [userId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"EscalationRequester\", fields: [userId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "assignedTo",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"EscalationAssignee\", fields: [assignedToId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"EscalationAssignee\", fields: [assignedToId], references: [id], onDelete: SetNull)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[status]"
-        ]
+        "args": ["[status]"]
       },
       {
         "name": "index",
-        "args": [
-          "[conversationId]"
-        ]
+        "args": ["[conversationId]"]
       },
       {
         "name": "map",
-        "args": [
-          "escalation_tickets"
-        ]
+        "args": ["escalation_tickets"]
       }
     ]
   },
@@ -2094,112 +1596,84 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "userId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"user_id\")"
-        ]
+        "attributes": ["@map(\"user_id\")"]
       },
       {
         "name": "tokenId",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"token_id\")"
-        ]
+        "attributes": ["@map(\"token_id\")"]
       },
       {
         "name": "deviceInfo",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"device_info\")"
-        ]
+        "attributes": ["@map(\"device_info\")"]
       },
       {
         "name": "ipAddress",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"ip_address\")"
-        ]
+        "attributes": ["@map(\"ip_address\")"]
       },
       {
         "name": "lastActiveAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"last_active_at\")"
-        ]
+        "attributes": ["@map(\"last_active_at\")"]
       },
       {
         "name": "expiresAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"expires_at\")"
-        ]
+        "attributes": ["@map(\"expires_at\")"]
       },
       {
         "name": "revokedAt",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"revoked_at\")"
-        ]
+        "attributes": ["@map(\"revoked_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(fields: [userId], references: [id], onDelete: Cascade)"
-        ]
+        "attributes": ["@relation(fields: [userId], references: [id], onDelete: Cascade)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[userId]"
-        ]
+        "args": ["[userId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[tokenId]"
-        ]
+        "args": ["[tokenId]"]
       },
       {
         "name": "map",
-        "args": [
-          "sessions"
-        ]
+        "args": ["sessions"]
       }
     ]
   },
@@ -2212,86 +1686,63 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "userId",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"user_id\")"
-        ]
+        "attributes": ["@map(\"user_id\")"]
       },
       {
         "name": "tokenHash",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"token_hash\")"
-        ]
+        "attributes": ["@map(\"token_hash\")"]
       },
       {
         "name": "isRevoked",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(false)",
-          "@map(\"is_revoked\")"
-        ]
+        "attributes": ["@default(false)", "@map(\"is_revoked\")"]
       },
       {
         "name": "expiresAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"expires_at\")"
-        ]
+        "attributes": ["@map(\"expires_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@relation(fields: [userId], references: [id], onDelete: Cascade)"
-        ]
+        "attributes": ["@relation(fields: [userId], references: [id], onDelete: Cascade)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[tokenHash]"
-        ]
+        "args": ["[tokenHash]"]
       },
       {
         "name": "index",
-        "args": [
-          "[userId]"
-        ]
+        "args": ["[userId]"]
       },
       {
         "name": "map",
-        "args": [
-          "refresh_tokens"
-        ]
+        "args": ["refresh_tokens"]
       }
     ]
   },
@@ -2304,19 +1755,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "actorId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"actor_id\")"
-        ]
+        "attributes": ["@map(\"actor_id\")"]
       },
       {
         "name": "action",
@@ -2330,91 +1776,67 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"entity_type\")"
-        ]
+        "attributes": ["@map(\"entity_type\")"]
       },
       {
         "name": "entityId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"entity_id\")"
-        ]
+        "attributes": ["@map(\"entity_id\")"]
       },
       {
         "name": "oldValue",
         "type": "Json",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"old_value\")"
-        ]
+        "attributes": ["@map(\"old_value\")"]
       },
       {
         "name": "newValue",
         "type": "Json",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"new_value\")"
-        ]
+        "attributes": ["@map(\"new_value\")"]
       },
       {
         "name": "ipAddress",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"ip_address\")"
-        ]
+        "attributes": ["@map(\"ip_address\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "actor",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [actorId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [actorId], references: [id], onDelete: SetNull)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[entityType",
-          "entityId]"
-        ]
+        "args": ["[entityType", "entityId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[createdAt]"
-        ]
+        "args": ["[createdAt]"]
       },
       {
         "name": "index",
-        "args": [
-          "[action]"
-        ]
+        "args": ["[action]"]
       },
       {
         "name": "map",
-        "args": [
-          "audit_logs"
-        ]
+        "args": ["audit_logs"]
       }
     ]
   },
@@ -2427,19 +1849,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "key",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@unique"
-        ]
+        "attributes": ["@unique"]
       },
       {
         "name": "value",
@@ -2453,52 +1870,38 @@
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"updated_by\")"
-        ]
+        "attributes": ["@map(\"updated_by\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedByUser",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(\"SystemSettings\", fields: [updatedBy], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(\"SystemSettings\", fields: [updatedBy], references: [id], onDelete: SetNull)"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[updatedBy]"
-        ]
+        "args": ["[updatedBy]"]
       },
       {
         "name": "map",
-        "args": [
-          "system_settings"
-        ]
+        "args": ["system_settings"]
       }
     ]
   },
@@ -2511,10 +1914,7 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "role",
@@ -2528,43 +1928,31 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"permission_key\")"
-        ]
+        "attributes": ["@map(\"permission_key\")"]
       },
       {
         "name": "enabled",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(true)"
-        ]
+        "attributes": ["@default(true)"]
       }
     ],
     "attributes": [
       {
         "name": "unique",
-        "args": [
-          "[role",
-          "permissionKey]"
-        ]
+        "args": ["[role", "permissionKey]"]
       },
       {
         "name": "map",
-        "args": [
-          "role_permissions"
-        ]
+        "args": ["role_permissions"]
       }
     ]
   },
   {
     "type": "enum",
     "name": "TaxBook",
-    "values": [
-      "DIRECT",
-      "INDIRECT"
-    ]
+    "values": ["DIRECT", "INDIRECT"]
   },
   {
     "type": "enum",
@@ -2602,36 +1990,17 @@
   {
     "type": "enum",
     "name": "RuleActionType",
-    "values": [
-      "EXEMPT",
-      "PERCENTAGE_RATE",
-      "FIXED_RATE",
-      "DISCOUNT",
-      "MULTIPLIER",
-      "DEDUCTION"
-    ]
+    "values": ["EXEMPT", "PERCENTAGE_RATE", "FIXED_RATE", "DISCOUNT", "MULTIPLIER", "DEDUCTION"]
   },
   {
     "type": "enum",
     "name": "TaxSessionStep",
-    "values": [
-      "awaiting_query",
-      "searching",
-      "computing",
-      "processing",
-      "results_displayed",
-      "terminated"
-    ]
+    "values": ["awaiting_query", "searching", "computing", "processing", "results_displayed", "terminated"]
   },
   {
     "type": "enum",
     "name": "QueryType",
-    "values": [
-      "SEARCH",
-      "CALC",
-      "PROCEDURE",
-      "UNKNOWN"
-    ]
+    "values": ["SEARCH", "CALC", "PROCEDURE", "UNKNOWN"]
   },
   {
     "type": "model",
@@ -2642,19 +2011,14 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "articleNumber",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"article_number\")"
-        ]
+        "attributes": ["@map(\"article_number\")"]
       },
       {
         "name": "text",
@@ -2668,118 +2032,82 @@
         "type": "String",
         "optional": false,
         "array": true,
-        "attributes": [
-          "@default([])"
-        ]
+        "attributes": ["@default([])"]
       },
       {
         "name": "chapterTitle",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")",
-          "@map(\"chapter_title\")"
-        ]
+        "attributes": ["@default(\"\")", "@map(\"chapter_title\")"]
       },
       {
         "name": "book",
         "type": "TaxBook",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(DIRECT)"
-        ]
+        "attributes": ["@default(DIRECT)"]
       },
       {
         "name": "category",
         "type": "TaxCategory",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"category\")"
-        ]
+        "attributes": ["@map(\"category\")"]
       },
       {
         "name": "validFrom",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"valid_from\")"
-        ]
+        "attributes": ["@map(\"valid_from\")"]
       },
       {
         "name": "validTo",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"valid_to\")"
-        ]
+        "attributes": ["@map(\"valid_to\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       }
     ],
     "attributes": [
       {
         "name": "unique",
-        "args": [
-          "[articleNumber",
-          "validFrom]"
-        ]
+        "args": ["[articleNumber", "validFrom]"]
       },
       {
         "name": "index",
-        "args": [
-          "[articleNumber]"
-        ]
+        "args": ["[articleNumber]"]
       },
       {
         "name": "index",
-        "args": [
-          "[book",
-          "category]"
-        ]
+        "args": ["[book", "category]"]
       },
       {
         "name": "index",
-        "args": [
-          "[validFrom",
-          "validTo]"
-        ]
+        "args": ["[validFrom", "validTo]"]
       },
       {
         "name": "index",
-        "args": [
-          "[articleNumber",
-          "validFrom",
-          "validTo]"
-        ]
+        "args": ["[articleNumber", "validFrom", "validTo]"]
       },
       {
         "name": "map",
-        "args": [
-          "tax_articles"
-        ]
+        "args": ["tax_articles"]
       }
     ]
   },
@@ -2792,37 +2120,28 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "type",
         "type": "BracketType",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"type\")"
-        ]
+        "attributes": ["@map(\"type\")"]
       },
       {
         "name": "ruleKey",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"rule_key\")"
-        ]
+        "attributes": ["@map(\"rule_key\")"]
       },
       {
         "name": "description",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "condition",
@@ -2843,80 +2162,56 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "effectiveFrom",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"effective_from\")"
-        ]
+        "attributes": ["@map(\"effective_from\")"]
       },
       {
         "name": "effectiveTo",
         "type": "DateTime",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"effective_to\")"
-        ]
+        "attributes": ["@map(\"effective_to\")"]
       },
       {
         "name": "isActive",
         "type": "Boolean",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(true)",
-          "@map(\"is_active\")"
-        ]
+        "attributes": ["@default(true)", "@map(\"is_active\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       }
     ],
     "attributes": [
       {
         "name": "unique",
-        "args": [
-          "[ruleKey]"
-        ]
+        "args": ["[ruleKey]"]
       },
       {
         "name": "index",
-        "args": [
-          "[type",
-          "isActive",
-          "effectiveFrom",
-          "effectiveTo]"
-        ]
+        "args": ["[type", "isActive", "effectiveFrom", "effectiveTo]"]
       },
       {
         "name": "map",
-        "args": [
-          "tax_rules"
-        ]
+        "args": ["tax_rules"]
       }
     ]
   },
@@ -2929,10 +2224,7 @@
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(autoincrement())"
-        ]
+        "attributes": ["@id", "@default(autoincrement())"]
       },
       {
         "name": "year",
@@ -2946,106 +2238,77 @@
         "type": "BracketType",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"type\")"
-        ]
+        "attributes": ["@map(\"type\")"]
       },
       {
         "name": "bracketOrder",
         "type": "Int",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"bracket_order\")"
-        ]
+        "attributes": ["@map(\"bracket_order\")"]
       },
       {
         "name": "minAmount",
         "type": "BigInt",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"min_amount\")"
-        ]
+        "attributes": ["@map(\"min_amount\")"]
       },
       {
         "name": "maxAmount",
         "type": "BigInt",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"max_amount\")"
-        ]
+        "attributes": ["@map(\"max_amount\")"]
       },
       {
         "name": "rate",
         "type": "Float",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(0)"
-        ]
+        "attributes": ["@default(0)"]
       },
       {
         "name": "description",
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"\")"
-        ]
+        "attributes": ["@default(\"\")"]
       },
       {
         "name": "metadata",
         "type": "Json",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@default(\"{}\")"
-        ]
+        "attributes": ["@default(\"{}\")"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       }
     ],
     "attributes": [
       {
         "name": "unique",
-        "args": [
-          "[year",
-          "type",
-          "bracketOrder]"
-        ]
+        "args": ["[year", "type", "bracketOrder]"]
       },
       {
         "name": "index",
-        "args": [
-          "[year",
-          "type]"
-        ]
+        "args": ["[year", "type]"]
       },
       {
         "name": "map",
-        "args": [
-          "tax_brackets"
-        ]
+        "args": ["tax_brackets"]
       }
     ]
   },
@@ -3058,182 +2321,137 @@
         "type": "String",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@id",
-          "@default(uuid())"
-        ]
+        "attributes": ["@id", "@default(uuid())"]
       },
       {
         "name": "step",
         "type": "TaxSessionStep",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(awaiting_query)"
-        ]
+        "attributes": ["@default(awaiting_query)"]
       },
       {
         "name": "queryType",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"query_type\")"
-        ]
+        "attributes": ["@map(\"query_type\")"]
       },
       {
         "name": "originalQuery",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"original_query\")"
-        ]
+        "attributes": ["@map(\"original_query\")"]
       },
       {
         "name": "detectedType",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"detected_type\")"
-        ]
+        "attributes": ["@map(\"detected_type\")"]
       },
       {
         "name": "calcType",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"calc_type\")"
-        ]
+        "attributes": ["@map(\"calc_type\")"]
       },
       {
         "name": "calcParams",
         "type": "Json",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"calc_params\")"
-        ]
+        "attributes": ["@map(\"calc_params\")"]
       },
       {
         "name": "calcResult",
         "type": "Json",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"calc_result\")"
-        ]
+        "attributes": ["@map(\"calc_result\")"]
       },
       {
         "name": "searchResults",
         "type": "Json",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"search_results\")"
-        ]
+        "attributes": ["@map(\"search_results\")"]
       },
       {
         "name": "selectedArticleId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"selected_article_id\")"
-        ]
+        "attributes": ["@map(\"selected_article_id\")"]
       },
       {
         "name": "procedureTopic",
         "type": "String",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"procedure_topic\")"
-        ]
+        "attributes": ["@map(\"procedure_topic\")"]
       },
       {
         "name": "history",
         "type": "Json",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(\"[]\")"
-        ]
+        "attributes": ["@default(\"[]\")"]
       },
       {
         "name": "userId",
         "type": "Int",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@map(\"user_id\")"
-        ]
+        "attributes": ["@map(\"user_id\")"]
       },
       {
         "name": "user",
         "type": "User",
         "optional": true,
         "array": false,
-        "attributes": [
-          "@relation(fields: [userId], references: [id], onDelete: SetNull)"
-        ]
+        "attributes": ["@relation(fields: [userId], references: [id], onDelete: SetNull)"]
       },
       {
         "name": "createdAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@default(now())",
-          "@map(\"created_at\")"
-        ]
+        "attributes": ["@default(now())", "@map(\"created_at\")"]
       },
       {
         "name": "updatedAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@updatedAt",
-          "@map(\"updated_at\")"
-        ]
+        "attributes": ["@updatedAt", "@map(\"updated_at\")"]
       },
       {
         "name": "expiresAt",
         "type": "DateTime",
         "optional": false,
         "array": false,
-        "attributes": [
-          "@map(\"expires_at\")"
-        ]
+        "attributes": ["@map(\"expires_at\")"]
       }
     ],
     "attributes": [
       {
         "name": "index",
-        "args": [
-          "[expiresAt]"
-        ]
+        "args": ["[expiresAt]"]
       },
       {
         "name": "index",
-        "args": [
-          "[userId]"
-        ]
+        "args": ["[userId]"]
       },
       {
         "name": "index",
-        "args": [
-          "[selectedArticleId]"
-        ]
+        "args": ["[selectedArticleId]"]
       },
       {
         "name": "map",
-        "args": [
-          "tax_sessions"
-        ]
+        "args": ["tax_sessions"]
       }
     ]
   }

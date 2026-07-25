@@ -21,7 +21,7 @@ jobs:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    
+
     permissions:
       contents: read
       packages: write
@@ -129,4 +129,3 @@ jobs:
           echo "To pull the images:"
           echo "  docker pull ${{ env.REGISTRY }}/${{ env.LOW_REPO }}/api:latest"
           echo "  docker pull ${{ env.REGISTRY }}/${{ env.LOW_REPO }}/web:latest"
-          

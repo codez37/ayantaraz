@@ -33,13 +33,19 @@ export default function AdminOrdersPage() {
   const updateStatus = async (id: number, status: string) => {
     try {
       await api.patch(`/orders/${id}/status`, { status, adminNote: 'تأیید مدیر' });
-      api.get<OrdersResponse | AdminOrder[]>('/orders')
-        .then(d => setOrders(Array.isArray(d) ? d : (d as OrdersResponse).data || []))
+      api
+        .get<OrdersResponse | AdminOrder[]>('/orders')
+        .then((d) => setOrders(Array.isArray(d) ? d : (d as OrdersResponse).data || []))
         .catch(() => {});
     } catch {}
   };
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
 
   return (
     <div className="space-y-4">
@@ -64,11 +70,15 @@ export default function AdminOrdersPage() {
                   <td className="p-3 text-gray-300">{o.user?.phone || '-'}</td>
                   <td className="p-3 text-[#C9A227]">{o.amount?.toLocaleString()}</td>
                   <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded text-xs ${
-                      o.status === 'confirmed' ? 'bg-green-900/50 text-green-400' :
-                      o.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                      'bg-red-900/50 text-red-400'
-                    }`}>
+                    <span
+                      className={`px-2 py-0.5 rounded text-xs ${
+                        o.status === 'confirmed'
+                          ? 'bg-green-900/50 text-green-400'
+                          : o.status === 'pending'
+                            ? 'bg-yellow-900/50 text-yellow-400'
+                            : 'bg-red-900/50 text-red-400'
+                      }`}
+                    >
                       {o.status === 'confirmed' ? 'تأیید شده' : o.status === 'pending' ? 'در انتظار' : 'لغو شده'}
                     </span>
                   </td>
@@ -76,15 +86,29 @@ export default function AdminOrdersPage() {
                   <td className="p-3">
                     {o.status === 'pending' && (
                       <div className="flex gap-2">
-                        <button onClick={() => updateStatus(o.id, 'confirmed')} className="px-3 py-1 bg-green-900/50 text-green-400 rounded text-xs hover:bg-green-900/70">تأیید</button>
-                        <button onClick={() => updateStatus(o.id, 'rejected')} className="px-3 py-1 bg-red-900/50 text-red-400 rounded text-xs hover:bg-red-900/70">رد</button>
+                        <button
+                          onClick={() => updateStatus(o.id, 'confirmed')}
+                          className="px-3 py-1 bg-green-900/50 text-green-400 rounded text-xs hover:bg-green-900/70"
+                        >
+                          تأیید
+                        </button>
+                        <button
+                          onClick={() => updateStatus(o.id, 'rejected')}
+                          className="px-3 py-1 bg-red-900/50 text-red-400 rounded text-xs hover:bg-red-900/70"
+                        >
+                          رد
+                        </button>
                       </div>
                     )}
                   </td>
                 </tr>
               ))}
               {orders.length === 0 && (
-                <tr><td colSpan={6} className="p-8 text-center text-gray-500">هیچ سفارشی یافت نشد</td></tr>
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                    هیچ سفارشی یافت نشد
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

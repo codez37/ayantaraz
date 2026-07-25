@@ -32,20 +32,20 @@ const validators: { name: string; command: string }[] = [
   { name: 'boundary-enforcement', command: 'bash scripts/enforce-boundaries.sh' },
 ];
 
-const results = validators.map(v => runValidator(v.name, v.command));
+const results = validators.map((v) => runValidator(v.name, v.command));
 
 console.log('=== VALIDATION ORCHESTRATOR ===');
 console.log(`Started: ${new Date().toISOString()}`);
 console.log('');
 
-const passed = results.filter(r => r.passed);
-const failed = results.filter(r => !r.passed);
+const passed = results.filter((r) => r.passed);
+const failed = results.filter((r) => !r.passed);
 
 for (const r of results) {
   const icon = r.passed ? '✓' : '✗';
   console.log(`${icon} ${r.name} (${r.duration}ms)`);
   if (!r.passed) {
-    const lines = r.output.split('\n').filter(l => l.trim());
+    const lines = r.output.split('\n').filter((l) => l.trim());
     for (const line of lines.slice(-10)) {
       console.log(`  ${line}`);
     }

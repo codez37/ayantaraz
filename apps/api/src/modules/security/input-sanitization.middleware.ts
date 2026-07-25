@@ -33,7 +33,7 @@ export class InputSanitizationMiddleware implements NestMiddleware {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
         if (typeof value === 'string') {
-          (obj as Record<string, unknown>)[key] = this.sanitizeString(value);
+          obj[key] = this.sanitizeString(value);
         } else if (typeof value === 'object' && value !== null) {
           this.sanitizeObject(value as Record<string, unknown>);
         } else if (Array.isArray(value)) {

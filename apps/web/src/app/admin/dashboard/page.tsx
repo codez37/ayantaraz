@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
           <span className="text-sm text-text-secondary">به‌روزرسانی خودکار</span>
         </div>
       </div>
-      
+
       {isFetching && (
         <div className="fixed top-4 right-4 z-50">
           <div className="glass-card p-4 rounded-xl shadow-gold-md">
@@ -113,14 +113,19 @@ export default function AdminDashboardPage() {
       {/* Stats Grid - Mobile First */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
         {statCards.map((stat, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={`glass-card ${cardBg} ${cardBorder} p-4 rounded-xl group transition-all duration-300 hover:-translate-y-1 hover:border-border-gold/40`}
           >
             <div className="text-xs text-text-secondary mb-1">{stat.title}</div>
-            <div 
-              className="text-xl font-bold gold-sheen" 
-              style={{ backgroundImage: `linear-gradient(135deg, ${stat.color} 0%, ${stat.color}CC 100%)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            <div
+              className="text-xl font-bold gold-sheen"
+              style={{
+                backgroundImage: `linear-gradient(135deg, ${stat.color} 0%, ${stat.color}CC 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
             >
               {formatPersianNumber(stat.value)}
             </div>
@@ -142,8 +147,8 @@ export default function AdminDashboardPage() {
           </div>
           <div className="space-y-3">
             {recentAudits.slice(0, 5).map((audit, index) => (
-              <div 
-                key={audit.id} 
+              <div
+                key={audit.id}
                 className="flex items-center gap-3 p-3 bg-background-tertiary/30 rounded-lg border border-border-gold/10 hover:bg-background-tertiary/50 transition-colors animate-fade-in-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -151,9 +156,7 @@ export default function AdminDashboardPage() {
                   {audit.action.slice(0, 1).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-white truncate">
-                    {audit.action}
-                  </div>
+                  <div className="text-sm font-medium text-white truncate">{audit.action}</div>
                   <div className="text-xs text-text-secondary">
                     {audit.entityType} • {formatPersianDate(audit.createdAt)}
                   </div>

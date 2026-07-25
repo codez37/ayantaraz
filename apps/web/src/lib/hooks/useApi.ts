@@ -13,7 +13,7 @@ export function useApiQuery<TData>(
   options?: Omit<UseQueryOptions<TData>, 'queryKey' | 'queryFn'>,
 ) {
   const queryKey = Array.isArray(key) ? key : [key];
-  
+
   return useQuery<TData>({
     queryKey: params ? [...queryKey, params] : queryKey,
     queryFn: async () => {
@@ -36,7 +36,7 @@ export function useApiMutation<TData, TVariables>(
   options?: Omit<UseMutationOptions<TData, Error, TVariables>, 'mutationFn'>,
 ) {
   const queryClient = useQueryClient();
-  
+
   return useMutation<TData, Error, TVariables>({
     mutationFn: async (variables) => {
       try {
@@ -62,7 +62,7 @@ export function useApiMutation<TData, TVariables>(
       // Invalidate queries related to this path
       const pathKey = path.split('/').filter(Boolean);
       queryClient.invalidateQueries({ queryKey: pathKey });
-      
+
       // Show success toast if there's a message in response
       if (typeof data === 'object' && data && 'message' in data) {
         toast.success((data as { message?: string }).message || 'عملیات با موفقیت انجام شد');
@@ -81,7 +81,7 @@ export function usePaginatedQuery<TData>(
   options?: Omit<UseQueryOptions<TData>, 'queryKey' | 'queryFn'>,
 ) {
   const queryKey = Array.isArray(key) ? key : [key];
-  
+
   return useQuery<TData>({
     queryKey: [...queryKey, pageParam, limitParam],
     queryFn: async () => {
@@ -89,7 +89,7 @@ export function usePaginatedQuery<TData>(
         const params: Record<string, string> = {};
         if (pageParam !== undefined) params.page = pageParam.toString();
         if (limitParam !== undefined) params.limit = limitParam.toString();
-        
+
         return await api.get<TData>(path, params, { skipCsrf: true });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'خطا در دریافت اطلاعات';
@@ -133,7 +133,7 @@ export function useUsersList(page: number = 1, limit: number = 20, search?: stri
     limit: limit.toString(),
   };
   if (search) params.search = search;
-  
+
   return useApiQuery<{
     data: Array<{
       id: number;
@@ -176,13 +176,18 @@ export function useKnowledgeBase(page: number = 1, limit: number = 20) {
       limit: number;
       totalPages: number;
     };
-  }>('knowledge-base', '/chatbot/knowledge', {
-    page: page.toString(),
-    limit: limit.toString(),
-  }, {
-    retry: 3,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  }>(
+    'knowledge-base',
+    '/chatbot/knowledge',
+    {
+      page: page.toString(),
+      limit: limit.toString(),
+    },
+    {
+      retry: 3,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  );
 }
 
 // Hook for audit logs with filters
@@ -199,11 +204,11 @@ export function useAuditLogs(
     page: page.toString(),
     limit: limit.toString(),
   };
-  
+
   if (filters?.entityType) params.entityType = filters.entityType;
   if (filters?.actorId) params.actorId = filters.actorId.toString();
   if (filters?.action) params.action = filters.action;
-  
+
   return useApiQuery<{
     data: Array<{
       id: number;
@@ -242,32 +247,35 @@ export function useToggleUserBlock() {
 
 // Mutation hook for creating/updating knowledge entry
 export function useUpsertKnowledge() {
-  return useApiMutation<{ message: string; id: number }, {
-    id?: number;
-    question: string;
-    answer: string;
-    category: string;
-    riskLevel: string;
-    isActive: boolean;
-  }>(
-    '/chatbot/knowledge',
-    'POST',
+  return useApiMutation<
+    { message: string; id: number },
     {
-      onSuccess: (data) => {
-        toast.success(data.message || 'مورد با موفقیت ذخیره شد');
-      },
+      id?: number;
+      question: string;
+      answer: string;
+      category: string;
+      riskLevel: string;
+      isActive: boolean;
+    }
+  >('/chatbot/knowledge', 'POST', {
+    onSuccess: (data) => {
+      toast.success(data.message || 'مورد با موفقیت ذخیره شد');
     },
-  );
+  });
 }
 
 // Mutation hook for file upload
 export function useFileUpload() {
-  return useMutation<{
-    url: string;
-    originalName: string;
-    mimeType: string;
-    size: number;
-  }, Error, File>({
+  return useMutation<
+    {
+      url: string;
+      originalName: string;
+      mimeType: string;
+      size: number;
+    },
+    Error,
+    File
+  >({
     mutationFn: async (file: File) => {
       try {
         return await api.upload('/upload', file, 'file');

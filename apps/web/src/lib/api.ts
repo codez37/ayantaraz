@@ -6,19 +6,12 @@ const isBrowser = typeof window !== 'undefined';
 // In browser: use relative /api path (handled by nginx proxy)
 const API_BASE = isBrowser
   ? '/api'
-  : (process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://api:3001/api');
+  : process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://api:3001/api';
 
-const PUBLIC_PATHS = [
-  '/csrf',
-  '/auth/otp',
-  '/auth/verify',
-  '/auth/refresh',
-  '/auth/logout',
-  '/health',
-];
+const PUBLIC_PATHS = ['/csrf', '/auth/otp', '/auth/verify', '/auth/refresh', '/auth/logout', '/health'];
 
 function isPublicPath(path: string): boolean {
-  return PUBLIC_PATHS.some(p => path.includes(p));
+  return PUBLIC_PATHS.some((p) => path.includes(p));
 }
 
 // CSRF token storage
@@ -26,11 +19,15 @@ let csrfTokenCache: string | null = null;
 
 export const csrfStorage = {
   get: (): string | null => csrfTokenCache,
-  set: (token: string): void => { csrfTokenCache = token; },
-  clear: (): void => { csrfTokenCache = null; },
+  set: (token: string): void => {
+    csrfTokenCache = token;
+  },
+  clear: (): void => {
+    csrfTokenCache = null;
+  },
 };
 
-type ApiRequestOptions = RequestInit & { 
+type ApiRequestOptions = RequestInit & {
   redirectOnUnauthorized?: boolean;
   skipCsrf?: boolean;
 };
@@ -45,11 +42,11 @@ class ApiClient {
     if (csrfTokenCache) {
       return csrfTokenCache;
     }
-    
+
     if (isBrowser && typeof window !== 'undefined') {
       // Try to get from cookie first
       const cookies = document.cookie;
-      const csrfCookie = cookies.split(';').find(c => c.trim().startsWith('csrfToken='));
+      const csrfCookie = cookies.split(';').find((c) => c.trim().startsWith('csrfToken='));
       if (csrfCookie) {
         const token = csrfCookie.split('=')[1];
         if (token) {
@@ -58,7 +55,7 @@ class ApiClient {
         }
       }
     }
-    
+
     // Fetch fresh CSRF token
     try {
       const response = await fetch(`${API_BASE}/csrf`, {
@@ -72,7 +69,7 @@ class ApiClient {
     } catch {
       // Silently fail - CSRF is optional for public endpoints
     }
-    
+
     return null;
   }
 
@@ -85,11 +82,11 @@ class ApiClient {
     // Only one refresh at a time
     if (this.refreshInProgress) {
       const newAccessToken = await this.refreshInProgress;
-      
+
       // Retry original request with new token
       const headers = new Headers(options.headers as Record<string, string>);
       headers.set('Authorization', `Bearer ${newAccessToken}`);
-      
+
       return fetch(`${API_BASE}${path.startsWith('/') ? '' : '/'}${path}`, {
         ...options,
         headers,
@@ -99,20 +96,20 @@ class ApiClient {
 
     // Start refresh process
     this.refreshInProgress = this.performTokenRefresh();
-    
+
     try {
       const newAccessToken = await this.refreshInProgress;
-      
+
       // Retry original request with new token
       const headers = new Headers(options.headers as Record<string, string>);
       headers.set('Authorization', `Bearer ${newAccessToken}`);
-      
+
       const response = await fetch(`${API_BASE}${path.startsWith('/') ? '' : '/'}${path}`, {
         ...options,
         headers,
         credentials: 'include',
       });
-      
+
       return response;
     } finally {
       this.refreshInProgress = null;
@@ -122,11 +119,11 @@ class ApiClient {
   private async performTokenRefresh(): Promise<string> {
     // Get refresh token from storage
     let refreshToken: string | null = null;
-    
+
     if (isBrowser && typeof window !== 'undefined') {
       refreshToken = localStorage.getItem('ayantaraz_refresh_token');
     }
-    
+
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
@@ -145,13 +142,13 @@ class ApiClient {
     }
 
     const data = await response.json();
-    
+
     // Store new tokens
     if (isBrowser && typeof window !== 'undefined') {
       localStorage.setItem('ayantaraz_access_token', data.accessToken);
       localStorage.setItem('ayantaraz_refresh_token', data.refreshToken || refreshToken);
     }
-    
+
     return data.accessToken;
   }
 
@@ -161,7 +158,7 @@ class ApiClient {
     if (!mutatingMethods.includes(method.toUpperCase())) {
       return;
     }
-    
+
     // Skip if explicitly told to skip
     // Get CSRF token
     const csrfToken = await this.getCsrfToken();
@@ -170,10 +167,7 @@ class ApiClient {
     }
   }
 
-  private async request<T>(
-    path: string,
-    options: ApiRequestOptions = {},
-  ): Promise<T> {
+  private async request<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
     const url = path.startsWith('http') ? path : `${API_BASE}${path.startsWith('/') ? '' : '/'}${path}`;
 
     const headers = new Headers({
@@ -208,7 +202,7 @@ class ApiClient {
         if (isBrowser) {
           // Try to refresh token and retry
           const retryResponse = await this.handle401Error(path, options);
-          
+
           if (retryResponse.ok) {
             return retryResponse.json();
           } else if (retryResponse.status === 401) {
@@ -240,19 +234,23 @@ class ApiClient {
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
         throw new Error('خطا در اتصال به سرور. لطفاً اتصال اینترنت خود را بررسی کنید.');
       }
-      
+
       // Re-throw known errors
       if (error instanceof Error) {
         throw error;
       }
-      
+
       throw new Error('خطایی ناشناخته رخ داد');
     }
   }
 
-  get<T>(path: string, params?: Record<string, string>, extra?: { redirectOnUnauthorized?: boolean; skipCsrf?: boolean }): Promise<T> {
+  get<T>(
+    path: string,
+    params?: Record<string, string>,
+    extra?: { redirectOnUnauthorized?: boolean; skipCsrf?: boolean },
+  ): Promise<T> {
     const query = params ? '?' + new URLSearchParams(params).toString() : '';
-    return this.request<T>(`${path}${query}`, { 
+    return this.request<T>(`${path}${query}`, {
       redirectOnUnauthorized: extra?.redirectOnUnauthorized,
       skipCsrf: extra?.skipCsrf,
     });
@@ -284,12 +282,17 @@ class ApiClient {
     return this.request<T>(path, { method: 'PUT', body: JSON.stringify(body) });
   }
 
-  async upload<T = unknown>(path: string, file: File, fieldName = 'file', onProgress?: (progress: number) => void): Promise<T> {
+  async upload<T = unknown>(
+    path: string,
+    file: File,
+    fieldName = 'file',
+    onProgress?: (progress: number) => void,
+  ): Promise<T> {
     const formData = new FormData();
     formData.append(fieldName, file);
 
     const url = path.startsWith('http') ? path : `${API_BASE}${path.startsWith('/') ? '' : '/'}${path}`;
-    
+
     // Add CSRF token for upload
     const csrfToken = await this.getCsrfToken();
     const headers: Record<string, string> = {};

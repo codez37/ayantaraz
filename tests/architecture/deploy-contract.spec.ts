@@ -127,10 +127,10 @@ describe('CONTRACT 2: State Machine Valid Transitions', () => {
   it('helper uses assert_state to enforce transitions', () => {
     const helper = readFileSync(join(__dirname, '../../scripts/helper-part4.sh'), 'utf8');
     // Critical transitions must use assert_state
-    expect(helper).toContain('assert_state "LOCKED"');    // release requires LOCKED
+    expect(helper).toContain('assert_state "LOCKED"'); // release requires LOCKED
     expect(helper).toContain('assert_state "PREPARING"'); // gate requires PREPARING
-    expect(helper).toContain('assert_state "ACTIVATING"');// activate requires ACTIVATING
-    expect(helper).toContain('assert_state "HEALTHCHECK"');// pass requires HEALTHCHECK
+    expect(helper).toContain('assert_state "ACTIVATING"'); // activate requires ACTIVATING
+    expect(helper).toContain('assert_state "HEALTHCHECK"'); // pass requires HEALTHCHECK
   });
 });
 
@@ -143,14 +143,14 @@ describe('CONTRACT 2: State Machine Valid Transitions', () => {
 describe('CONTRACT 3: WAL Transaction Pairing', () => {
   const HELPER_PATH = join(__dirname, '../../scripts/helper-part1.sh');
 
-  it('tx_begin function writes sync'd event', () => {
+  it("tx_begin function writes sync'd event", () => {
     const helper = readFileSync(HELPER_PATH, 'utf8');
     // tx_begin must sync before and after
     expect(helper).toContain('tx_begin(){');
     expect(helper).toContain('sync'); // Before event
   });
 
-  it('tx_commit function writes sync'd event', () => {
+  it("tx_commit function writes sync'd event", () => {
     const helper = readFileSync(HELPER_PATH, 'utf8');
     expect(helper).toContain('tx_commit(){');
   });
@@ -333,10 +333,7 @@ describe('CONTRACT 9: Event Log Structure', () => {
   it('event function calls sync for durability', () => {
     const helper = readFileSync(join(__dirname, '../../scripts/helper-part1.sh'), 'utf8');
     // Must sync after writing
-    const eventFn = helper.substring(
-      helper.indexOf('event(){'),
-      helper.indexOf('}', helper.indexOf('event(){') + 10)
-    );
+    const eventFn = helper.substring(helper.indexOf('event(){'), helper.indexOf('}', helper.indexOf('event(){') + 10));
     expect(eventFn).toContain('sync');
   });
 });

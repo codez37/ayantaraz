@@ -24,7 +24,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [isLoading, isAuthenticated, router]);
 
-  if (isLoading) return <div className="text-center py-16"><div className="animate-spin h-8 w-8 border-4 border-[#C9A227] border-t-transparent rounded-full mx-auto" /></div>;
+  if (isLoading)
+    return (
+      <div className="text-center py-16">
+        <div className="animate-spin h-8 w-8 border-4 border-[#C9A227] border-t-transparent rounded-full mx-auto" />
+      </div>
+    );
   if (!user) return null;
 
   return (
@@ -36,7 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <p className="font-bold text-white">{user.firstName || 'کاربر'}</p>
         </div>
         <nav className="p-2 space-y-1">
-          {sidebarItems.map(item => (
+          {sidebarItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -55,14 +60,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile bottom tabs */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#1A1A1A] border-t border-[#C9A227]/10 safe-area-bottom">
         <div className="flex items-center justify-around py-2">
-          {sidebarItems.map(item => (
+          {sidebarItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors min-w-[60px] ${
-                pathname === item.href
-                  ? 'text-[#C9A227] font-bold'
-                  : 'text-gray-500'
+                pathname === item.href ? 'text-[#C9A227] font-bold' : 'text-gray-500'
               }`}
             >
               <span className="text-lg">{item.icon}</span>

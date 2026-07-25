@@ -50,15 +50,15 @@ const entityTypeLabels: Record<string, string> = {
 
 // Action type labels
 const actionTypeLabels: Record<string, string> = {
-  'create': 'ایجاد',
-  'update': 'به‌روزرسانی',
-  'delete': 'حذف',
-  'login': 'ورود',
-  'logout': 'خروج',
-  'block': 'مسدود کردن',
-  'unblock': 'رفع مسدودیت',
-  'otp_send': 'ارسال OTP',
-  'otp_verify': 'تایید OTP',
+  create: 'ایجاد',
+  update: 'به‌روزرسانی',
+  delete: 'حذف',
+  login: 'ورود',
+  logout: 'خروج',
+  block: 'مسدود کردن',
+  unblock: 'رفع مسدودیت',
+  otp_send: 'ارسال OTP',
+  otp_verify: 'تایید OTP',
   'auth:login': 'ورود',
   'auth:logout': 'خروج',
   'auth:otp_fail': 'خطا در OTP',
@@ -85,15 +85,11 @@ export default function AdminAuditLogsPage() {
     return () => clearTimeout(timer);
   }, [filters]);
 
-  const { data, isLoading, error, isFetching } = useAuditLogs(
-    page,
-    limit,
-    {
-      entityType: debouncedFilters.entityType || undefined,
-      action: debouncedFilters.action || undefined,
-      actorId: debouncedFilters.actorId ? parseInt(debouncedFilters.actorId) : undefined,
-    },
-  );
+  const { data, isLoading, error, isFetching } = useAuditLogs(page, limit, {
+    entityType: debouncedFilters.entityType || undefined,
+    action: debouncedFilters.action || undefined,
+    actorId: debouncedFilters.actorId ? parseInt(debouncedFilters.actorId) : undefined,
+  });
 
   const logs = data?.data || [];
   const meta = data?.meta || { total: 0, page: 1, limit: 20, totalPages: 1 };
@@ -136,7 +132,9 @@ export default function AdminAuditLogsPage() {
             >
               <option value="">همه</option>
               {Object.entries(entityTypeLabels).map(([key, label]) => (
-                <option key={key} value={key}>{label}</option>
+                <option key={key} value={key}>
+                  {label}
+                </option>
               ))}
             </select>
           </div>
@@ -149,7 +147,9 @@ export default function AdminAuditLogsPage() {
             >
               <option value="">همه</option>
               {Object.entries(actionTypeLabels).map(([key, label]) => (
-                <option key={key} value={key}>{label}</option>
+                <option key={key} value={key}>
+                  {label}
+                </option>
               ))}
             </select>
           </div>
@@ -200,21 +200,13 @@ export default function AdminAuditLogsPage() {
             <tbody>
               {logs.map((log) => (
                 <tr key={log.id} className="border-b border-[#C9A227]/5 hover:bg-[#C9A227]/5">
-                  <td className="p-3 text-gray-300">
-                    {actionTypeLabels[log.action] || log.action}
-                  </td>
-                  <td className="p-3 text-gray-400">
-                    {entityTypeLabels[log.entityType] || log.entityType}
-                  </td>
-                  <td className="p-3 text-gray-400 text-xs">
-                    {log.entityId ?? '-'}
-                  </td>
+                  <td className="p-3 text-gray-300">{actionTypeLabels[log.action] || log.action}</td>
+                  <td className="p-3 text-gray-400">{entityTypeLabels[log.entityType] || log.entityType}</td>
+                  <td className="p-3 text-gray-400 text-xs">{log.entityId ?? '-'}</td>
                   <td className="p-3 text-gray-300">
                     {log.actor?.firstName || log.actor?.phone?.slice(-4) || 'ناشناس'}
                   </td>
-                  <td className="p-3 text-gray-400 text-xs">
-                    {formatPersianDateTime(log.createdAt)}
-                  </td>
+                  <td className="p-3 text-gray-400 text-xs">{formatPersianDateTime(log.createdAt)}</td>
                   <td className="p-3 text-gray-400 text-xs max-w-[200px] truncate">
                     {log.oldValue ? `از: ${JSON.stringify(log.oldValue)}` : ''}
                     {log.newValue ? ` به: ${JSON.stringify(log.newValue)}` : ''}
@@ -238,7 +230,8 @@ export default function AdminAuditLogsPage() {
       {meta.total > meta.limit && (
         <div className="flex items-center justify-between pt-4">
           <div className="text-sm text-gray-500">
-            نمایش {meta.page.toLocaleString('fa-IR')} از {meta.totalPages.toLocaleString('fa-IR')} صفحه ({meta.total.toLocaleString('fa-IR')} لاگ)
+            نمایش {meta.page.toLocaleString('fa-IR')} از {meta.totalPages.toLocaleString('fa-IR')} صفحه (
+            {meta.total.toLocaleString('fa-IR')} لاگ)
           </div>
           <div className="flex items-center gap-2">
             <button

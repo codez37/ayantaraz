@@ -25,9 +25,9 @@ const config: Config = {
           200: '#FFF5D0',
           300: '#FFEFB3',
           400: '#FFE899',
-          500: '#FFD700',  // Primary Gold - Modern Pure Gold
+          500: '#FFD700', // Primary Gold - Modern Pure Gold
           600: '#E6C200',
-          700: '#CCA800',  // Secondary Gold
+          700: '#CCA800', // Secondary Gold
           800: '#B38F00',
           900: '#997600',
           950: '#806000',
@@ -83,7 +83,8 @@ const config: Config = {
         'gradient-gold-light': 'linear-gradient(135deg, #FFE899 0%, #FFD700 100%)',
         'gradient-gold-dark': 'linear-gradient(135deg, #CCA800 0%, #B38F00 100%)',
         'gradient-professional': 'linear-gradient(135deg, #FFD700 0%, #FFE899 50%, #FFD700 100%)',
-        'aurora-professional': 'radial-gradient(circle at 80% 10%, rgba(255, 215, 0, 0.12), transparent 28rem), radial-gradient(circle at 10% 70%, rgba(205, 168, 0, 0.11), transparent 24rem), linear-gradient(180deg, #0A0A0A 0%, #0F0F0F 48%, #0A0A0A 100%)',
+        'aurora-professional':
+          'radial-gradient(circle at 80% 10%, rgba(255, 215, 0, 0.12), transparent 28rem), radial-gradient(circle at 10% 70%, rgba(205, 168, 0, 0.11), transparent 24rem), linear-gradient(180deg, #0A0A0A 0%, #0F0F0F 48%, #0A0A0A 100%)',
       },
       animation: {
         'aurora-pan': 'aurora-pan 12s ease-in-out infinite',
@@ -94,7 +95,7 @@ const config: Config = {
         'slide-in-right': 'slide-in-right 380ms cubic-bezier(0.4, 0, 0.2, 1) both',
         'scale-in': 'scale-in 280ms cubic-bezier(0.4, 0, 0.2, 1) both',
         'pulse-gold': 'pulse-gold 2.2s ease-in-out infinite',
-        'shimmer': 'shimmer 1.8s infinite',
+        shimmer: 'shimmer 1.8s infinite',
         'professional-fade': 'professional-fade 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
         'professional-scale': 'professional-scale 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
       },
@@ -131,7 +132,7 @@ const config: Config = {
           '0%, 100%': { boxShadow: '0 0 0 0 rgba(255, 215, 0, 0.45)' },
           '50%': { boxShadow: '0 0 0 12px rgba(255, 215, 0, 0)' },
         },
-        'shimmer': {
+        shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
@@ -145,14 +146,14 @@ const config: Config = {
         },
       },
       transitionDuration: {
-        'gold': '380ms',
-        'spring': '480ms',
-        'professional': '320ms',
+        gold: '380ms',
+        spring: '480ms',
+        professional: '320ms',
       },
       transitionTimingFunction: {
-        'gold': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-        'professional': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        gold: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        professional: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
     },
   },

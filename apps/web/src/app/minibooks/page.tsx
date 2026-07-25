@@ -11,12 +11,12 @@ function formatFileSize(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB'];
   const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
   const size = bytes / Math.pow(1024, i);
-  const faDigits = (n: string) => n.replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
+  const faDigits = (n: string) => n.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
   return faDigits(size.toFixed(i === 0 ? 0 : 1)) + ' ' + units[i];
 }
 
 function formatPageCount(n: number): string {
-  return n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
+  return n.toString().replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
 }
 
 export default function MinibooksPage() {
@@ -35,10 +35,11 @@ export default function MinibooksPage() {
     load();
   }, []);
 
-  const filtered = minibooks.filter(b =>
-    b.title.toLowerCase().includes(search.trim().toLowerCase()) ||
-    b.summary.toLowerCase().includes(search.trim().toLowerCase()) ||
-    (b.categoryName || '').toLowerCase().includes(search.trim().toLowerCase()),
+  const filtered = minibooks.filter(
+    (b) =>
+      b.title.toLowerCase().includes(search.trim().toLowerCase()) ||
+      b.summary.toLowerCase().includes(search.trim().toLowerCase()) ||
+      (b.categoryName || '').toLowerCase().includes(search.trim().toLowerCase()),
   );
 
   const imageSrc = (item: Content) => {
@@ -52,12 +53,9 @@ export default function MinibooksPage() {
     <div className="min-h-screen bg-[#121212]">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-gold-gradient text-4xl font-bold mb-3">
-            مینی‌بوک‌های آموزشی
-          </h1>
+          <h1 className="text-gold-gradient text-4xl font-bold mb-3">مینی‌بوک‌های آموزشی</h1>
           <p className="text-gray-400 text-sm max-w-xl mx-auto leading-relaxed">
-            جزوه‌ها و کتابچه‌های کاربردی در حوزه حسابداری، مالیات و مدیریت مالی
-            — رایگان دانلود کنید
+            جزوه‌ها و کتابچه‌های کاربردی در حوزه حسابداری، مالیات و مدیریت مالی — رایگان دانلود کنید
           </p>
         </div>
 
@@ -105,14 +103,10 @@ export default function MinibooksPage() {
                       </span>
                     )}
 
-                    <h3 className="text-gray-200 font-bold text-sm mt-2 leading-relaxed line-clamp-2">
-                      {book.title}
-                    </h3>
+                    <h3 className="text-gray-200 font-bold text-sm mt-2 leading-relaxed line-clamp-2">{book.title}</h3>
 
                     {book.summary && (
-                      <p className="text-gray-500 text-xs mt-1.5 leading-relaxed line-clamp-2">
-                        {book.summary}
-                      </p>
+                      <p className="text-gray-500 text-xs mt-1.5 leading-relaxed line-clamp-2">{book.summary}</p>
                     )}
 
                     <div className="flex items-center gap-3 mt-3 text-gray-500 text-xs">
@@ -146,9 +140,7 @@ export default function MinibooksPage() {
         )}
 
         <div className="mt-14 text-center border-t border-[#C9A227]/10 pt-6">
-          <p className="text-gray-600 text-xs">
-            مینی‌بوک‌های بیشتری در دست تهیه است · به زودی
-          </p>
+          <p className="text-gray-600 text-xs">مینی‌بوک‌های بیشتری در دست تهیه است · به زودی</p>
         </div>
       </div>
     </div>

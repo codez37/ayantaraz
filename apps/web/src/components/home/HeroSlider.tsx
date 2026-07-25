@@ -66,9 +66,9 @@ export default function HeroSlider() {
 
   const handleTouchEnd = () => {
     if (touchStart === null || touchEnd === null) return;
-    
+
     const diff = touchStart - touchEnd;
-    
+
     if (diff > 5) {
       // Swipe left - next slide
       nextSlide();
@@ -76,7 +76,7 @@ export default function HeroSlider() {
       // Swipe right - previous slide
       prevSlide();
     }
-    
+
     setTouchStart(null);
     setTouchEnd(null);
   };
@@ -84,13 +84,16 @@ export default function HeroSlider() {
   // ==========================================
   // KEYBOARD NAVIGATION
   // ==========================================
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') {
-      nextSlide();
-    } else if (e.key === 'ArrowRight') {
-      prevSlide();
-    }
-  }, [nextSlide, prevSlide]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        nextSlide();
+      } else if (e.key === 'ArrowRight') {
+        prevSlide();
+      }
+    },
+    [nextSlide, prevSlide],
+  );
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -115,10 +118,11 @@ export default function HeroSlider() {
       aria-label="اسلایدر اصلی"
     >
       {/* Background Pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-50"
         style={{
-          backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNCOTVBOUIiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')",
+          backgroundImage:
+            "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNCOTVBOUIiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')",
         }}
       />
 
@@ -131,11 +135,7 @@ export default function HeroSlider() {
             flex items-center justify-center 
             px-4 md:px-8
             transition-all duration-700 ease-in-out
-            ${
-              i === currentSlide 
-                ? 'opacity-100 translate-y-0 scale-100' 
-                : 'opacity-0 translate-y-4 scale-95'
-            }
+            ${i === currentSlide ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'}
           `}
           aria-hidden={i !== currentSlide}
         >
@@ -195,8 +195,8 @@ export default function HeroSlider() {
       </div>
 
       {/* Navigation Arrows - Desktop */}
-      <button 
-        onClick={nextSlide} 
+      <button
+        onClick={nextSlide}
         className="
           absolute left-4 top-1/2 -translate-y-1/2 
           text-white/50 hover:text-[#C9A227]
@@ -210,9 +210,9 @@ export default function HeroSlider() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
-      
-      <button 
-        onClick={prevSlide} 
+
+      <button
+        onClick={prevSlide}
         className="
           absolute right-4 top-1/2 -translate-y-1/2 
           text-white/50 hover:text-[#C9A227]
@@ -229,9 +229,7 @@ export default function HeroSlider() {
 
       {/* Mobile Swipe Indicator */}
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 sm:hidden">
-        <p className="text-xs text-gray-500 animate-pulse">
-          برای تغییر اسلاید به چپ یا راست بکشید
-        </p>
+        <p className="text-xs text-gray-500 animate-pulse">برای تغییر اسلاید به چپ یا راست بکشید</p>
       </div>
     </section>
   );

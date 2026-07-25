@@ -12,8 +12,8 @@ async function main() {
   // 1. Admin users (comma-separated phone numbers in ADMIN_PHONE env var)
   const adminPhones = (process.env.ADMIN_PHONE || '09120000000')
     .split(',')
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
   for (const phone of adminPhones) {
     const existing = await prisma.user.findUnique({ where: { phone } });
     if (!existing) {

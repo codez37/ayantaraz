@@ -1,6 +1,9 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from 'fs';
-import { join, relative } from 'path';
+import { join, relative, dirname } from 'path';
 import { createHash } from 'crypto';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 interface RouteEntry {
   method: string;
@@ -72,9 +75,7 @@ function extractRoutes(filePath: string, controllerPrefix: string): RouteEntry[]
 
       if (hasExplicitPath) {
         const routePath = hasExplicitPath[1] || hasExplicitPath[2] || '';
-        const fullPath = routePath
-          ? `${controllerPrefix}/${routePath}`.replace(/\/+/g, '/')
-          : controllerPrefix || '/';
+        const fullPath = routePath ? `${controllerPrefix}/${routePath}`.replace(/\/+/g, '/') : controllerPrefix || '/';
         routes.push({
           method: method.toUpperCase(),
           path: fullPath || '/',
@@ -159,8 +160,8 @@ if (snapshot.routeCount !== baseline.routeCount) {
 }
 
 if (snapshot.checksum !== baseline.checksum) {
-  const baselineSet = new Set(baseline.routes.map(r => `${r.method} ${r.path}`));
-  const currentSet = new Set(snapshot.routes.map(r => `${r.method} ${r.path}`));
+  const baselineSet = new Set(baseline.routes.map((r) => `${r.method} ${r.path}`));
+  const currentSet = new Set(snapshot.routes.map((r) => `${r.method} ${r.path}`));
 
   for (const r of snapshot.routes) {
     const key = `${r.method} ${r.path}`;
@@ -184,7 +185,9 @@ console.log('=== SCOPE VALIDATION ===');
 console.log(`Timestamp: ${snapshot.timestamp}`);
 console.log(`Controllers: ${snapshot.controllerCount} (baseline: ${baseline.controllerCount})`);
 console.log(`Routes: ${snapshot.routeCount} (baseline: ${baseline.routeCount})`);
-console.log(`Schema: ${snapshot.schema.models}m/${snapshot.schema.enums}e (baseline: ${baseline.schema.models}m/${baseline.schema.enums}e)`);
+console.log(
+  `Schema: ${snapshot.schema.models}m/${snapshot.schema.enums}e (baseline: ${baseline.schema.models}m/${baseline.schema.enums}e)`,
+);
 console.log(`Checksum: ${snapshot.checksum}${snapshot.checksum === baseline.checksum ? ' ✓' : ' ✗'}`);
 console.log('');
 

@@ -78,7 +78,18 @@
     "domainScore": {
       "type": "object",
       "properties": {
-        "domain": { "type": "string", "enum": ["security", "correctness", "stability", "observability", "maintainability", "freshness", "production_safety"] },
+        "domain": {
+          "type": "string",
+          "enum": [
+            "security",
+            "correctness",
+            "stability",
+            "observability",
+            "maintainability",
+            "freshness",
+            "production_safety"
+          ]
+        },
         "weight": { "type": "number", "minimum": 0, "maximum": 1 },
         "score": { "$ref": "#/definitions/score" },
         "status": { "$ref": "#/definitions/status" }
@@ -107,7 +118,18 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["auth", "admin", "content", "consultation", "orders", "chatbot", "seo", "responsive", "security", "monitoring"]
+            "enum": [
+              "auth",
+              "admin",
+              "content",
+              "consultation",
+              "orders",
+              "chatbot",
+              "seo",
+              "responsive",
+              "security",
+              "monitoring"
+            ]
           }
         },
         "analysisLayers": {

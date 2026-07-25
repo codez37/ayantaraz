@@ -1,0 +1,13 @@
+export declare const OTP_EXPIRY_MS = 300000;
+export declare const OTP_RESEND_LIMIT = 3;
+export declare const OTP_RESEND_WINDOW_MS = 600000;
+export declare const OTP_MAX_ATTEMPTS = 5;
+export declare const OTP_LOCK_WINDOW_MS = 1800000;
+export declare const JWT_ACCESS_EXPIRY = '24h';
+export declare const JWT_REFRESH_EXPIRY = '7d';
+export declare const RATE_LIMIT_GLOBAL = 100;
+export declare const RATE_LIMIT_AUTH = 10;
+export declare const RATE_LIMIT_WINDOW_MS = 60000;
+export declare const PAGINATION_DEFAULT_PAGE = 1;
+export declare const PAGINATION_DEFAULT_LIMIT = 20;
+export declare const PAGINATION_MAX_LIMIT = 100;

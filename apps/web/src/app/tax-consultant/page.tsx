@@ -39,8 +39,9 @@ export default function TaxConsultantPage() {
   }, [messages]);
 
   useEffect(() => {
-    api.post<StartResponse>('/tax-engine/start', {})
-      .then(res => setSessionId(res.sessionId))
+    api
+      .post<StartResponse>('/tax-engine/start', {})
+      .then((res) => setSessionId(res.sessionId))
       .catch(() => {});
   }, []);
 
@@ -48,7 +49,7 @@ export default function TaxConsultantPage() {
     if (!input.trim() || loading) return;
     const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
     try {
       const res = await api.post<SendResponse>('/tax-engine/query', {
@@ -58,9 +59,19 @@ export default function TaxConsultantPage() {
       if (res.sessionId) {
         setSessionId(res.sessionId);
       }
-      setMessages(prev => [...prev, { role: 'assistant', content: res.answer ?? '', referencedArticles: res.referencedArticles }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: res.answer ?? '', referencedArticles: res.referencedArticles },
+      ]);
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'متأسفم، خطایی در ارتباط با سرور رخ داد. لطفاً دوباره تلاش کنید.', step: 'error' }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: 'متأسفم، خطایی در ارتباط با سرور رخ داد. لطفاً دوباره تلاش کنید.',
+          step: 'error',
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -68,8 +79,17 @@ export default function TaxConsultantPage() {
 
   const handleReset = async () => {
     setSessionId(null);
-    setMessages([{ role: 'assistant', content: 'سلام! به موتور هوشمند مالیاتی خوش آمدید. هر سوالی درباره قانون مالیاتهای مستقیم دارید بپرسید.', step: 'initial' }]);
-    try { const res = await api.post<StartResponse>('/tax-engine/start', {}); setSessionId(res.sessionId); } catch {}
+    setMessages([
+      {
+        role: 'assistant',
+        content: 'سلام! به موتور هوشمند مالیاتی خوش آمدید. هر سوالی درباره قانون مالیاتهای مستقیم دارید بپرسید.',
+        step: 'initial',
+      },
+    ]);
+    try {
+      const res = await api.post<StartResponse>('/tax-engine/start', {});
+      setSessionId(res.sessionId);
+    } catch {}
   };
 
   return (
@@ -99,20 +119,25 @@ export default function TaxConsultantPage() {
           <div className="h-[50vh] max-h-[500px] overflow-y-auto p-4 space-y-4 bg-[#121212]">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-                <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
-                  msg.role === 'user'
-                    ? 'bg-[#1A1A1A] border border-[#C9A227]/10 text-gray-200 rounded-br-md'
-                    : msg.step === 'error'
-                    ? 'bg-red-900/20 border border-red-500/20 text-gray-200 rounded-bl-md'
-                    : 'bg-[#1C1C1C] border border-[#C9A227]/10 text-gray-200 rounded-bl-md shadow-sm font-medium'
-                }`}>
+                <div
+                  className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
+                    msg.role === 'user'
+                      ? 'bg-[#1A1A1A] border border-[#C9A227]/10 text-gray-200 rounded-br-md'
+                      : msg.step === 'error'
+                        ? 'bg-red-900/20 border border-red-500/20 text-gray-200 rounded-bl-md'
+                        : 'bg-[#1C1C1C] border border-[#C9A227]/10 text-gray-200 rounded-bl-md shadow-sm font-medium'
+                  }`}
+                >
                   <div className="whitespace-pre-wrap overflow-x-auto custom-scrollbar">{msg.content}</div>
                   {msg.referencedArticles && msg.referencedArticles.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-[#C9A227]/10">
                       <div className="text-xs text-gray-500 mb-1">مواد قانونی مرتبط:</div>
                       <div className="flex flex-wrap gap-1.5">
                         {msg.referencedArticles.map((art, j) => (
-                          <span key={j} className="px-2 py-0.5 bg-[#C9A227]/20 text-[#C9A227] rounded text-xs font-medium">
+                          <span
+                            key={j}
+                            className="px-2 py-0.5 bg-[#C9A227]/20 text-[#C9A227] rounded text-xs font-medium"
+                          >
                             ماده {art}
                           </span>
                         ))}

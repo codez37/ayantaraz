@@ -10,7 +10,8 @@ export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
-    api.get<Course[]>('/courses')
+    api
+      .get<Course[]>('/courses')
       .then(setCourses)
       .catch(() => {});
   }, []);
@@ -22,10 +23,30 @@ export default function CoursesPage() {
       name: 'ثبت‌نام و گذراندن دوره آموزشی آیان تراز',
       description: 'مراحل شرکت در دوره‌های آموزشی حسابداری و مالیات آیان تراز',
       step: [
-        { '@type': 'HowToStep', position: 1, name: 'ثبت‌نام در دوره', text: 'دوره مورد نظر خود را انتخاب کرده و ثبت‌نام کنید.' },
-        { '@type': 'HowToStep', position: 2, name: 'مشاهده ویدیوهای آموزشی', text: 'به ویدیوهای ضبط شده دوره دسترسی پیدا کرده و گام‌به‌گام آموزش ببینید.' },
-        { '@type': 'HowToStep', position: 3, name: 'انجام تمرین‌ها', text: 'تمرین‌های هر جلسه را انجام دهید تا مفاهیم را تثبیت کنید.' },
-        { '@type': 'HowToStep', position: 4, name: 'دریافت گواهینامه', text: 'پس از اتمام دوره، گواهینامه معتبر دریافت کنید.' },
+        {
+          '@type': 'HowToStep',
+          position: 1,
+          name: 'ثبت‌نام در دوره',
+          text: 'دوره مورد نظر خود را انتخاب کرده و ثبت‌نام کنید.',
+        },
+        {
+          '@type': 'HowToStep',
+          position: 2,
+          name: 'مشاهده ویدیوهای آموزشی',
+          text: 'به ویدیوهای ضبط شده دوره دسترسی پیدا کرده و گام‌به‌گام آموزش ببینید.',
+        },
+        {
+          '@type': 'HowToStep',
+          position: 3,
+          name: 'انجام تمرین‌ها',
+          text: 'تمرین‌های هر جلسه را انجام دهید تا مفاهیم را تثبیت کنید.',
+        },
+        {
+          '@type': 'HowToStep',
+          position: 4,
+          name: 'دریافت گواهینامه',
+          text: 'پس از اتمام دوره، گواهینامه معتبر دریافت کنید.',
+        },
       ],
     });
 
@@ -41,7 +62,7 @@ export default function CoursesPage() {
 
   useEffect(() => {
     if (courses.length === 0) return;
-    courses.forEach(course => {
+    courses.forEach((course) => {
       injectJsonLd({
         '@context': 'https://schema.org',
         '@type': 'Course',
@@ -61,7 +82,7 @@ export default function CoursesPage() {
     <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-black text-gold-gradient mb-8">دوره‌های آموزشی</h1>
       <div className="grid md:grid-cols-2 gap-6">
-        {courses.map(course => (
+        {courses.map((course) => (
           <Link key={course.id} href={`/courses/${course.slug}`} className="card-dark p-6">
             <h2 className="text-xl font-bold text-white mb-2">{course.title}</h2>
             <p className="text-gray-400 mb-4">{course.description}</p>

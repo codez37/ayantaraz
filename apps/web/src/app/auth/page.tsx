@@ -196,13 +196,14 @@ export default function AuthPage() {
               <span className="text-3xl font-black text-background-primary">آ</span>
             </div>
             <h1 className="text-2xl font-black text-gradient-gold mb-2">
-              {step === 'phone' ? 'ورود / ثبت‌نام' :
-               step === 'otp' ? 'تایید کد' : 'تکمیل پروفایل'}
+              {step === 'phone' ? 'ورود / ثبت‌نام' : step === 'otp' ? 'تایید کد' : 'تکمیل پروفایل'}
             </h1>
             <p className={`text-sm ${textMuted}`}>
-              {step === 'phone' ? 'شماره تلفن خود را وارد کنید. کد تایید پیامک می‌شود.' :
-               step === 'otp' ? `کد ۶ رقمی ارسال شده به ${normalizePhone(phone).slice(0, 4)}***${normalizePhone(phone).slice(7)} را وارد کنید` :
-               'نام خود را وارد کنید'}
+              {step === 'phone'
+                ? 'شماره تلفن خود را وارد کنید. کد تایید پیامک می‌شود.'
+                : step === 'otp'
+                  ? `کد ۶ رقمی ارسال شده به ${normalizePhone(phone).slice(0, 4)}***${normalizePhone(phone).slice(7)} را وارد کنید`
+                  : 'نام خود را وارد کنید'}
             </p>
           </div>
 
@@ -220,9 +221,7 @@ export default function AuthPage() {
                 onKeyDown={(e) => e.key === 'Enter' && handleRequestOtp()}
                 autoFocus
               />
-              <p className={`text-xs ${textMuted} mb-6 text-center`}>
-                کد تایید به این شماره ارسال می‌شود
-              </p>
+              <p className={`text-xs ${textMuted} mb-6 text-center`}>کد تایید به این شماره ارسال می‌شود</p>
               <button
                 onClick={handleRequestOtp}
                 disabled={isLoading}
@@ -237,7 +236,9 @@ export default function AuthPage() {
                     </div>
                     در حال ارسال...
                   </>
-                ) : 'دریافت کد تایید'}
+                ) : (
+                  'دریافت کد تایید'
+                )}
               </button>
               {showMessage()}
             </>
@@ -250,7 +251,9 @@ export default function AuthPage() {
                 {code.map((digit, i) => (
                   <input
                     key={i}
-                    ref={(el) => { codeInputs.current[i] = el; }}
+                    ref={(el) => {
+                      codeInputs.current[i] = el;
+                    }}
                     type="text"
                     maxLength={1}
                     value={digit}
@@ -289,10 +292,17 @@ export default function AuthPage() {
                     </div>
                     در حال بررسی...
                   </>
-                ) : 'تایید'}
+                ) : (
+                  'تایید'
+                )}
               </button>
               <button
-                onClick={() => { setStep('phone'); setCode(['', '', '', '', '', '']); setMessage(''); setTimer(300); }}
+                onClick={() => {
+                  setStep('phone');
+                  setCode(['', '', '', '', '', '']);
+                  setMessage('');
+                  setTimer(300);
+                }}
                 className="w-full text-text-secondary p-3 mt-3 hover:text-text-primary text-sm transition-colors"
                 disabled={isLoading}
               >
@@ -335,7 +345,9 @@ export default function AuthPage() {
                     </div>
                     در حال ثبت...
                   </>
-                ) : 'ورود به پنل'}
+                ) : (
+                  'ورود به پنل'
+                )}
               </button>
               {showMessage()}
             </>

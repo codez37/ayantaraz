@@ -72,7 +72,12 @@ export class UsersService {
     limit: number = 10,
     role?: UserRole,
     isActive?: boolean,
-  ): Promise<{ users: Partial<User>[]; total: number; page: number; limit: number }> {
+  ): Promise<{
+    users: Partial<User>[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
     this.logger.debug(`Listing users - page: ${page}, limit: ${limit}`);
     const skip = (page - 1) * limit;
     const where: Prisma.UserWhereInput = {};
@@ -100,7 +105,7 @@ export class UsersService {
       this.prisma.user.count({ where }),
     ]);
     return {
-      users: users as Partial<User>[],
+      users: users,
       total,
       page,
       limit,
@@ -193,7 +198,12 @@ export class UsersService {
   async listUsers(
     page: number = 1,
     limit: number = 20,
-  ): Promise<{ users: Partial<User>[]; total: number; page: number; limit: number }> {
+  ): Promise<{
+    users: Partial<User>[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
     return this.list(page, limit);
   }
 

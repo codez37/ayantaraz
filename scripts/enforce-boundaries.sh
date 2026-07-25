@@ -37,7 +37,7 @@ echo "--- TypeScript Source Check ---"
 
 for dir in packages/shared/dist apps/api/dist; do
   if [ -d "$dir" ]; then
-    ts_count=$(find "$dir" -name "*.ts" 2>/dev/null | wc -l)
+    ts_count=$(find "$dir" -name "*.ts" ! -name "*.d.ts" 2>/dev/null | wc -l)
     if [ "$ts_count" -gt 0 ]; then
       echo -e "${RED}✗ $dir contains $ts_count .ts files — VIOLATION${NC}"
       ((FAIL++))

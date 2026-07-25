@@ -4,6 +4,8 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
+    "webRoot": "dist",
+    "tsc": true,
     "assets": [
       {
         "include": "**/*.json",

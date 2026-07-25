@@ -5,12 +5,7 @@ import { useFileUpload } from '@/lib/hooks/useApi';
 import { ButtonSkeleton, Spinner } from './Skeleton';
 
 interface FileUploadProps {
-  onUploadSuccess?: (data: {
-    url: string;
-    originalName: string;
-    mimeType: string;
-    size: number;
-  }) => void;
+  onUploadSuccess?: (data: { url: string; originalName: string; mimeType: string; size: number }) => void;
   onUploadError?: (error: Error) => void;
   accept?: string;
   maxSize?: number;
@@ -39,7 +34,7 @@ export function FileUpload({
     isUploading: false,
     error: null,
   });
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = useFileUpload();
 
@@ -61,13 +56,16 @@ export function FileUpload({
     }
 
     // Check file type
-    if (accept !== '*' && !accept.split(',').some((type) => {
-      if (type.endsWith('/*')) {
-        const category = type.slice(0, -2);
-        return file.type.startsWith(category);
-      }
-      return file.type === type || file.name.endsWith(type.slice(1));
-    })) {
+    if (
+      accept !== '*' &&
+      !accept.split(',').some((type) => {
+        if (type.endsWith('/*')) {
+          const category = type.slice(0, -2);
+          return file.type.startsWith(category);
+        }
+        return file.type === type || file.name.endsWith(type.slice(1));
+      })
+    ) {
       return {
         valid: false,
         error: `نوع فایل مجاز نیست. انواع مجاز: ${accept}`,
@@ -92,9 +90,9 @@ export function FileUpload({
     // Start upload
     try {
       setState((prev) => ({ ...prev, isUploading: true, progress: 0 }));
-      
+
       const result = await uploadMutation.mutateAsync(file);
-      
+
       setState((prev) => ({ ...prev, isUploading: false, progress: 100 }));
       onUploadSuccess?.(result);
     } catch (error) {
@@ -140,13 +138,7 @@ export function FileUpload({
   return (
     <div className={`space-y-3 ${className}`}>
       {/* File input (hidden) */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleInputChange}
-        accept={accept}
-        className="hidden"
-      />
+      <input type="file" ref={fileInputRef} onChange={handleInputChange} accept={accept} className="hidden" />
 
       {/* Drop zone */}
       <div
@@ -157,8 +149,8 @@ export function FileUpload({
           state.isUploading
             ? 'border-[#C9A227] bg-[#C9A227]/10'
             : state.error
-            ? 'border-red-500 bg-red-900/10'
-            : 'border-[#C9A227]/30 bg-[#0B0B0C]/50 hover:border-[#C9A227]/50 hover:bg-[#0B0B0C]/80'
+              ? 'border-red-500 bg-red-900/10'
+              : 'border-[#C9A227]/30 bg-[#0B0B0C]/50 hover:border-[#C9A227]/50 hover:bg-[#0B0B0C]/80'
         }`}
       >
         {state.isUploading ? (
@@ -205,9 +197,7 @@ export function FileUpload({
 
       {/* Error message */}
       {state.error && (
-        <div className="bg-red-900/20 border border-red-800/30 text-red-400 p-3 rounded-lg text-sm">
-          {state.error}
-        </div>
+        <div className="bg-red-900/20 border border-red-800/30 text-red-400 p-3 rounded-lg text-sm">{state.error}</div>
       )}
 
       {/* Custom children */}
@@ -238,22 +228,13 @@ function FileIcon({ extension }: { extension: string }) {
     rar: '🗄️',
   };
 
-  return (
-    <span className="text-2xl">
-      {icons[extension.toLowerCase()] || '📁'}
-    </span>
-  );
+  return <span className="text-2xl">{icons[extension.toLowerCase()] || '📁'}</span>;
 }
 
 // Upload icon component
 function UploadIcon() {
   return (
-    <svg
-      className="w-12 h-12 text-[#C9A227] mx-auto"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
+    <svg className="w-12 h-12 text-[#C9A227] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

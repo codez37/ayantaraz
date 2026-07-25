@@ -14,7 +14,8 @@ export default function ArticleDetailPage() {
   const [article, setArticle] = useState<Content | null>(null);
 
   useEffect(() => {
-    api.get<Content>(`/content/${slug}`)
+    api
+      .get<Content>(`/content/${slug}`)
       .then((a) => {
         setArticle(a);
 
@@ -34,12 +35,8 @@ export default function ArticleDetailPage() {
           description: a.summary || a.body?.replace(/<[^>]*>/g, '').slice(0, 320),
           url: `${SITE_URL}/articles/${a.slug}`,
           mainEntityOfPage: `${SITE_URL}/articles/${a.slug}`,
-          datePublished: a.publishedAt
-            ? new Date(a.publishedAt).toISOString()
-            : undefined,
-          dateModified: a.updatedAt
-            ? new Date(a.updatedAt).toISOString()
-            : undefined,
+          datePublished: a.publishedAt ? new Date(a.publishedAt).toISOString() : undefined,
+          dateModified: a.updatedAt ? new Date(a.updatedAt).toISOString() : undefined,
           author: { '@type': 'Organization', name: 'آیان تراز', url: SITE_URL },
           publisher: {
             '@type': 'Organization',
@@ -70,7 +67,10 @@ export default function ArticleDetailPage() {
     <article className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-black text-gold-gradient mb-4">{article.title}</h1>
       <p className="text-gray-500 mb-8">{new Date(article.publishedAt!).toLocaleDateString('fa-IR')}</p>
-      <div className="prose prose-lg max-w-none text-gray-200 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_p]:text-gray-300 [&_li]:text-gray-300" dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.body) }} />
+      <div
+        className="prose prose-lg max-w-none text-gray-200 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_p]:text-gray-300 [&_li]:text-gray-300"
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.body) }}
+      />
     </article>
   );
 }

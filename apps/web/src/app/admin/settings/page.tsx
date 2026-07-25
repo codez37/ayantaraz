@@ -17,8 +17,9 @@ export default function AdminSettingsPage() {
 
   const loadSettings = () => {
     setLoading(true);
-    api.get<Setting[]>('/admin/settings')
-      .then(d => setSettings(Array.isArray(d) ? d : []))
+    api
+      .get<Setting[]>('/admin/settings')
+      .then((d) => setSettings(Array.isArray(d) ? d : []))
       .catch(() => {})
       .finally(() => setLoading(false));
   };
@@ -41,7 +42,12 @@ export default function AdminSettingsPage() {
     }
   };
 
-  if (loading && !editing) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading && !editing)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
 
   return (
     <div className="space-y-4">
@@ -62,23 +68,45 @@ export default function AdminSettingsPage() {
                   <td className="p-3 text-gray-300">{s.key}</td>
                   <td className="p-3 text-gray-400 max-w-[400px] truncate text-left" dir="ltr">
                     {editing === s.key ? (
-                      <input value={editValue} onChange={e => setEditValue(e.target.value)} className="input-dark text-xs py-1" />
-                    ) : s.value}
+                      <input
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        className="input-dark text-xs py-1"
+                      />
+                    ) : (
+                      s.value
+                    )}
                   </td>
                   <td className="p-3 text-center">
                     {editing === s.key ? (
                       <div className="flex gap-2 justify-center">
-                        <button onClick={() => handleUpdate(s.key)} className="text-green-400 text-xs">تایید</button>
-                        <button onClick={() => setEditing(null)} className="text-red-400 text-xs">لغو</button>
+                        <button onClick={() => handleUpdate(s.key)} className="text-green-400 text-xs">
+                          تایید
+                        </button>
+                        <button onClick={() => setEditing(null)} className="text-red-400 text-xs">
+                          لغو
+                        </button>
                       </div>
                     ) : (
-                      <button onClick={() => { setEditing(s.key); setEditValue(s.value); }} className="text-blue-400 hover:underline text-xs">ویرایش</button>
+                      <button
+                        onClick={() => {
+                          setEditing(s.key);
+                          setEditValue(s.value);
+                        }}
+                        className="text-blue-400 hover:underline text-xs"
+                      >
+                        ویرایش
+                      </button>
                     )}
                   </td>
                 </tr>
               ))}
               {settings.length === 0 && (
-                <tr><td colSpan={2} className="p-8 text-center text-gray-500">تنظیماتی یافت نشد</td></tr>
+                <tr>
+                  <td colSpan={2} className="p-8 text-center text-gray-500">
+                    تنظیماتی یافت نشد
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

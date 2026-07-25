@@ -88,12 +88,12 @@ export default function ChatbotWidget() {
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
-    
+
     const question = input.trim();
     setInput('');
     setError(null);
     setShowSuggestions(false);
-    
+
     const userMessage: Message = {
       id: generateId(),
       role: 'user',
@@ -105,10 +105,9 @@ export default function ChatbotWidget() {
     setLoading(true);
 
     try {
-      const res = await api.post<{ answer: string; source?: string; riskLevel?: string }>(
-        '/chatbot/query',
-        { question },
-      );
+      const res = await api.post<{ answer: string; source?: string; riskLevel?: string }>('/chatbot/query', {
+        question,
+      });
 
       const botMessage: Message = {
         id: generateId(),
@@ -118,7 +117,7 @@ export default function ChatbotWidget() {
         status: 'delivered',
       };
       setMessages((prev) => [...prev, botMessage]);
-      
+
       if (res.source === 'fallback') {
         setShowSuggestions(true);
       }
@@ -166,16 +165,14 @@ export default function ChatbotWidget() {
 
   // Luxury color scheme based on theme
   const isDark = theme === 'dark';
-  const chatHeaderBg = isDark 
-    ? 'bg-gradient-to-l from-gold-400 to-gold-500' 
+  const chatHeaderBg = isDark
+    ? 'bg-gradient-to-l from-gold-400 to-gold-500'
     : 'bg-gradient-to-l from-gold-600 to-gold-700';
   const chatHeaderText = isDark ? 'text-background-primary' : 'text-white';
   const chatBg = isDark ? 'bg-background-secondary' : 'bg-background-primary';
   const chatInputBg = isDark ? 'bg-background-tertiary' : 'bg-surface/80';
   const messageUserBg = isDark ? 'bg-background-tertiary' : 'bg-surface/60';
-  const messageBotBg = isDark 
-    ? 'bg-gold-900/10 border-gold-800/20' 
-    : 'bg-gold-700/10 border-gold-700/20';
+  const messageBotBg = isDark ? 'bg-gold-900/10 border-gold-800/20' : 'bg-gold-700/10 border-gold-700/20';
 
   return (
     <>
@@ -195,12 +192,17 @@ export default function ChatbotWidget() {
           </svg>
         ) : (
           <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
           </svg>
         )}
         {messages.length > 1 && !open && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold-400 text-background-primary text-xs font-bold rounded-full flex items-center justify-center animate-pulse-gold">
-            {messages.filter(m => m.role === 'user').length}
+            {messages.filter((m) => m.role === 'user').length}
           </span>
         )}
       </button>
@@ -218,12 +220,8 @@ export default function ChatbotWidget() {
                 ⚖️
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className={`font-bold ${chatHeaderText} text-sm truncate`}>
-                  پرسش و پاسخ مالیاتی
-                </h3>
-                <p className={`text-xs truncate ${chatHeaderText}/70`}>
-                  پاسخگویی بر اساس دانشنامه تخصصی
-                </p>
+                <h3 className={`font-bold ${chatHeaderText} text-sm truncate`}>پرسش و پاسخ مالیاتی</h3>
+                <p className={`text-xs truncate ${chatHeaderText}/70`}>پاسخگویی بر اساس دانشنامه تخصصی</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -233,7 +231,12 @@ export default function ChatbotWidget() {
                 title="پاک کردن گفتگو"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
                 </svg>
               </button>
               <button
@@ -249,7 +252,10 @@ export default function ChatbotWidget() {
           </div>
 
           {/* Messages Area */}
-          <div className={`flex-1 overflow-y-auto p-4 space-y-3 ${chatBg} custom-scrollbar`} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={`flex-1 overflow-y-auto p-4 space-y-3 ${chatBg} custom-scrollbar`}
+            onClick={(e) => e.stopPropagation()}
+          >
             {error && (
               <div className="bg-gold-700/10 border border-gold-700/30 text-gold-400 p-3 rounded-xl text-sm text-center animate-fade-in">
                 {error}
@@ -257,14 +263,18 @@ export default function ChatbotWidget() {
             )}
 
             {messages.map((msg, i) => (
-              <div 
-                key={msg.id} 
+              <div
+                key={msg.id}
                 className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'} animate-fade-in-up`}
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed relative ${msg.role === 'user' ? `${messageUserBg} text-text-primary rounded-br-md border border-border-gold/30` : `${messageBotBg} text-text-primary rounded-bl-md border`}`}>
+                <div
+                  className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed relative ${msg.role === 'user' ? `${messageUserBg} text-text-primary rounded-br-md border border-border-gold/30` : `${messageBotBg} text-text-primary rounded-bl-md border`}`}
+                >
                   <p className="whitespace-pre-wrap">{msg.content}</p>
-                  <span className={`absolute bottom-1 text-[10px] opacity-50 ${msg.role === 'user' ? 'left-3' : 'right-3'}`}>
+                  <span
+                    className={`absolute bottom-1 text-[10px] opacity-50 ${msg.role === 'user' ? 'left-3' : 'right-3'}`}
+                  >
                     {formatTime(msg.timestamp)}
                   </span>
                 </div>
@@ -288,9 +298,9 @@ export default function ChatbotWidget() {
                 <p className="text-[11px] text-text-secondary text-center">پیشنهادهای ما:</p>
                 <div className="grid grid-cols-1 gap-2">
                   {SUGGESTED_QUESTIONS.slice(0, 3).map((q, i) => (
-                    <button 
-                      key={i} 
-                      onClick={() => handleSuggestedClick(q)} 
+                    <button
+                      key={i}
+                      onClick={() => handleSuggestedClick(q)}
                       className="w-full text-left bg-background-tertiary/50 border border-border-gold/20 text-text-secondary p-2.5 rounded-xl text-xs hover:bg-background-tertiary/80 hover:border-border-gold/40 hover:text-text-primary transition-all truncate"
                     >
                       {q}
@@ -338,7 +348,11 @@ export default function ChatbotWidget() {
 
       {/* Backdrop Overlay */}
       {open && (
-        <div className="fixed inset-0 z-[55] bg-black/30 backdrop-blur-sm transition-opacity duration-300" onClick={() => setOpen(false)} aria-hidden="true" />
+        <div
+          className="fixed inset-0 z-[55] bg-black/30 backdrop-blur-sm transition-opacity duration-300"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
       )}
     </>
   );

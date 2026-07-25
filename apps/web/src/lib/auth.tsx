@@ -29,26 +29,26 @@ export const tokenStorage = {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem(ACCESS_TOKEN_KEY);
   },
-  
+
   getRefreshToken: (): string | null => {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem(REFRESH_TOKEN_KEY);
   },
-  
+
   setTokens: (accessToken: string, refreshToken: string): void => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
       localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     }
   },
-  
+
   clearTokens: (): void => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(ACCESS_TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
     }
   },
-  
+
   hasTokens: (): boolean => {
     if (typeof window === 'undefined') return false;
     return !!localStorage.getItem(ACCESS_TOKEN_KEY) && !!localStorage.getItem(REFRESH_TOKEN_KEY);
@@ -80,8 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const load = async () => {
       try {
         // Try to load profile with existing tokens
-        const profile = await api.get<User>('/users/profile', undefined, { 
-          redirectOnUnauthorized: false 
+        const profile = await api.get<User>('/users/profile', undefined, {
+          redirectOnUnauthorized: false,
         });
         setUser(profile);
       } catch {
@@ -91,17 +91,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const refreshResult = await api.post<{ accessToken: string; refreshToken: string }>(
               '/auth/refresh',
               {},
-              { redirectOnUnauthorized: false }
+              { redirectOnUnauthorized: false },
             );
             tokenStorage.setTokens(refreshResult.accessToken, refreshResult.refreshToken);
             setTokensState({
               accessToken: refreshResult.accessToken,
               refreshToken: refreshResult.refreshToken,
             });
-            
+
             // Retry profile fetch with new tokens
-            const profile = await api.get<User>('/users/profile', undefined, { 
-              redirectOnUnauthorized: false 
+            const profile = await api.get<User>('/users/profile', undefined, {
+              redirectOnUnauthorized: false,
             });
             setUser(profile);
           } catch {
@@ -129,20 +129,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const requestOtp = async (phone: string, csrfToken?: string): Promise<string> => {
-    const result = await api.post<{ message: string }>('/auth/otp', { phone }, {
-      headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : {},
-    });
+    const result = await api.post<{ message: string }>(
+      '/auth/otp',
+      { phone },
+      {
+        headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : {},
+      },
+    );
     return result.message;
   };
 
   const login = async (phone: string, code: string): Promise<boolean> => {
     const result = await api.post<AuthResponse>('/auth/verify', { phone, code });
-    
+
     // Store tokens persistently
     tokenStorage.setTokens(result.accessToken, result.refreshToken);
     setTokensState({ accessToken: result.accessToken, refreshToken: result.refreshToken });
     setUser(result.user);
-    
+
     return result.isNew;
   };
 
@@ -152,28 +156,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // proceed with local logout even if API fails
     }
-    
+
     // Clear all auth state
     clearTokens();
     setUser(null);
     setTokensState({});
-    
+
     // Use router for client-side navigation instead of window.location
     router.push('/auth');
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isAuthenticated: !!user,
-      login,
-      requestOtp,
-      logout,
-      isLoading,
-      tokens,
-      setTokens,
-      clearTokens,
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        login,
+        requestOtp,
+        logout,
+        isLoading,
+        tokens,
+        setTokens,
+        clearTokens,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

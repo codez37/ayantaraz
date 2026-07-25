@@ -79,8 +79,11 @@ export default function ProfilePage() {
           {orders.length === 0 ? (
             <p className="text-gray-500">سفارشی ثبت نشده</p>
           ) : (
-            orders.map(order => (
-              <div key={order.id} className="flex justify-between items-center py-2 border-b border-[#C9A227]/10 last:border-0">
+            orders.map((order) => (
+              <div
+                key={order.id}
+                className="flex justify-between items-center py-2 border-b border-[#C9A227]/10 last:border-0"
+              >
                 <span className="text-gray-200">{order.itemType === 'course' ? 'دوره' : 'مشاوره'}</span>
                 <span className={order.status === 'confirmed' ? 'text-green-400' : 'text-[#C9A227]'}>
                   {statusMap[order.status] || order.status}
@@ -95,15 +98,23 @@ export default function ProfilePage() {
           {consultations.length === 0 ? (
             <p className="text-gray-500">درخواستی ثبت نشده</p>
           ) : (
-            consultations.map(c => (
-              <div key={c.id} className="flex justify-between items-center py-2 border-b border-[#C9A227]/10 last:border-0">
+            consultations.map((c) => (
+              <div
+                key={c.id}
+                className="flex justify-between items-center py-2 border-b border-[#C9A227]/10 last:border-0"
+              >
                 <span className="text-gray-200">
                   {c.requestType === 'tax' ? 'مالیاتی' : c.requestType === 'accounting' ? 'حسابداری' : 'عمومی'}
                 </span>
-                <span className={
-                  c.status === 'completed' ? 'text-green-400' :
-                  c.status === 'canceled' ? 'text-red-400' : 'text-[#C9A227]'
-                }>
+                <span
+                  className={
+                    c.status === 'completed'
+                      ? 'text-green-400'
+                      : c.status === 'canceled'
+                        ? 'text-red-400'
+                        : 'text-[#C9A227]'
+                  }
+                >
                   {statusMap[c.status] || c.status}
                 </span>
               </div>

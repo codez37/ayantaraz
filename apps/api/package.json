@@ -10,7 +10,7 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "tsc -p tsconfig.build.json && mv dist/apps/api/src/* dist/ 2>/dev/null || true && rm -rf dist/apps",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

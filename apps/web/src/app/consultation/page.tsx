@@ -54,13 +54,8 @@ export default function ConsultationPage() {
         <div className="card-dark p-8 text-center">
           <div className="text-5xl mb-4">✅</div>
           <h1 className="text-2xl font-black text-gold-gradient mb-3">درخواست شما با موفقیت ثبت شد</h1>
-          <p className="text-gray-400 mb-6">
-            همکاران ما در اسرع وقت با شما تماس خواهند گرفت.
-          </p>
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="btn-gold !py-2 !px-6"
-          >
+          <p className="text-gray-400 mb-6">همکاران ما در اسرع وقت با شما تماس خواهند گرفت.</p>
+          <button onClick={() => router.push('/dashboard')} className="btn-gold !py-2 !px-6">
             پنل کاربری
           </button>
         </div>
@@ -108,11 +103,7 @@ export default function ConsultationPage() {
           />
         </div>
 
-        <button
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="btn-gold w-full text-center"
-        >
+        <button onClick={handleSubmit} disabled={isLoading} className="btn-gold w-full text-center">
           {isLoading ? 'در حال ثبت...' : 'ثبت درخواست مشاوره'}
         </button>
 

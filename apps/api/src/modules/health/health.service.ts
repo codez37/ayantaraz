@@ -62,17 +62,22 @@ export class HealthService {
 
     const memoryUsage = process.memoryUsage();
 
-      memoryUsed = memoryUsage.rss || 0;
-      memoryTotal = os.totalmem();
-      const usagePercent = (memoryUsed / memoryTotal) * 100;
-      if (usagePercent > 90) memoryStatus = 'critical';
-      else if (usagePercent > 70) memoryStatus = 'warning';
-      memoryUsagePercent = parseFloat(usagePercent.toFixed(2));
+    memoryUsed = memoryUsage.rss || 0;
+    memoryTotal = os.totalmem();
+    const usagePercent = (memoryUsed / memoryTotal) * 100;
+    if (usagePercent > 90) memoryStatus = 'critical';
+    else if (usagePercent > 70) memoryStatus = 'warning';
+    memoryUsagePercent = parseFloat(usagePercent.toFixed(2));
 
     const checks = {
       database: { status: databaseStatus, responseTime: databaseResponseTime },
       cache: { status: cacheStatus, responseTime: cacheResponseTime },
-      memory: { status: memoryStatus, used: memoryUsed, total: memoryTotal, usagePercent: memoryUsagePercent },
+      memory: {
+        status: memoryStatus,
+        used: memoryUsed,
+        total: memoryTotal,
+        usagePercent: memoryUsagePercent,
+      },
     };
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (checks.database.status === 'down' || checks.cache.status === 'down') {

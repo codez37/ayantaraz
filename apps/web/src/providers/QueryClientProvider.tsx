@@ -21,11 +21,7 @@ const queryClient = new QueryClient({
 });
 
 export function QueryClientProvider({ children }: { children: ReactNode }) {
-  return (
-    <TanStackQueryClientProvider client={queryClient}>
-      {children}
-    </TanStackQueryClientProvider>
-  );
+  return <TanStackQueryClientProvider client={queryClient}>{children}</TanStackQueryClientProvider>;
 }
 
 export { queryClient };

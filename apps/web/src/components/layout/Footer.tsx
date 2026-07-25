@@ -66,16 +66,12 @@ export default function Footer() {
           {/* Brand Section (Full width on mobile, 2 cols on tablet, 1 col on desktop) */}
           <div className="lg:col-span-1">
             {brandSection.logo}
-            <p className="text-sm text-gray-500 leading-relaxed">
-              {brandSection.description}
-            </p>
+            <p className="text-sm text-gray-500 leading-relaxed">{brandSection.description}</p>
           </div>
 
           {/* Services Section */}
           <div className="md:col-span-1">
-            <h4 className="text-[#C9A227] font-bold mb-4 text-sm">
-              {servicesSection.title}
-            </h4>
+            <h4 className="text-[#C9A227] font-bold mb-4 text-sm">{servicesSection.title}</h4>
             <div className="space-y-3">
               {servicesSection.links.map((item) => (
                 <Link
@@ -95,9 +91,7 @@ export default function Footer() {
 
           {/* Quick Access Section */}
           <div className="md:col-span-1">
-            <h4 className="text-[#C9A227] font-bold mb-4 text-sm">
-              {quickAccessSection.title}
-            </h4>
+            <h4 className="text-[#C9A227] font-bold mb-4 text-sm">{quickAccessSection.title}</h4>
             <div className="space-y-3">
               {quickAccessSection.links.map((item) => (
                 <Link
@@ -117,9 +111,7 @@ export default function Footer() {
 
           {/* Contact Section */}
           <div className="md:col-span-1">
-            <h4 className="text-[#C9A227] font-bold mb-4 text-sm">
-              {contactSection.title}
-            </h4>
+            <h4 className="text-[#C9A227] font-bold mb-4 text-sm">{contactSection.title}</h4>
             <div className="space-y-3 text-sm">
               {contactSection.items.map((item, index) => (
                 <div key={index} className="flex gap-2">
@@ -138,28 +130,16 @@ export default function Footer() {
               تمامی حقوق برای آیان تراز محفوظ است © {year}
             </p>
             <div className="flex gap-4 text-xs text-gray-600 justify-center md:justify-start">
-              <Link
-                href="/about"
-                className="hover:text-[#C9A227] transition-colors"
-              >
+              <Link href="/about" className="hover:text-[#C9A227] transition-colors">
                 درباره ما
               </Link>
-              <Link
-                href="/contact"
-                className="hover:text-[#C9A227] transition-colors"
-              >
+              <Link href="/contact" className="hover:text-[#C9A227] transition-colors">
                 تماس
               </Link>
-              <Link
-                href="/privacy"
-                className="hover:text-[#C9A227] transition-colors"
-              >
+              <Link href="/privacy" className="hover:text-[#C9A227] transition-colors">
                 حریم خصوصی
               </Link>
-              <Link
-                href="/terms"
-                className="hover:text-[#C9A227] transition-colors"
-              >
+              <Link href="/terms" className="hover:text-[#C9A227] transition-colors">
                 قوانین
               </Link>
             </div>

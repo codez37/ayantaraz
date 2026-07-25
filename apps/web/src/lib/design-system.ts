@@ -11,7 +11,7 @@ export const colors = {
   // Primary Colors - Modern Professional Black
   black: {
     950: '#000000',
-    900: '#0A0A0A',  // Primary Black - Modern Deep Black
+    900: '#0A0A0A', // Primary Black - Modern Deep Black
     800: '#0F0F0F',
     700: '#151515',
     600: '#1C1C1C',
@@ -22,7 +22,7 @@ export const colors = {
     100: '#555555',
     50: '#707070',
   },
-  
+
   // Gold Colors - Modern Professional Gold
   gold: {
     50: '#FFFEF7',
@@ -30,14 +30,14 @@ export const colors = {
     200: '#FFF5D0',
     300: '#FFEFB3',
     400: '#FFE899',
-    500: '#FFD700',  // Primary Gold - Modern Pure Gold
+    500: '#FFD700', // Primary Gold - Modern Pure Gold
     600: '#E6C200',
-    700: '#CCA800',  // Secondary Gold
+    700: '#CCA800', // Secondary Gold
     800: '#B38F00',
     900: '#997600',
     950: '#806000',
   },
-  
+
   // Accent Colors
   blue: {
     500: '#1E40AF',
@@ -45,7 +45,7 @@ export const colors = {
   purple: {
     500: '#7C3AED',
   },
-  
+
   // Semantic Colors
   semantic: {
     primary: '#FFD700',
@@ -60,7 +60,7 @@ export const colors = {
     warning: '#D97706',
     info: '#0284C7',
   },
-  
+
   // Gradients
   gradients: {
     primary: 'linear-gradient(135deg, #FFD700 0%, #CCA800 100%)',
@@ -111,17 +111,17 @@ export const typography = {
 // ============================================
 export const spacing = {
   0: '0',
-  1: '0.25rem',   // 4px
-  2: '0.5rem',    // 8px
-  3: '0.75rem',   // 12px
-  4: '1rem',      // 16px
-  5: '1.25rem',   // 20px
-  6: '1.5rem',    // 24px
-  8: '2rem',      // 32px
-  10: '2.5rem',   // 40px
-  12: '3rem',     // 48px
-  16: '4rem',     // 64px
-  20: '5rem',     // 80px
+  1: '0.25rem', // 4px
+  2: '0.5rem', // 8px
+  3: '0.75rem', // 12px
+  4: '1rem', // 16px
+  5: '1.25rem', // 20px
+  6: '1.5rem', // 24px
+  8: '2rem', // 32px
+  10: '2.5rem', // 40px
+  12: '3rem', // 48px
+  16: '4rem', // 64px
+  20: '5rem', // 80px
 };
 
 // ============================================
@@ -129,13 +129,13 @@ export const spacing = {
 // ============================================
 export const borderRadius = {
   none: '0',
-  sm: '0.25rem',    // 4px
+  sm: '0.25rem', // 4px
   default: '0.25rem',
-  md: '0.5rem',     // 8px
-  lg: '0.75rem',    // 12px
-  xl: '1rem',       // 16px
-  '2xl': '1.5rem',   // 24px
-  '3xl': '2rem',     // 32px
+  md: '0.5rem', // 8px
+  lg: '0.75rem', // 12px
+  xl: '1rem', // 16px
+  '2xl': '1.5rem', // 24px
+  '3xl': '2rem', // 32px
   full: '9999px',
 };
 

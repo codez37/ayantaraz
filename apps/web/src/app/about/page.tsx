@@ -3,13 +3,15 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'درباره آیان تراز | تیم متخصص حسابداری و مالیات',
-  description: 'آیان تراز با تیمی از متخصصان حسابداری و مالیات با بیش از ۱۵ سال تجربه، خدمات حرفه‌ای مالی و مالیاتی ارائه می‌دهد.',
+  description:
+    'آیان تراز با تیمی از متخصصان حسابداری و مالیات با بیش از ۱۵ سال تجربه، خدمات حرفه‌ای مالی و مالیاتی ارائه می‌دهد.',
   alternates: {
     canonical: 'https://ayantaraz.ir/about',
   },
   openGraph: {
     title: 'درباره آیان تراز | تیم متخصص حسابداری و مالیات',
-    description: 'آیان تراز با تیمی از متخصصان حسابداری و مالیات با بیش از ۱۵ سال تجربه، خدمات حرفه‌ای مالی و مالیاتی ارائه می‌دهد.',
+    description:
+      'آیان تراز با تیمی از متخصصان حسابداری و مالیات با بیش از ۱۵ سال تجربه، خدمات حرفه‌ای مالی و مالیاتی ارائه می‌دهد.',
     url: 'https://ayantaraz.ir/about',
     siteName: 'آیان تراز',
     images: [
@@ -56,16 +58,16 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-gray-400 leading-relaxed">
               <p>
-                آیان تراز در سال ۱۳۸۸ با هدف ارائه خدمات حرفه‌ای حسابداری و مشاوره مالیاتی آغاز به کار کرد. 
-                ما معتقدیم شفافیت مالی و رعایت قوانین مالیاتی کلید موفقیت هر کسب‌وکاری است.
+                آیان تراز در سال ۱۳۸۸ با هدف ارائه خدمات حرفه‌ای حسابداری و مشاوره مالیاتی آغاز به کار کرد. ما معتقدیم
+                شفافیت مالی و رعایت قوانین مالیاتی کلید موفقیت هر کسب‌وکاری است.
               </p>
               <p>
-                تیم ما متشکل از حسابداران رسمی، مشاوران مالیاتی و اساتید دانشگاه است که با 
-                به‌روزترین دانش و تجربه در کنار شما هستند.
+                تیم ما متشکل از حسابداران رسمی، مشاوران مالیاتی و اساتید دانشگاه است که با به‌روزترین دانش و تجربه در
+                کنار شما هستند.
               </p>
               <p>
-                امروز آیان تراز به یکی از معتبرترین برندهای مشاوره مالی و حسابداری در ایران تبدیل شده 
-                و به بیش از ۵۰۰ کسب‌وکار در سراسر کشور خدمات ارائه می‌دهد.
+                امروز آیان تراز به یکی از معتبرترین برندهای مشاوره مالی و حسابداری در ایران تبدیل شده و به بیش از ۵۰۰
+                کسب‌وکار در سراسر کشور خدمات ارائه می‌دهد.
               </p>
             </div>
           </div>
@@ -73,8 +75,8 @@ export default function AboutPage() {
             <div className="text-6xl mb-4">🎯</div>
             <h3 className="text-xl font-bold text-white mb-3">مأموریت ما</h3>
             <p className="text-gray-400 leading-relaxed">
-              توانمندسازی کسب‌وکارها با ارائه خدمات حرفه‌ای مالی و مالیاتی، 
-              تا بتوانند با اطمینان و آگاهی بیشتری مسیر رشد خود را طی کنند.
+              توانمندسازی کسب‌وکارها با ارائه خدمات حرفه‌ای مالی و مالیاتی، تا بتوانند با اطمینان و آگاهی بیشتری مسیر
+              رشد خود را طی کنند.
             </p>
             <div className="mt-6 grid grid-cols-2 gap-4">
               <div className="bg-[#121212] p-4 rounded-xl">
@@ -93,16 +95,14 @@ export default function AboutPage() {
       {/* Values */}
       <section className="bg-[#0B0B0C] py-16">
         <div className="container-mobile">
-          <h2 className="text-2xl md:text-3xl font-black text-gold-gradient text-center mb-12">
-            ارزش‌های ما
-          </h2>
+          <h2 className="text-2xl md:text-3xl font-black text-gold-gradient text-center mb-12">ارزش‌های ما</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { icon: '🎯', title: 'دقت', desc: 'بالاترین استانداردهای دقت در خدمات' },
               { icon: '🔒', title: 'امنیت', desc: 'حفظ محرمانگی اطلاعات مالی شما' },
               { icon: '⚡', title: 'سرعت', desc: 'پاسخگویی سریع به نیازهای شما' },
               { icon: '🤝', title: 'اعتماد', desc: 'رابطه صادقانه و شفاف با مشتریان' },
-            ].map(v => (
+            ].map((v) => (
               <div key={v.title} className="card-dark p-5 text-center">
                 <div className="text-3xl mb-3">{v.icon}</div>
                 <h3 className="text-white font-bold mb-1">{v.title}</h3>
@@ -115,11 +115,9 @@ export default function AboutPage() {
 
       {/* Team */}
       <section className="container-mobile py-16">
-        <h2 className="text-2xl md:text-3xl font-black text-gold-gradient text-center mb-12">
-          تیم ما
-        </h2>
+        <h2 className="text-2xl md:text-3xl font-black text-gold-gradient text-center mb-12">تیم ما</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {team.map(m => (
+          {team.map((m) => (
             <div key={m.name} className="card-dark p-5 text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-[#C9A227] to-[#FFA000] rounded-full mx-auto mb-3 flex items-center justify-center text-white font-black text-xl">
                 {m.name[0]}
@@ -135,13 +133,15 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="bg-gradient-to-br from-[#1C1C1C] to-[#121212] py-16 text-center">
         <div className="container-mobile">
-          <h2 className="text-2xl md:text-3xl font-black text-white mb-4">
-            آماده همکاری با ما هستید؟
-          </h2>
+          <h2 className="text-2xl md:text-3xl font-black text-white mb-4">آماده همکاری با ما هستید؟</h2>
           <p className="text-gray-300 mb-8">با تیم ما تماس بگیرید یا درخواست مشاوره ثبت کنید</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/consultation" className="btn-gold">ثبت درخواست مشاوره</Link>
-            <Link href="/contact" className="btn-outline-gold">تماس با ما</Link>
+            <Link href="/consultation" className="btn-gold">
+              ثبت درخواست مشاوره
+            </Link>
+            <Link href="/contact" className="btn-outline-gold">
+              تماس با ما
+            </Link>
           </div>
         </div>
       </section>

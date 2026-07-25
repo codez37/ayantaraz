@@ -65,18 +65,20 @@ async function checkOrphanFiles(): Promise<OrphanReport> {
   await prisma.$connect();
 
   try {
-    console.log(JSON.stringify({
-      type: 'orphan-check-start',
-      timestamp: new Date().toISOString(),
-      uploadDir: UPLOAD_DIR,
-    }));
+    console.log(
+      JSON.stringify({
+        type: 'orphan-check-start',
+        timestamp: new Date().toISOString(),
+        uploadDir: UPLOAD_DIR,
+      }),
+    );
 
     const [dbUrls, allFiles] = await Promise.all([
       collectDbUrls(prisma),
       Promise.resolve(walkUploads(UPLOAD_DIR, UPLOAD_DIR)),
     ]);
 
-    const orphans = allFiles.filter(f => !dbUrls.has(f)).sort();
+    const orphans = allFiles.filter((f) => !dbUrls.has(f)).sort();
 
     const missingReferences: { contentId: number; type: string; url: string }[] = [];
     const contents = await prisma.content.findMany({
@@ -100,11 +102,13 @@ async function checkOrphanFiles(): Promise<OrphanReport> {
       missingReferences,
     };
 
-    console.log(JSON.stringify({
-      type: 'orphan-check-result',
-      timestamp: new Date().toISOString(),
-      ...report,
-    }));
+    console.log(
+      JSON.stringify({
+        type: 'orphan-check-result',
+        timestamp: new Date().toISOString(),
+        ...report,
+      }),
+    );
 
     return report;
   } finally {
@@ -113,13 +117,15 @@ async function checkOrphanFiles(): Promise<OrphanReport> {
 }
 
 checkOrphanFiles()
-  .then(report => {
+  .then((report) => {
     process.exit(report.orphans.length > 0 ? 1 : 0);
   })
-  .catch(err => {
-    console.error(JSON.stringify({
-      type: 'orphan-check-error',
-      message: err instanceof Error ? err.message : String(err),
-    }));
+  .catch((err) => {
+    console.error(
+      JSON.stringify({
+        type: 'orphan-check-error',
+        message: err instanceof Error ? err.message : String(err),
+      }),
+    );
     process.exit(2);
   });

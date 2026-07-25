@@ -19,7 +19,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
     name: TypeCheck
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
     name: Format Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -100,7 +100,7 @@ jobs:
     name: Schema Validate
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -121,12 +121,14 @@ jobs:
 
       - name: Validate Prisma schema
         run: npx prisma validate --schema=prisma/schema.prisma
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/test
 
   build-validate:
     name: Build Validate
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -27,21 +27,30 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) { router.push('/auth'); }
+    if (!authLoading && !isAuthenticated) {
+      router.push('/auth');
+    }
   }, [authLoading, isAuthenticated, router]);
 
   useEffect(() => {
-    api.get<Order[]>('/orders')
+    api
+      .get<Order[]>('/orders')
       .then(setOrders)
       .catch(() => {})
       .finally(() => setOrdersLoading(false));
-    api.get<ConsultationRequest[]>('/consultation')
+    api
+      .get<ConsultationRequest[]>('/consultation')
       .then(setConsultations)
       .catch(() => {})
       .finally(() => setConsultLoading(false));
   }, []);
 
-  if (authLoading) return <div className="text-center py-16"><div className="animate-spin h-8 w-8 border-4 border-[#C9A227] border-t-transparent rounded-full mx-auto" /></div>;
+  if (authLoading)
+    return (
+      <div className="text-center py-16">
+        <div className="animate-spin h-8 w-8 border-4 border-[#C9A227] border-t-transparent rounded-full mx-auto" />
+      </div>
+    );
   if (!user) return null;
 
   return (
@@ -71,20 +80,33 @@ export default function DashboardPage() {
         <div className="bg-[#1C1C1C] p-6 rounded-xl border border-[#C9A227]/10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-white">سفارش‌های اخیر</h2>
-            <Link href="/dashboard/orders" className="text-sm text-[#C9A227] hover:text-[#FFB71A]">مشاهده همه</Link>
+            <Link href="/dashboard/orders" className="text-sm text-[#C9A227] hover:text-[#FFB71A]">
+              مشاهده همه
+            </Link>
           </div>
           {ordersLoading ? (
-            <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 bg-[#1A1A1A] rounded animate-pulse" />)}</div>
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-12 bg-[#1A1A1A] rounded animate-pulse" />
+              ))}
+            </div>
           ) : orders.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <p>هنوز سفارشی ثبت نکرده‌اید.</p>
-              <Link href="/courses" className="text-[#C9A227] text-sm hover:text-[#FFB71A]">مشاهده دوره‌ها</Link>
+              <Link href="/courses" className="text-[#C9A227] text-sm hover:text-[#FFB71A]">
+                مشاهده دوره‌ها
+              </Link>
             </div>
           ) : (
-            orders.slice(0, 5).map(order => (
-              <div key={order.id} className="flex justify-between items-center py-3 border-b border-[#C9A227]/10 last:border-0">
+            orders.slice(0, 5).map((order) => (
+              <div
+                key={order.id}
+                className="flex justify-between items-center py-3 border-b border-[#C9A227]/10 last:border-0"
+              >
                 <div>
-                  <span className="text-sm text-gray-200">{order.itemType === 'course' ? 'دوره آموزشی' : 'مشاوره'}</span>
+                  <span className="text-sm text-gray-200">
+                    {order.itemType === 'course' ? 'دوره آموزشی' : 'مشاوره'}
+                  </span>
                   <span className="text-xs text-gray-500 mr-2">{order.amount.toLocaleString()} ریال</span>
                 </div>
                 <span className={`text-xs px-2 py-1 rounded ${statusMap[order.status]?.color || 'text-gray-400'}`}>
@@ -98,18 +120,29 @@ export default function DashboardPage() {
         <div className="bg-[#1C1C1C] p-6 rounded-xl border border-[#C9A227]/10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-white">درخواست‌های مشاوره</h2>
-            <Link href="/dashboard/consultations" className="text-sm text-[#C9A227] hover:text-[#FFB71A]">مشاهده همه</Link>
+            <Link href="/dashboard/consultations" className="text-sm text-[#C9A227] hover:text-[#FFB71A]">
+              مشاهده همه
+            </Link>
           </div>
           {consultLoading ? (
-            <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 bg-[#1A1A1A] rounded animate-pulse" />)}</div>
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-12 bg-[#1A1A1A] rounded animate-pulse" />
+              ))}
+            </div>
           ) : consultations.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <p>هنوز درخواست مشاوره‌ای ثبت نکرده‌اید.</p>
-              <Link href="/consultation" className="text-[#C9A227] text-sm hover:text-[#FFB71A]">درخواست مشاوره</Link>
+              <Link href="/consultation" className="text-[#C9A227] text-sm hover:text-[#FFB71A]">
+                درخواست مشاوره
+              </Link>
             </div>
           ) : (
-            consultations.slice(0, 5).map(c => (
-              <div key={c.id} className="flex justify-between items-center py-3 border-b border-[#C9A227]/10 last:border-0">
+            consultations.slice(0, 5).map((c) => (
+              <div
+                key={c.id}
+                className="flex justify-between items-center py-3 border-b border-[#C9A227]/10 last:border-0"
+              >
                 <span className="text-sm text-gray-200">
                   {c.requestType === 'tax' ? 'مالیاتی' : c.requestType === 'accounting' ? 'حسابداری' : 'عمومی'}
                 </span>

@@ -167,17 +167,15 @@ describe('CONTRACT 20: Volume Configuration', () => {
 
   it('postgres has persistent volume', () => {
     const pgVolumes = compose.services?.postgres?.volumes || [];
-    const hasPersistent = pgVolumes.some((v: string) =>
-      v.includes('pgdata') || v.includes('postgres_data')
-    );
+    const hasPersistent = pgVolumes.some((v: string) => v.includes('pgdata') || v.includes('postgres_data'));
     expect(hasPersistent).toBe(true);
   });
 
   it('redis has no persistent volume', () => {
     const redisVolumes = compose.services?.redis?.volumes || [];
     // Redis should only have tmpfs or no volumes
-    const hasPersistent = redisVolumes.some((v: string) =>
-      !v.includes('tmpfs') && v.includes(':') && !v.includes('/tmp')
+    const hasPersistent = redisVolumes.some(
+      (v: string) => !v.includes('tmpfs') && v.includes(':') && !v.includes('/tmp'),
     );
     expect(hasPersistent).toBe(false);
   });

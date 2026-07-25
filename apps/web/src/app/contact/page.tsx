@@ -43,13 +43,8 @@ export default function ContactPage() {
         </div>
         <div className="card-dark p-6">
           <h2 className="text-lg font-bold text-white mb-4">پیگیری درخواست</h2>
-          <p className="text-gray-400 mb-4">
-            برای پیگیری وضعیت درخواست مشاوره یا سفارش خود، وارد پنل کاربری شوید.
-          </p>
-          <Link
-            href="/auth"
-            className="btn-gold !py-2 !px-6 inline-block"
-          >
+          <p className="text-gray-400 mb-4">برای پیگیری وضعیت درخواست مشاوره یا سفارش خود، وارد پنل کاربری شوید.</p>
+          <Link href="/auth" className="btn-gold !py-2 !px-6 inline-block">
             ورود به پنل
           </Link>
         </div>

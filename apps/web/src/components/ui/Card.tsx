@@ -47,10 +47,13 @@ export default function Card({
   // ==========================================
   // CLICKABLE STYLES
   // ==========================================
-  const clickableStyles = clickable || onClick ? `
+  const clickableStyles =
+    clickable || onClick
+      ? `
     cursor-pointer
     active:scale-[0.98]
-  ` : '';
+  `
+      : '';
 
   // ==========================================
   // RENDER
@@ -89,10 +92,7 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 function CardHeader({ children, className = '', ...props }: CardHeaderProps) {
   return (
-    <div
-      {...props}
-      className={`px-4 py-3 border-b border-[#C9A227]/10 ${className}`}
-    >
+    <div {...props} className={`px-4 py-3 border-b border-[#C9A227]/10 ${className}`}>
       {children}
     </div>
   );
@@ -126,10 +126,7 @@ interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
 
 function CardFooter({ children, className = '', ...props }: CardFooterProps) {
   return (
-    <div
-      {...props}
-      className={`px-4 py-3 border-t border-[#C9A227]/10 ${className}`}
-    >
+    <div {...props} className={`px-4 py-3 border-t border-[#C9A227]/10 ${className}`}>
       {children}
     </div>
   );

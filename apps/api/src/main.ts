@@ -173,7 +173,8 @@ async function bootstrap() {
     ),
   );
   process.on('unhandledRejection', (reason: unknown) => {
-    const errorMessage = reason instanceof Error ? reason.stack || reason.message : String(reason);
+    const errorMessage =
+      reason instanceof Error ? reason.stack || reason.message : String(reason);
     logger.error('Unhandled Rejection', errorMessage, 'Bootstrap');
   });
   process.on('uncaughtException', (err: Error) => {

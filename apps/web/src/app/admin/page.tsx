@@ -16,7 +16,11 @@ export default function AdminPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
-          <Link key={card.href} href={card.href} className="rounded-2xl border border-[#C9A227]/10 bg-[#121212] p-5 transition hover:border-[#C9A227]/35 hover:shadow-lg hover:shadow-[#C9A227]/10">
+          <Link
+            key={card.href}
+            href={card.href}
+            className="rounded-2xl border border-[#C9A227]/10 bg-[#121212] p-5 transition hover:border-[#C9A227]/35 hover:shadow-lg hover:shadow-[#C9A227]/10"
+          >
             <h2 className="font-black text-white">{card.title}</h2>
             <p className="mt-3 text-sm leading-7 text-gray-500">{card.desc}</p>
           </Link>

@@ -41,7 +41,10 @@ while (i < lines.length) {
           const paren = f.indexOf('(');
           const attr: AttributeNode = { name: paren > 0 ? f.slice(2, paren) : f.slice(2), args: [] };
           if (paren > 0) {
-            attr.args = f.slice(paren + 1, f.lastIndexOf(')')).split(',').map(a => a.trim().replace(/"/g, ''));
+            attr.args = f
+              .slice(paren + 1, f.lastIndexOf(')'))
+              .split(',')
+              .map((a) => a.trim().replace(/"/g, ''));
           }
           attributes.push(attr);
         }
@@ -50,10 +53,20 @@ while (i < lines.length) {
       }
       const parts = f.split(/\s+/);
       if (parts.length >= 2) {
-        const field: FieldNode = { name: parts[0], type: parts[1].replace('?', '').replace('[]', ''), optional: parts[1].includes('?'), array: parts[1].includes('[]'), attributes: [] };
+        const field: FieldNode = {
+          name: parts[0],
+          type: parts[1].replace('?', '').replace('[]', ''),
+          optional: parts[1].includes('?'),
+          array: parts[1].includes('[]'),
+          attributes: [],
+        };
         const attrStart = f.indexOf('@');
         if (attrStart > 0) {
-          field.attributes = f.slice(attrStart).split(/@(?=[a-zA-Z])/).filter(Boolean).map(a => '@' + a.trim());
+          field.attributes = f
+            .slice(attrStart)
+            .split(/@(?=[a-zA-Z])/)
+            .filter(Boolean)
+            .map((a) => '@' + a.trim());
         }
         fields.push(field);
       }

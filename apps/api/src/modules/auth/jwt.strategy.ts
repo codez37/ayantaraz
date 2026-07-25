@@ -33,7 +33,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: { sub: number; phone: string; role: string; iss?: string; aud?: string }) {
+  validate(payload: {
+    sub: number;
+    phone: string;
+    role: string;
+    iss?: string;
+    aud?: string;
+  }) {
     if (!payload.sub) {
       throw new UnauthorizedException('توکن نامعتبر است');
     }

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-29T13:38:15.045Z",
+  "timestamp": "2026-07-25T01:30:16.777Z",
   "routes": [
     {
       "method": "DELETE",
@@ -113,7 +113,7 @@
     },
     {
       "method": "GET",
-      "path": "csrf/token",
+      "path": "csrf",
       "controller": "modules/security/csrf.controller.ts"
     },
     {
@@ -123,7 +123,27 @@
     },
     {
       "method": "GET",
-      "path": "health/detailed",
+      "path": "health/database",
+      "controller": "modules/health/health.controller.ts"
+    },
+    {
+      "method": "GET",
+      "path": "health/info",
+      "controller": "modules/health/health.controller.ts"
+    },
+    {
+      "method": "GET",
+      "path": "health/metrics",
+      "controller": "modules/health/health.controller.ts"
+    },
+    {
+      "method": "GET",
+      "path": "health/ping",
+      "controller": "modules/health/health.controller.ts"
+    },
+    {
+      "method": "GET",
+      "path": "health/ready",
       "controller": "modules/health/health.controller.ts"
     },
     {
@@ -378,6 +398,6 @@
     "checksum": "1452ddd6629c322f"
   },
   "controllerCount": 15,
-  "routeCount": 74,
-  "checksum": "e847854500de9a58"
+  "routeCount": 78,
+  "checksum": "ca4de65ba219715b"
 }

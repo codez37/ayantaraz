@@ -10,7 +10,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
-  const faDigits = (n: number) => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
+  const faDigits = (n: number) => n.toString().replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
   return `${faDigits(m)}:${faDigits(s).padStart(2, '۰')}`;
 }
 
@@ -41,29 +41,32 @@ export default function VideosPage() {
     load();
   }, []);
 
-  const filtered = videos.filter(v => v.title.toLowerCase().includes(search.trim().toLowerCase()));
+  const filtered = videos.filter((v) => v.title.toLowerCase().includes(search.trim().toLowerCase()));
 
   return (
     <div dir="rtl" className="min-h-screen bg-[#121212]">
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-gold-gradient mb-3">ویدیوهای آموزشی</h1>
-          <p className="text-gray-400 max-w-xl mx-auto">
-            مجموعه ویدیوهای آموزشی حسابداری، مالیات و مدیریت مالی
-          </p>
+          <p className="text-gray-400 max-w-xl mx-auto">مجموعه ویدیوهای آموزشی حسابداری، مالیات و مدیریت مالی</p>
         </div>
 
         <div className="relative max-w-md mx-auto mb-10">
           <span className="absolute right-4 top-1/2 -translate-y-1/2">
             <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </span>
           <input
             type="text"
             placeholder="جستجوی عنوان ویدیو..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="input-dark w-full pr-12 pl-4 py-3 rounded-xl bg-[#1A1A1A] border border-[#C9A227]/10 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#C9A227]/40 transition"
           />
         </div>
@@ -78,7 +81,7 @@ export default function VideosPage() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
-            {filtered.map(video => (
+            {filtered.map((video) => (
               <Link
                 key={video.id}
                 href={`/videos/${video.slug}`}
@@ -86,7 +89,13 @@ export default function VideosPage() {
               >
                 <div className="relative aspect-video bg-gradient-to-br from-[#C9A227]/30 to-[#FFA000]/10 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
                   {video.thumbnailUrl ? (
-                    <img src={video.thumbnailUrl.startsWith('http') ? video.thumbnailUrl : `${API_BASE}${video.thumbnailUrl}`} alt={video.title} className="w-full h-full object-cover absolute inset-0" />
+                    <img
+                      src={
+                        video.thumbnailUrl.startsWith('http') ? video.thumbnailUrl : `${API_BASE}${video.thumbnailUrl}`
+                      }
+                      alt={video.title}
+                      className="w-full h-full object-cover absolute inset-0"
+                    />
                   ) : null}
                   <svg className="w-16 h-16 text-[#C9A227]/50 relative z-10" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
@@ -106,22 +115,35 @@ export default function VideosPage() {
                   <h2 className="font-bold text-gray-200 mb-1.5 line-clamp-2 hover:text-[#C9A227] transition leading-snug">
                     {video.title}
                   </h2>
-                  <p className="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-                    {video.summary}
-                  </p>
+                  <p className="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">{video.summary}</p>
                   <div className="flex items-center gap-4 text-xs text-gray-400">
                     {video.mediaUrl && (
                       <span className="flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         {formatDuration(video.duration)}
                       </span>
                     )}
                     <span className="flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                       {toPersianViews(0)} بازدید
                     </span>

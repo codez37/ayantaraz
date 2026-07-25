@@ -13,7 +13,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
-  const fa = (n: number) => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
+  const fa = (n: number) => n.toString().replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
   return `${fa(m)}:${fa(s).padStart(2, '۰')}`;
 }
 
@@ -26,12 +26,13 @@ export default function CourseDetailPage() {
   const router = useRouter();
 
   useEffect(() => {
-    api.get<Course>(`/courses/${slug}`)
+    api
+      .get<Course>(`/courses/${slug}`)
       .then((d) => {
         setCourse(d);
 
         // Auto-select first sample video
-        const firstSample = d.videos?.find(v => v.isSample);
+        const firstSample = d.videos?.find((v) => v.isSample);
         if (firstSample) setSelectedVideo(firstSample);
 
         setPageMeta({
@@ -95,7 +96,7 @@ export default function CourseDetailPage() {
 
   if (!course) return <div className="text-center py-16 text-gray-400">در حال بارگذاری...</div>;
 
-  const sampleVideos = course.videos?.filter(v => v.isSample) || [];
+  const sampleVideos = course.videos?.filter((v) => v.isSample) || [];
   const hasSamples = sampleVideos.length > 0;
 
   return (
@@ -115,9 +116,7 @@ export default function CourseDetailPage() {
               className="w-full h-full"
             />
           </div>
-          <p className="text-sm text-gray-500 mt-2 text-center">
-            پیش‌نمایش دوره — {selectedVideo.title}
-          </p>
+          <p className="text-sm text-gray-500 mt-2 text-center">پیش‌نمایش دوره — {selectedVideo.title}</p>
         </div>
       )}
 
@@ -125,7 +124,7 @@ export default function CourseDetailPage() {
       {hasSamples && (
         <div className="mb-8">
           <h2 className="text-xl font-bold text-white mb-4">پیش‌نمایش دوره</h2>
-          {sampleVideos.map(video => (
+          {sampleVideos.map((video) => (
             <button
               key={video.id}
               onClick={() => setSelectedVideo(video)}
@@ -139,9 +138,7 @@ export default function CourseDetailPage() {
                 <path d="M8 5v14l11-7z" />
               </svg>
               <span className="text-gray-200 flex-1 text-sm">{video.title}</span>
-              {video.duration > 0 && (
-                <span className="text-gray-500 text-xs">{formatDuration(video.duration)}</span>
-              )}
+              {video.duration > 0 && <span className="text-gray-500 text-xs">{formatDuration(video.duration)}</span>}
               <span className="bg-[#C9A227]/20 text-[#C9A227] text-xs px-2 py-1 rounded">نمونه</span>
             </button>
           ))}
@@ -175,17 +172,11 @@ export default function CourseDetailPage() {
 
       {/* Purchase Button */}
       {!course.isEnrolled && (
-        <button
-          onClick={handlePurchase}
-          disabled={isLoading}
-          className="btn-gold w-full text-center"
-        >
+        <button onClick={handlePurchase} disabled={isLoading} className="btn-gold w-full text-center">
           {isLoading ? 'در حال ثبت...' : 'درخواست خرید دوره'}
         </button>
       )}
-      {course.isEnrolled && (
-        <p className="text-green-400 text-center">شما در این دوره ثبت‌نام کرده‌اید</p>
-      )}
+      {course.isEnrolled && <p className="text-green-400 text-center">شما در این دوره ثبت‌نام کرده‌اید</p>}
     </div>
   );
 }

@@ -10,13 +10,21 @@ interface OrderResult {
 
 export default function CheckoutPage() {
   const [step, setStep] = useState<'info' | 'payment' | 'done'>('info');
-  const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', itemType: 'course', itemId: '', amount: '' });
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    itemType: 'course',
+    itemId: '',
+    amount: '',
+  });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<OrderResult | null>(null);
   const [error, setError] = useState('');
 
   const handleSubmit = async () => {
-    setLoading(true); setError('');
+    setLoading(true);
+    setError('');
     try {
       const res = await api.post<OrderResult>('/orders', {
         itemType: form.itemType,
@@ -39,12 +47,21 @@ export default function CheckoutPage() {
 
   const confirmPayment = async () => {
     if (!result?.id) return;
-    setLoading(true); setError('');
+    setLoading(true);
+    setError('');
     try {
       const ref = (document.getElementById('paymentRef') as HTMLInputElement)?.value;
-      if (!ref) { setError('شماره پیگیری را وارد کنید'); setLoading(false); return; }
+      if (!ref) {
+        setError('شماره پیگیری را وارد کنید');
+        setLoading(false);
+        return;
+      }
 
-      await api.patch(`/orders/${result.id}/status`, { status: 'confirmed', paymentRef: ref, adminNote: 'پرداخت توسط کاربر' });
+      await api.patch(`/orders/${result.id}/status`, {
+        status: 'confirmed',
+        paymentRef: ref,
+        adminNote: 'پرداخت توسط کاربر',
+      });
       setStep('done');
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } }; message?: string };
@@ -65,9 +82,13 @@ export default function CheckoutPage() {
         <div className="flex items-center justify-center gap-2 mb-8">
           {['اطلاعات', 'پرداخت', 'تأیید'].map((label, i) => (
             <div key={label} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === ['info','payment','done'][i] ? 'bg-[#C9A227] text-[#121212]' : 'bg-[#121212] text-gray-500'
-              }`}>{i + 1}</div>
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  step === ['info', 'payment', 'done'][i] ? 'bg-[#C9A227] text-[#121212]' : 'bg-[#121212] text-gray-500'
+                }`}
+              >
+                {i + 1}
+              </div>
               <span className="text-sm text-gray-400">{label}</span>
               {i < 2 && <div className="w-8 h-0.5 bg-[#121212]" />}
             </div>
@@ -78,32 +99,61 @@ export default function CheckoutPage() {
           <div className="card-dark p-6 space-y-4">
             <div>
               <label className="text-sm text-gray-400 mb-1 block">نوع سفارش</label>
-              <select value={form.itemType} onChange={e => setForm(f => ({...f, itemType: e.target.value}))} className="input-dark">
+              <select
+                value={form.itemType}
+                onChange={(e) => setForm((f) => ({ ...f, itemType: e.target.value }))}
+                className="input-dark"
+              >
                 <option value="course">دوره آموزشی</option>
                 <option value="consultation">مشاوره مالیاتی</option>
               </select>
             </div>
             <div>
               <label className="text-sm text-gray-400 mb-1 block">شناسه دوره / مشاوره</label>
-              <input value={form.itemId} onChange={e => setForm(f => ({...f, itemId: e.target.value}))} className="input-dark" placeholder="شناسه را وارد کنید" />
+              <input
+                value={form.itemId}
+                onChange={(e) => setForm((f) => ({ ...f, itemId: e.target.value }))}
+                className="input-dark"
+                placeholder="شناسه را وارد کنید"
+              />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-sm text-gray-400 mb-1 block">نام</label>
-                <input value={form.firstName} onChange={e => setForm(f => ({...f, firstName: e.target.value}))} className="input-dark" placeholder="نام" />
+                <input
+                  value={form.firstName}
+                  onChange={(e) => setForm((f) => ({ ...f, firstName: e.target.value }))}
+                  className="input-dark"
+                  placeholder="نام"
+                />
               </div>
               <div>
                 <label className="text-sm text-gray-400 mb-1 block">نام خانوادگی</label>
-                <input value={form.lastName} onChange={e => setForm(f => ({...f, lastName: e.target.value}))} className="input-dark" placeholder="نام خانوادگی" />
+                <input
+                  value={form.lastName}
+                  onChange={(e) => setForm((f) => ({ ...f, lastName: e.target.value }))}
+                  className="input-dark"
+                  placeholder="نام خانوادگی"
+                />
               </div>
             </div>
             <div>
               <label className="text-sm text-gray-400 mb-1 block">شماره تلفن</label>
-              <input value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} className="input-dark" placeholder="09123456789" />
+              <input
+                value={form.phone}
+                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                className="input-dark"
+                placeholder="09123456789"
+              />
             </div>
             <div>
               <label className="text-sm text-gray-400 mb-1 block">مبلغ (تومان)</label>
-              <input value={form.amount} onChange={e => setForm(f => ({...f, amount: e.target.value}))} className="input-dark" placeholder="مبلغ به تومان" />
+              <input
+                value={form.amount}
+                onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))}
+                className="input-dark"
+                placeholder="مبلغ به تومان"
+              />
             </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <button onClick={handleSubmit} disabled={loading} className="btn-gold w-full text-center">
@@ -139,9 +189,7 @@ export default function CheckoutPage() {
           <div className="card-dark p-8 text-center space-y-4">
             <div className="text-6xl">✅</div>
             <h2 className="text-2xl font-black text-gold-gradient">سفارش ثبت شد!</h2>
-            <p className="text-gray-400">
-              سفارش شما با موفقیت ثبت شد. پس از تأیید مدیر، دسترسی شما فعال خواهد شد.
-            </p>
+            <p className="text-gray-400">سفارش شما با موفقیت ثبت شد. پس از تأیید مدیر، دسترسی شما فعال خواهد شد.</p>
             <p className="text-sm text-gray-500">شماره سفارش: {result?.id}</p>
             <Link href="/dashboard" className="btn-gold inline-block mt-4">
               پیگیری سفارش

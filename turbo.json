@@ -4,13 +4,7 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
-      "inputs": [
-        "src/**",
-        "tsconfig.json",
-        "tsconfig.build.json",
-        "package.json",
-        "../../tsconfig.base.json"
-      ],
+      "inputs": ["src/**", "tsconfig.json", "tsconfig.build.json", "package.json", "../../tsconfig.base.json"],
       "outputLogs": "new-only"
     },
     "dev": {
@@ -36,11 +30,7 @@
       "cache": false
     }
   },
-  "globalDependencies": [
-    "tsconfig.base.json",
-    "pnpm-lock.yaml",
-    "turbo.json"
-  ],
+  "globalDependencies": ["tsconfig.base.json", "pnpm-lock.yaml", "turbo.json"],
   "globalEnv": ["NODE_ENV", "DATABASE_URL"],
   "remoteCache": {
     "signature": true

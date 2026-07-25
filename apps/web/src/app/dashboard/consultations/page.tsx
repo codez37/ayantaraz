@@ -19,7 +19,8 @@ export default function ConsultationsPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
-    api.get<ConsultationRequest[]>('/consultation')
+    api
+      .get<ConsultationRequest[]>('/consultation')
       .then(setConsultations)
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -28,20 +29,28 @@ export default function ConsultationsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/dashboard" className="text-gray-500 hover:text-[#C9A227]">← داشبورد</Link>
+        <Link href="/dashboard" className="text-gray-500 hover:text-[#C9A227]">
+          ← داشبورد
+        </Link>
         <h1 className="text-2xl font-black text-gold-gradient">درخواست‌های مشاوره</h1>
       </div>
 
       {loading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 bg-[#1C1C1C] rounded-xl animate-pulse" />)}</div>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-16 bg-[#1C1C1C] rounded-xl animate-pulse" />
+          ))}
+        </div>
       ) : consultations.length === 0 ? (
         <div className="text-center py-16 text-gray-500 bg-[#1C1C1C] rounded-xl border border-[#C9A227]/10">
           <p>هنوز درخواست مشاوره‌ای ثبت نکرده‌اید.</p>
-          <Link href="/consultation" className="text-[#C9A227] hover:text-[#FFB71A] mt-2 inline-block">درخواست مشاوره</Link>
+          <Link href="/consultation" className="text-[#C9A227] hover:text-[#FFB71A] mt-2 inline-block">
+            درخواست مشاوره
+          </Link>
         </div>
       ) : (
         <div className="space-y-3">
-          {consultations.map(c => (
+          {consultations.map((c) => (
             <div key={c.id} className="bg-[#1C1C1C] rounded-xl border border-[#C9A227]/10 overflow-hidden">
               <button
                 onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
@@ -49,7 +58,11 @@ export default function ConsultationsPage() {
               >
                 <div>
                   <span className="font-bold text-white ml-2">
-                    {c.requestType === 'tax' ? 'مشاوره مالیاتی' : c.requestType === 'accounting' ? 'خدمات حسابداری' : 'مشاوره عمومی'}
+                    {c.requestType === 'tax'
+                      ? 'مشاوره مالیاتی'
+                      : c.requestType === 'accounting'
+                        ? 'خدمات حسابداری'
+                        : 'مشاوره عمومی'}
                   </span>
                   <span className={`text-xs px-2 py-1 rounded mr-2 ${statusMap[c.status]?.color}`}>
                     {statusMap[c.status]?.label || c.status}

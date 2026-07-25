@@ -29,7 +29,9 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/dashboard" className="text-gray-500 hover:text-[#C9A227]">← داشبورد</Link>
+        <Link href="/dashboard" className="text-gray-500 hover:text-[#C9A227]">
+          ← داشبورد
+        </Link>
         <h1 className="text-2xl font-black text-gold-gradient">پروفایل</h1>
       </div>
 
@@ -48,17 +50,11 @@ export default function ProfilePage() {
             <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="input-dark" />
           </div>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="btn-gold"
-        >
+        <button onClick={handleSave} disabled={saving} className="btn-gold">
           {saving ? 'در حال ذخیره...' : 'ذخیره'}
         </button>
         {message && (
-          <p className={`mt-4 text-sm ${message.includes('موفقیت') ? 'text-green-400' : 'text-red-400'}`}>
-            {message}
-          </p>
+          <p className={`mt-4 text-sm ${message.includes('موفقیت') ? 'text-green-400' : 'text-red-400'}`}>{message}</p>
         )}
       </div>
     </div>

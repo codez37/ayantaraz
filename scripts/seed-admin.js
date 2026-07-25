@@ -3,8 +3,8 @@ const prisma = new PrismaClient();
 
 const ADMIN_PHONES = (process.env.ADMIN_PHONE || '09133374162,09134292329')
   .split(',')
-  .map(s => s.trim())
-  .filter(s => s.length > 0);
+  .map((s) => s.trim())
+  .filter((s) => s.length > 0);
 
 async function main() {
   console.log('Seeding admin users...');
@@ -15,7 +15,7 @@ async function main() {
         if (existing.role !== 'admin') {
           await prisma.user.update({
             where: { id: existing.id },
-            data: { role: 'admin', isActive: true, firstName: 'Admin', lastName: 'User' }
+            data: { role: 'admin', isActive: true, firstName: 'Admin', lastName: 'User' },
           });
           console.log('Updated ' + phone + ' to admin');
         } else {
@@ -23,7 +23,7 @@ async function main() {
         }
       } else {
         await prisma.user.create({
-          data: { phone: phone, role: 'admin', isActive: true, firstName: 'Admin', lastName: 'User' }
+          data: { phone: phone, role: 'admin', isActive: true, firstName: 'Admin', lastName: 'User' },
         });
         console.log('Created admin: ' + phone);
       }
@@ -34,4 +34,7 @@ async function main() {
   console.log('Admin users seeded successfully!');
   await prisma.$disconnect();
 }
-main().catch(e => { console.error('Error:', e); process.exit(1); });
+main().catch((e) => {
+  console.error('Error:', e);
+  process.exit(1);
+});

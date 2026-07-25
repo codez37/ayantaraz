@@ -146,10 +146,7 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                <Link
-                  href="/auth"
-                  className="btn-gold text-sm"
-                >
+                <Link href="/auth" className="btn-gold text-sm">
                   ورود / ثبت‌نام
                 </Link>
               )}
@@ -208,9 +205,7 @@ export default function Header() {
                       onClick={() => setMenuOpen(false)}
                     >
                       پنل کاربری
-                      <span className="text-sm text-text-tertiary block">
-                        {user?.firstName || user?.phone}
-                      </span>
+                      <span className="text-sm text-text-tertiary block">{user?.firstName || user?.phone}</span>
                     </Link>
                     {user?.role === 'admin' && (
                       <Link
@@ -222,7 +217,10 @@ export default function Header() {
                       </Link>
                     )}
                     <button
-                      onClick={() => { logout(); setMenuOpen(false); }}
+                      onClick={() => {
+                        logout();
+                        setMenuOpen(false);
+                      }}
                       className="block w-full text-right px-4 py-3 text-base text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors duration-200"
                     >
                       خروج

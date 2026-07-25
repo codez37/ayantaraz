@@ -10,8 +10,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   env: {
-    NEXT_PUBLIC_SITE_URL:
-      process.env.NEXT_PUBLIC_SITE_URL || 'http://202.133.91.13',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://202.133.91.13',
   },
 
   images: {
@@ -53,9 +52,7 @@ const nextConfig: NextConfig = {
               "form-action 'self'",
 
               // scripts (production hardened but not broken)
-              isProd
-                ? "script-src 'self'"
-                : "script-src 'self' 'unsafe-inline'",
+              isProd ? "script-src 'self'" : "script-src 'self' 'unsafe-inline'",
 
               // styles
               "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
@@ -68,7 +65,7 @@ const nextConfig: NextConfig = {
               "connect-src 'self' http://202.133.91.13",
 
               // optional upgrade
-              isProd ? "upgrade-insecure-requests" : '',
+              isProd ? 'upgrade-insecure-requests' : '',
             ]
               .filter(Boolean)
               .join('; '),
@@ -128,8 +125,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value:
-              'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
           },
           { key: 'Pragma', value: 'no-cache' },
           { key: 'Expires', value: '0' },

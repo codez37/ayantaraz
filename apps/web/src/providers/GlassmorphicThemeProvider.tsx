@@ -67,13 +67,13 @@ export function GlassmorphicThemeProvider({ children }: { children: ReactNode })
     // Check localStorage first
     const savedTheme = localStorage.getItem('ayan-taraz-theme') as 'dark' | 'light' | null;
     const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    
+
     // Use requestAnimationFrame to avoid synchronous setState
     const frame = requestAnimationFrame(() => {
       setTheme(initialTheme);
       setIsMounted(true);
     });
-    
+
     return () => cancelAnimationFrame(frame);
   }, []);
 
@@ -82,7 +82,7 @@ export function GlassmorphicThemeProvider({ children }: { children: ReactNode })
     if (!isMounted) return;
 
     localStorage.setItem('ayan-taraz-theme', theme);
-    
+
     // Update document class and CSS variables
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(theme);
@@ -117,11 +117,7 @@ export function GlassmorphicThemeProvider({ children }: { children: ReactNode })
     setGlassEffect,
   };
 
-  return (
-    <GlassmorphicThemeContext.Provider value={value}>
-      {children}
-    </GlassmorphicThemeContext.Provider>
-  );
+  return <GlassmorphicThemeContext.Provider value={value}>{children}</GlassmorphicThemeContext.Provider>;
 }
 
 // ============================================

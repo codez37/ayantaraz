@@ -26,13 +26,13 @@ jobs:
             # Use $HOME everywhere — never bare ~ or \~
             COREPACK_DIR="$HOME/.npm-global"
             mkdir -p "$COREPACK_DIR/bin"
-            
+
             npm install -g corepack@latest --prefix "$COREPACK_DIR"
             export PATH="$COREPACK_DIR/bin:$PATH"
-            
+
             corepack enable --install-directory "$COREPACK_DIR/bin"
             corepack prepare pnpm@11.9.0 --activate
-            
+
             echo "✅ Ready:"
             node --version
             pnpm --version

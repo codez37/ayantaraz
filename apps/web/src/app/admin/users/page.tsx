@@ -34,7 +34,7 @@ export default function AdminUsersPage() {
   const [limit, setLimit] = useState(20);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  
+
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -111,17 +111,23 @@ export default function AdminUsersPage() {
             <tbody>
               {users.map((u) => (
                 <tr key={u.id} className="border-b border-[#C9A227]/5 hover:bg-[#C9A227]/5">
-                  <td className="p-3 text-gray-300" dir="ltr">{u.phone}</td>
+                  <td className="p-3 text-gray-300" dir="ltr">
+                    {u.phone}
+                  </td>
                   <td className="p-3 text-gray-300">
                     {u.firstName || u.lastName ? `${u.firstName} ${u.lastName}` : '-'}
                   </td>
                   <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded text-xs ${roleColors[u.role] || 'bg-gray-800 text-gray-400'}`}>
+                    <span
+                      className={`px-2 py-0.5 rounded text-xs ${roleColors[u.role] || 'bg-gray-800 text-gray-400'}`}
+                    >
                       {roleLabels[u.role] || u.role}
                     </span>
                   </td>
                   <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded text-xs ${u.isActive ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}`}>
+                    <span
+                      className={`px-2 py-0.5 rounded text-xs ${u.isActive ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}`}
+                    >
                       {u.isActive ? 'فعال' : 'مسدود'}
                     </span>
                   </td>

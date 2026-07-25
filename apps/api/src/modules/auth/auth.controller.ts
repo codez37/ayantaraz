@@ -69,7 +69,10 @@ export class AuthController {
       throw new Error('ریفرش توکن یافت نشد');
     }
     const { tokens } = await this.authService.refreshTokens(refreshToken, res);
-    return { message: 'توکن‌ها به‌روزرسانی شدند', accessToken: tokens.accessToken };
+    return {
+      message: 'توکن‌ها به‌روزرسانی شدند',
+      accessToken: tokens.accessToken,
+    };
   }
 
   @Post('logout')
