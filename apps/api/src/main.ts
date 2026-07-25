@@ -30,7 +30,7 @@ async function waitForDatabase(prisma: PrismaService, retries = 10) {
       );
       const delay = Math.min(
         1000 * Math.pow(2, i) + Math.random() * 100,
-        10000
+        10000,
       );
       await sleep(delay);
     }

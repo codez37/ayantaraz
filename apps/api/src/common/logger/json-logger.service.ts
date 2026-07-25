@@ -9,7 +9,7 @@ export class JsonLogger implements LoggerService {
 
   constructor() {
     const logsDir = path.join(process.cwd(), 'logs');
-    
+
     // Create logs directory if it doesn't exist
     try {
       // Note: In production, this will be handled by Docker volume mounts
@@ -68,7 +68,9 @@ export class JsonLogger implements LoggerService {
     context?: string,
     metadata?: Record<string, unknown>,
   ): void {
-    this.winstonLogger.info(this.format('info', message, context, undefined, metadata));
+    this.winstonLogger.info(
+      this.format('info', message, context, undefined, metadata),
+    );
   }
 
   error(
@@ -77,7 +79,9 @@ export class JsonLogger implements LoggerService {
     context?: string,
     metadata?: Record<string, unknown>,
   ): void {
-    this.winstonLogger.error(this.format('error', message, context, trace, metadata));
+    this.winstonLogger.error(
+      this.format('error', message, context, trace, metadata),
+    );
   }
 
   warn(
@@ -85,7 +89,9 @@ export class JsonLogger implements LoggerService {
     context?: string,
     metadata?: Record<string, unknown>,
   ): void {
-    this.winstonLogger.warn(this.format('warn', message, context, undefined, metadata));
+    this.winstonLogger.warn(
+      this.format('warn', message, context, undefined, metadata),
+    );
   }
 
   debug?(
@@ -93,7 +99,9 @@ export class JsonLogger implements LoggerService {
     context?: string,
     metadata?: Record<string, unknown>,
   ): void {
-    this.winstonLogger.debug(this.format('debug', message, context, undefined, metadata));
+    this.winstonLogger.debug(
+      this.format('debug', message, context, undefined, metadata),
+    );
   }
 
   verbose?(
@@ -101,6 +109,8 @@ export class JsonLogger implements LoggerService {
     context?: string,
     metadata?: Record<string, unknown>,
   ): void {
-    this.winstonLogger.verbose(this.format('verbose', message, context, undefined, metadata));
+    this.winstonLogger.verbose(
+      this.format('verbose', message, context, undefined, metadata),
+    );
   }
 }

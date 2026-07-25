@@ -5,6 +5,14 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
+  beforeAll(() => {
+    // Mock environment variables for tests
+    process.env.SMS_API_KEY = 'test_sms_key';
+    process.env.JWT_SECRET = 'test_jwt_secret';
+    process.env.JWT_REFRESH_SECRET = 'test_refresh_secret';
+    process.env.FILE_ENCRYPTION_KEY = 'test_encryption_key';
+    process.env.SESSION_SECRET = 'test_session_secret';
+  });
   let authService: AuthService;
 
   const mockTx = {
@@ -110,6 +118,9 @@ describe('AuthService', () => {
       mockPrisma.oTP.count.mockResolvedValueOnce(0);
       mockPrisma.oTP.create.mockResolvedValue({ id: 1 });
       mockPrisma.auditLog.create.mockResolvedValue({});
+
+      // Mock the private sendSms method to return true
+      jest.spyOn(authService as any, 'sendSms').mockResolvedValue(true);
 
       const result = await authService.requestOtp('09123456789');
       expect(result.message).toBeDefined();

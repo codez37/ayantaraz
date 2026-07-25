@@ -68,7 +68,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: today,
       changeFrequency: 'weekly',
       priority: 1,
-      images: getImageSitemap().map((i) => `${BASE_URL}${i.url}`),
     },
     { url: `${BASE_URL}/about`, lastModified: today, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/services`, lastModified: today, changeFrequency: 'monthly', priority: 0.9 },

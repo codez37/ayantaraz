@@ -18,7 +18,7 @@ const adminItems = [
   { path: '/admin/settings', icon: '⚙️', label: 'تنظیمات' },
 ];
 
-export function AdminLayout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
   const { theme } = useGlassmorphicTheme();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -160,5 +160,3 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     </div>
   );
 }
-
-export default AdminLayout;

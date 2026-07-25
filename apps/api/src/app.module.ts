@@ -40,11 +40,11 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
             port: parseInt(process.env.REDIS_PORT || '6379'),
           },
           password: process.env.REDIS_PASSWORD,
-          retryStrategy: (times) => Math.min(times * 100, 5000),
+          retryStrategy: (times: number) => Math.min(times * 100, 5000),
         });
 
         await redisClient.connect();
-        
+
         // Health check
         try {
           const pong = await redisClient.ping();
@@ -53,7 +53,10 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
           }
         } catch (err) {
           await redisClient.quit();
-          throw new Error('Redis connection failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+          throw new Error(
+            'Redis connection failed: ' +
+              (err instanceof Error ? err.message : 'Unknown error'),
+          );
         }
 
         return {

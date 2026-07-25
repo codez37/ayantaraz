@@ -15,16 +15,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Install Pnpm
-        run: npm install -g pnpm@11.9.0
+          cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --shamefully-hoist
 
       - name: Build Workspaces
         run: pnpm build

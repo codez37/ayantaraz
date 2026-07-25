@@ -34,10 +34,8 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Enable Corepack and pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,8 +44,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile --shamefully-hoist
+        run: pnpm install --frozen-lockfile --shamefully-hoist
 
       - name: Validate Prisma schema
         run: |
@@ -126,10 +123,8 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Enable Corepack and pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -138,8 +133,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile --shamefully-hoist
+        run: pnpm install --frozen-lockfile --shamefully-hoist
 
       - name: Generate Prisma client
         run: |
