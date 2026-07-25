@@ -19,6 +19,10 @@ interface ErrorResponseBody {
   correlationId?: string;
 }
 
+interface ValidationError {
+  constraints?: Record<string, string>;
+}
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger('Exception');
@@ -46,16 +50,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
             : message;
         errorType = (resObj.error as string) || errorType;
       }
-    } else if (
-      Array.isArray(exception) &&
-      exception.length > 0 &&
-      exception[0]?.constraints
-    ) {
-      status = HttpStatus.BAD_REQUEST;
-      errorType = 'ValidationError';
-      message = exception.map((err) =>
-        Object.values(err.constraints || {}).join(', '),
-      );
+    } else if (Array.isArray(exception) && exception.length > 0) {
+      // Type guard: check if first element has constraints (class-validator errors)
+      const firstError = exception[0] as Record<string, unknown>;
+      if (
+        firstError &&
+        typeof firstError === 'object' &&
+        firstError.constraints
+      ) {
+        status = HttpStatus.BAD_REQUEST;
+        errorType = 'ValidationError';
+        message = exception.map((err: ValidationError) =>
+          Object.values(err.constraints || {}).join(', '),
+        );
+      } else {
+        message = String(exception);
+      }
     } else if (exception instanceof Error) {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       errorType = exception.constructor.name;

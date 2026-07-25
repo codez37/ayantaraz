@@ -32,7 +32,7 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
     }),
     CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: async () => ({
+      useFactory: () => ({
         store: 'redis',
         // FIX: Use Docker service name 'redis' instead of localhost
         host: process.env.REDIS_HOST || 'redis',
