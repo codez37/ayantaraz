@@ -1,71 +1,73 @@
 // ============================================
-// DESIGN SYSTEM - MATTE BLACK & GOLD THEME
+// DESIGN SYSTEM - MODERN BLACK GOLD PROFESSIONAL THEME
 // Ayantaraz Project - Production Ready
-// Mobile-First, RTL, Brand Colors: #0B0B0C, #C9A227
+// Mobile-First, RTL, Brand Colors: #0A0A0A, #FFD700
 // ============================================
 
 // ============================================
 // COLOR SYSTEM
 // ============================================
 export const colors = {
-  // Primary Colors
+  // Primary Colors - Modern Professional Black
   black: {
-    950: '#030303',
-    900: '#0B0B0C',  // Primary Black
-    800: '#121212',
-    700: '#1A1A1A',
-    600: '#252525',
-    500: '#333333',
-    400: '#404040',
-    300: '#4D4D4D',
-    200: '#5A5A5A',
-    100: '#666666',
-    50: '#808080',
+    950: '#000000',
+    900: '#0A0A0A',  // Primary Black - Modern Deep Black
+    800: '#0F0F0F',
+    700: '#151515',
+    600: '#1C1C1C',
+    500: '#252525',
+    400: '#303030',
+    300: '#3D3D3D',
+    200: '#4A4A4A',
+    100: '#555555',
+    50: '#707070',
   },
   
-  // Gold Colors
+  // Gold Colors - Modern Professional Gold
   gold: {
-    50: '#FFF9E6',
-    100: '#FFE8B3',
-    200: '#FFD780',
-    300: '#FFC64D',
-    400: '#FFB71A',
-    500: '#FFA000',
-    600: '#E68A00',
-    700: '#C9A227',  // Primary Gold
-    800: '#A0781E',
-    900: '#FFA000',
+    50: '#FFFEF7',
+    100: '#FFFAE6',
+    200: '#FFF5D0',
+    300: '#FFEFB3',
+    400: '#FFE899',
+    500: '#FFD700',  // Primary Gold - Modern Pure Gold
+    600: '#E6C200',
+    700: '#CCA800',  // Secondary Gold
+    800: '#B38F00',
+    900: '#997600',
+    950: '#806000',
   },
   
   // Accent Colors
   blue: {
-    500: '#2563EB',
+    500: '#1E40AF',
   },
   purple: {
-    500: '#8B5CF6',
+    500: '#7C3AED',
   },
   
   // Semantic Colors
   semantic: {
-    primary: '#C9A227',
-    secondary: '#A0781E',
-    background: '#0B0B0C',
-    surface: '#121212',
-    onPrimary: '#0B0B0C',
+    primary: '#FFD700',
+    secondary: '#CCA800',
+    background: '#0A0A0A',
+    surface: '#0F0F0F',
+    onPrimary: '#0A0A0A',
     onBackground: '#FFFFFF',
-    onSurface: '#B0B0B0',
-    error: '#EF4444',
-    success: '#10B981',
-    warning: '#F59E0B',
-    info: '#3B82F6',
+    onSurface: '#C0C0C0',
+    error: '#DC2626',
+    success: '#059669',
+    warning: '#D97706',
+    info: '#0284C7',
   },
   
   // Gradients
   gradients: {
-    primary: 'linear-gradient(135deg, #C9A227 0%, #FFA000 100%)',
-    dark: 'linear-gradient(180deg, #0B0B0C 0%, #121212 100%)',
-    gold: 'linear-gradient(135deg, #FFB71A 0%, #C9A227 50%, #FFA000 100%)',
-    glass: 'linear-gradient(145deg, rgba(28, 28, 28, 0.84), rgba(11, 11, 12, 0.72))',
+    primary: 'linear-gradient(135deg, #FFD700 0%, #CCA800 100%)',
+    dark: 'linear-gradient(180deg, #0A0A0A 0%, #0F0F0F 100%)',
+    gold: 'linear-gradient(135deg, #FFE899 0%, #FFD700 50%, #CCA800 100%)',
+    glass: 'linear-gradient(145deg, rgba(15, 15, 15, 0.85), rgba(10, 10, 10, 0.75))',
+    professional: 'linear-gradient(135deg, #FFD700 0%, #FFE899 50%, #FFD700 100%)',
   },
 };
 
@@ -141,16 +143,21 @@ export const borderRadius = {
 // SHADOW SYSTEM
 // ============================================
 export const shadows = {
-  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-  default: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+  default: '0 1px 3px 0 rgba(0, 0, 0, 0.12)',
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.08)',
+  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.06)',
+  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.05)',
+  '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.28)',
   gold: {
-    sm: '0 2px 8px 0 rgba(201, 162, 39, 0.25)',
-    md: '0 4px 14px 0 rgba(201, 162, 39, 0.39)',
-    lg: '0 8px 24px 0 rgba(201, 162, 39, 0.35)',
+    sm: '0 2px 8px 0 rgba(255, 215, 0, 0.28)',
+    md: '0 4px 14px 0 rgba(255, 215, 0, 0.42)',
+    lg: '0 8px 24px 0 rgba(255, 215, 0, 0.38)',
+    xl: '0 12px 32px 0 rgba(255, 215, 0, 0.32)',
+  },
+  professional: {
+    sm: '0 1px 3px 0 rgba(255, 215, 0, 0.18)',
+    md: '0 2px 8px 0 rgba(255, 215, 0, 0.24)',
   },
 };
 
@@ -158,10 +165,11 @@ export const shadows = {
 // TRANSITION SYSTEM
 // ============================================
 export const transitions = {
-  fast: '150ms cubic-bezier(0.4, 0, 0.2, 1)',
-  normal: '250ms cubic-bezier(0.4, 0, 0.2, 1)',
-  slow: '350ms cubic-bezier(0.4, 0, 0.2, 1)',
-  gold: '300ms cubic-bezier(0.4, 0, 0.2, 1)',
+  fast: '140ms cubic-bezier(0.4, 0, 0.2, 1)',
+  normal: '240ms cubic-bezier(0.4, 0, 0.2, 1)',
+  slow: '340ms cubic-bezier(0.4, 0, 0.2, 1)',
+  gold: '280ms cubic-bezier(0.4, 0, 0.2, 1)',
+  professional: '320ms cubic-bezier(0.34, 1.56, 0.64, 1)',
 };
 
 // ============================================

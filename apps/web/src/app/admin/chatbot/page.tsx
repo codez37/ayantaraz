@@ -32,7 +32,11 @@ export default function AdminChatbotPage() {
   };
 
   useEffect(() => {
-    loadData();
+    // Use requestAnimationFrame to avoid synchronous setState
+    const frame = requestAnimationFrame(() => {
+      loadData();
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const handleSubmit = async () => {

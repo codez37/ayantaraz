@@ -19,7 +19,11 @@ export default function AdminCoursesPage() {
   };
 
   useEffect(() => {
-    loadCourses();
+    // Use requestAnimationFrame to avoid synchronous setState
+    const frame = requestAnimationFrame(() => {
+      loadCourses();
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const handleSubmit = async () => {

@@ -64,10 +64,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Initialize tokens from storage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setTokensState({
-        accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || undefined,
-        refreshToken: localStorage.getItem(REFRESH_TOKEN_KEY) || undefined,
+      // Use requestAnimationFrame to avoid synchronous setState
+      const frame = requestAnimationFrame(() => {
+        setTokensState({
+          accessToken: localStorage.getItem(ACCESS_TOKEN_KEY) || undefined,
+          refreshToken: localStorage.getItem(REFRESH_TOKEN_KEY) || undefined,
+        });
       });
+      return () => cancelAnimationFrame(frame);
     }
   }, []);
 

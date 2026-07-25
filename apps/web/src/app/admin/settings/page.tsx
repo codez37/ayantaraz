@@ -24,7 +24,11 @@ export default function AdminSettingsPage() {
   };
 
   useEffect(() => {
-    loadSettings();
+    // Use requestAnimationFrame to avoid synchronous setState
+    const frame = requestAnimationFrame(() => {
+      loadSettings();
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const handleUpdate = async (key: string) => {

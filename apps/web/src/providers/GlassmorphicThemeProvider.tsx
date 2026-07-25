@@ -64,18 +64,17 @@ export function GlassmorphicThemeProvider({ children }: { children: ReactNode })
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
-    setIsMounted(true);
-    
     // Check localStorage first
     const savedTheme = localStorage.getItem('ayan-taraz-theme') as 'dark' | 'light' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      return;
-    }
-
-    // Check system preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(prefersDark ? 'dark' : 'light');
+    const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    // Use requestAnimationFrame to avoid synchronous setState
+    const frame = requestAnimationFrame(() => {
+      setTheme(initialTheme);
+      setIsMounted(true);
+    });
+    
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   // Sync theme with localStorage and document

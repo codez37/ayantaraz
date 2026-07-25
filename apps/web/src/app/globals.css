@@ -2,18 +2,18 @@
 @source "../";
 @source "../";
 /* ============================================
-   GLOBAL STYLES - DARK GOLD LUXURY THEME
+   GLOBAL STYLES - MODERN BLACK GOLD PROFESSIONAL THEME
    Ayan Taraz - Premium Tax & Accounting Advisory
    Mobile-First, Responsive, RTL
    
    Brand Identity:
-   - Primary Background: #0B0C0E (Deep Space Black)
-   - Secondary Background: #121418 (Dark Charcoal)
-   - Surface Glass: rgba(255, 255, 255, 0.03) (Frosted Glass)
-   - Border Gold: rgba(212, 175, 55, 0.2) (Subtle Gold Glow)
-   - Accent Gold Gradient: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%)
-   - Text Primary: #F5F5F7 (Soft White)
-   - Text Secondary: #9E9E9E (Muted Gray)
+   - Primary Background: #0A0A0A (Modern Deep Black)
+   - Secondary Background: #0F0F0F (Modern Charcoal)
+   - Surface Glass: rgba(255, 255, 255, 0.04) (Frosted Glass)
+   - Border Gold: rgba(255, 215, 0, 0.22) (Subtle Gold Glow)
+   - Accent Gold Gradient: linear-gradient(135deg, #CCA800 0%, #B38F00 100%)
+   - Text Primary: #F8F8F8 (Soft White)
+   - Text Secondary: #A0A0A0 (Muted Gray)
    
    Typography:
    - Font Family: IRANSansX, Anjoman, Vazirmatn, sans-serif
@@ -22,55 +22,56 @@
 
 :root {
   /* ==========================================
-     COLOR TOKENS - DARK GOLD LUXURY PALETTE
+     COLOR TOKENS - MODERN BLACK GOLD PROFESSIONAL PALETTE
      ========================================== */
   
   /* Background Colors */
-  --color-background-primary: #0B0C0E;
-  --color-background-secondary: #121418;
-  --color-background-tertiary: #1A1B20;
-  --color-surface: rgba(255, 255, 255, 0.03);
-  --color-surface-elevated: rgba(255, 255, 255, 0.05);
+  --color-background-primary: #0A0A0A;
+  --color-background-secondary: #0F0F0F;
+  --color-background-tertiary: #151515;
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-surface-elevated: rgba(255, 255, 255, 0.06);
   
   /* Gold Color Palette */
-  --color-gold-50: #FFF9E6;
-  --color-gold-100: #FFE8B3;
-  --color-gold-200: #FFD780;
-  --color-gold-300: #FFC64D;
-  --color-gold-400: #FFB71A;
-  --color-gold-500: #FFA000;
-  --color-gold-600: #E68A00;
-  --color-gold-700: #D4AF37;  /* Primary Gold */
-  --color-gold-800: #C5A059;  /* Secondary Gold */
-  --color-gold-900: #A0781E;
-  --color-gold-950: #7D5A15;
+  --color-gold-50: #FFFEF7;
+  --color-gold-100: #FFFAE6;
+  --color-gold-200: #FFF5D0;
+  --color-gold-300: #FFEFB3;
+  --color-gold-400: #FFE899;
+  --color-gold-500: #FFD700;
+  --color-gold-600: #E6C200;
+  --color-gold-700: #CCA800;  /* Primary Gold */
+  --color-gold-800: #B38F00;  /* Secondary Gold */
+  --color-gold-900: #997600;
+  --color-gold-950: #806000;
   
   /* Gold Gradient */
-  --gradient-gold-primary: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%);
-  --gradient-gold-light: linear-gradient(135deg, #FFB71A 0%, #FFA000 100%);
-  --gradient-gold-dark: linear-gradient(135deg, #C5A059 0%, #A0781E 100%);
+  --gradient-gold-primary: linear-gradient(135deg, #CCA800 0%, #B38F00 100%);
+  --gradient-gold-light: linear-gradient(135deg, #FFE899 0%, #FFD700 100%);
+  --gradient-gold-dark: linear-gradient(135deg, #B38F00 0%, #997600 100%);
+  --gradient-professional: linear-gradient(135deg, #FFD700 0%, #FFE899 50%, #FFD700 100%);
   
   /* Text Colors */
-  --color-text-primary: #F5F5F7;
-  --color-text-secondary: #9E9E9E;
-  --color-text-tertiary: #6B7280;
-  --color-text-inverse: #0B0C0E;
+  --color-text-primary: #F8F8F8;
+  --color-text-secondary: #A0A0A0;
+  --color-text-tertiary: #707070;
+  --color-text-inverse: #0A0A0A;
   
   /* Border Colors */
-  --color-border-gold: rgba(212, 175, 55, 0.2);
-  --color-border-gold-hover: rgba(212, 175, 55, 0.35);
-  --color-border-subtle: rgba(255, 255, 255, 0.05);
+  --color-border-gold: rgba(255, 215, 0, 0.22);
+  --color-border-gold-hover: rgba(255, 215, 0, 0.38);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
   
   /* Glass Effect */
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.06);
   --glass-blur: 18px;
   
   /* Semantic Colors */
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-  --color-info: #3B82F6;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+  --color-info: #0284C7;
   
   /* Neutral Colors */
   --color-white: #FFFFFF;
@@ -79,7 +80,7 @@
   /* Legacy Compatibility */
   --color-background: var(--color-background-primary);
   --color-on-background: var(--color-text-primary);
-  --color-primary: var(--color-gold-700);
+  --color-primary: var(--color-gold-500);
   
   /* ==========================================
      TYPOGRAPHY TOKENS
@@ -142,10 +143,10 @@
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   
   /* Gold Shadows - Luxury Glow */
-  --shadow-gold-sm: 0 2px 8px 0 rgba(212, 175, 55, 0.25);
-  --shadow-gold-md: 0 4px 14px 0 rgba(212, 175, 55, 0.35);
-  --shadow-gold-lg: 0 8px 24px 0 rgba(212, 175, 55, 0.3);
-  --shadow-gold-xl: 0 12px 32px 0 rgba(212, 175, 55, 0.25);
+  --shadow-gold-sm: 0 2px 8px 0 rgba(255, 215, 0, 0.28);
+  --shadow-gold-md: 0 4px 14px 0 rgba(255, 215, 0, 0.38);
+  --shadow-gold-lg: 0 8px 24px 0 rgba(255, 215, 0, 0.38);
+  --shadow-gold-xl: 0 12px 32px 0 rgba(255, 215, 0, 0.28);
   
   /* ==========================================
      TRANSITION TOKENS
@@ -245,7 +246,7 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: var(--color-gold-700);
+  border-color: var(--color-gold-500);
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
@@ -341,6 +342,7 @@ input::placeholder, textarea::placeholder {
 
 .btn-gold:active {
   background: var(--gradient-gold-dark);
+  --gradient-professional: linear-gradient(135deg, #FFD700 0%, #FFE899 50%, #FFD700 100%);
   transform: translateY(0);
 }
 
@@ -392,7 +394,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .btn-outline-gold:active {
-  background: rgba(212, 175, 55, 0.2);
+  background: rgba(255, 215, 0, 0.22);
 }
 
 /* Ghost Gold Button */
@@ -421,7 +423,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .btn-ghost-gold:active {
-  background: rgba(212, 175, 55, 0.2);
+  background: rgba(255, 215, 0, 0.22);
 }
 
 /* Gold Gradient Text */
@@ -500,7 +502,7 @@ input::placeholder, textarea::placeholder {
 
 .input-dark:focus {
   outline: none;
-  border-color: var(--color-gold-700);
+  border-color: var(--color-gold-500);
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
@@ -525,7 +527,7 @@ body::before {
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.35);
+  background: rgba(255, 215, 0, 0.38);
   color: #fff7d1;
 }
 
@@ -655,7 +657,7 @@ body::before {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(255, 215, 0, 0.38);
   border: none;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -668,7 +670,7 @@ body::before {
 }
 
 .slider-dot.active {
-  background: var(--color-gold-700);
+  background: var(--color-gold-500);
   width: 28px;
   border-radius: 14px;
 }
@@ -711,7 +713,7 @@ html, body {
 
 /* Focus styles for accessibility */
 :focus-visible {
-  outline: 2px solid var(--color-gold-700);
+  outline: 2px solid var(--color-gold-500);
   outline-offset: 2px;
 }
 
@@ -720,7 +722,7 @@ html, body {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--color-gold-700);
+  background: var(--color-gold-500);
   color: var(--color-background-primary);
   padding: var(--spacing-sm) var(--spacing-md);
   z-index: var(--z-index-tooltip);
@@ -851,6 +853,7 @@ body {
 
 .bg-gradient-gold-dark {
   background: var(--gradient-gold-dark);
+  --gradient-professional: linear-gradient(135deg, #FFD700 0%, #FFE899 50%, #FFD700 100%);
 }
 
 /* Text gradients */
@@ -873,7 +876,7 @@ body {
   background: linear-gradient(
     90deg,
     rgba(212, 175, 55, 0.1) 0%,
-    rgba(212, 175, 55, 0.2) 50%,
+    rgba(255, 215, 0, 0.22) 50%,
     rgba(212, 175, 55, 0.1) 100%
   );
   background-size: 200% 100%;

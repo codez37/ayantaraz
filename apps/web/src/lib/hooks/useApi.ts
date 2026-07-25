@@ -38,7 +38,7 @@ export function useApiMutation<TData, TVariables>(
   const queryClient = useQueryClient();
   
   return useMutation<TData, Error, TVariables>({
-    mutationFn: async (variables: TVariables) => {
+    mutationFn: async (variables) => {
       try {
         switch (method) {
           case 'POST':
@@ -58,7 +58,7 @@ export function useApiMutation<TData, TVariables>(
         throw error;
       }
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data) => {
       // Invalidate queries related to this path
       const pathKey = path.split('/').filter(Boolean);
       queryClient.invalidateQueries({ queryKey: pathKey });
@@ -277,7 +277,7 @@ export function useFileUpload() {
         throw error;
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('فایل با موفقیت آپلود شد');
     },
   });
