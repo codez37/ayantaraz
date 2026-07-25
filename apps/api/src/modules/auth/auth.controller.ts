@@ -8,6 +8,9 @@ import {
   Res,
   UsePipes,
   ValidationPipe,
+  UseGuards,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '../../common/decorators/public.decorator';
@@ -16,6 +19,7 @@ import { PhoneNormalizationPipe } from '../security/phone-normalization.pipe';
 import { RateLimitTier } from '../security/decorators';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { SecurityGuard } from '../security/security.guard';
 import type { Request, Response } from 'express';
 
 interface CookieRequest extends Request {
@@ -27,7 +31,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @RateLimitTier('auth')
+  @UseGuards(SecurityGuard)
+  @RateLimitTier('otp')
   @Post('otp')
   @HttpCode(200)
   @UsePipes(
@@ -39,6 +44,7 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(SecurityGuard)
   @RateLimitTier('auth')
   @Post('verify')
   @HttpCode(200)
@@ -48,45 +54,50 @@ export class AuthController {
   )
   async verifyOtp(
     @Body() dto: VerifyOtpDto,
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const ip = req.ip;
-    const deviceInfo = req.headers['user-agent'];
-    return this.authService.verifyOtp(dto.phone, dto.code, ip, deviceInfo, res);
-  }
-
-  @Public()
-  @RateLimitTier('auth')
-  @Post('refresh')
-  @HttpCode(200)
-  async refresh(
     @Req() req: CookieRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshToken = req.cookies?.refreshToken;
-    if (!refreshToken) {
-      throw new Error('ریفرش توکن یافت نشد');
+    const user = await this.authService.verifyOtp(
+      dto.phone,
+      dto.code,
+      req.ip,
+      req.headers['user-agent'],
+      res,
+    );
+    return user;
+  }
+
+  @Public()
+  @UseGuards(SecurityGuard)
+  @RateLimitTier('auth')
+  @Post('refresh')
+  @HttpCode(200)
+  async refreshTokens(
+    @Body() body: { refreshToken: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (!body.refreshToken) {
+      throw new HttpException(
+        'Refresh token is required',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    const { tokens } = await this.authService.refreshTokens(refreshToken, res);
-    return {
-      message: 'توکن‌ها به‌روزرسانی شدند',
-      accessToken: tokens.accessToken,
-    };
+    return this.authService.refreshTokens(body.refreshToken, res);
   }
 
   @Post('logout')
   @HttpCode(200)
   async logout(
-    @CurrentUser('id') userId: number,
+    @CurrentUser() user: { id: number },
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ message: string }> {
-    await this.authService.logout(userId, res);
-    return { message: 'خروج با موفقیت انجام شد' };
+  ) {
+    await this.authService.logout(user.id, res);
+    return { message: 'Logged out successfully' };
   }
 
-  @Get('session')
-  async session(@CurrentUser('id') userId: number) {
-    return this.authService.getSessionInfo(userId);
+  @Get('me')
+  @HttpCode(200)
+  async getSessionInfo(@CurrentUser() user: { id: number }) {
+    return this.authService.getSessionInfo(user.id);
   }
 }

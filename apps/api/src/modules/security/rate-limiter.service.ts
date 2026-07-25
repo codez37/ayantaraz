@@ -33,9 +33,15 @@ export class RateLimiterService implements OnModuleDestroy {
     });
     this.configs.set('auth', {
       windowMs: 60 * 1000,
-      max: 5,
-      message: 'Too many auth attempts',
+      max: 3,
+      message: 'Too many auth attempts. Please wait 1 minute.',
       keyPrefix: 'rl:auth:',
+    });
+    this.configs.set('otp', {
+      windowMs: 5 * 60 * 1000,
+      max: 1,
+      message: 'Too many OTP requests. Please wait 5 minutes.',
+      keyPrefix: 'rl:otp:',
     });
     this.configs.set('short', {
       windowMs: 1000,

@@ -1,22 +1,38 @@
 import { plainToInstance } from 'class-transformer';
-import { IsString, IsOptional, IsIn, validateSync } from 'class-validator';
+import { IsString, IsOptional, IsIn, IsNotEmpty, validateSync } from 'class-validator';
 
 class EnvironmentVariables {
   @IsString()
+  @IsNotEmpty()
   DATABASE_URL!: string;
 
   @IsString()
+  @IsNotEmpty()
   REDIS_URL!: string;
 
   @IsString()
+  @IsNotEmpty()
   JWT_SECRET!: string;
 
   @IsString()
+  @IsNotEmpty()
   JWT_REFRESH_SECRET!: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
+  SESSION_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  FILE_ENCRYPTION_KEY!: string;
+
+  @IsString()
+  @IsNotEmpty()
   SMS_API_KEY!: string;
+
+  @IsString()
+  @IsOptional()
+  REDIS_PASSWORD?: string;
 
   @IsString()
   @IsIn(['development', 'production', 'test'])
@@ -30,6 +46,14 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   LOG_LEVEL!: string;
+
+  @IsString()
+  @IsOptional()
+  POSTGRES_USER?: string;
+
+  @IsString()
+  @IsOptional()
+  POSTGRES_DB?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

@@ -4,6 +4,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { setTimeout } from 'timers/promises';
 
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
@@ -13,24 +14,30 @@ import { PrismaService } from './prisma/prisma.service';
 
 const logger = new JsonLogger();
 
-const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+const BASE_DELAY_MS = 1000;
+const MAX_DELAY_MS = 10000;
+const MAX_RETRIES = 15;
 
-async function waitForDatabase(prisma: PrismaService, retries = 10) {
+async function waitForDatabase(prisma: PrismaService, retries = MAX_RETRIES) {
   for (let i = 0; i < retries; i++) {
     try {
       await prisma.$queryRaw`SELECT 1`;
       logger.log('Database connection established', 'Bootstrap');
       return;
     } catch (err) {
-      logger.error(
-        `DB not ready (attempt ${i + 1}/${retries})`,
-        err instanceof Error ? err.stack : undefined,
-        'Bootstrap',
+      const delay = Math.min(
+        BASE_DELAY_MS * Math.pow(2, i) + Math.random() * 100, // Exponential backoff + jitter
+        MAX_DELAY_MS
       );
-      await sleep(1500 * (i + 1));
+      logger.error(
+        `DB not ready (attempt ${i + 1}/${retries}), retrying in ${Math.round(delay)}ms`,
+        err instanceof Error ? err.stack : String(err),
+        'Bootstrap'
+      );
+      await setTimeout(delay);
     }
   }
-  throw new Error('Database unreachable after retries');
+  throw new Error('Database unreachable after all retries. Please check database connection.');
 }
 
 let isShuttingDown = false;
@@ -137,7 +144,7 @@ async function bootstrap() {
     if (isShuttingDown) return;
     isShuttingDown = true;
     const forceKill = setTimeout(() => {
-      logger.error('Force shutdown', undefined, 'Bootstrap');
+      logger.error('Force shutdown after 20 seconds timeout', undefined, 'Bootstrap');
       process.exit(1);
     }, 20000);
     try {
@@ -151,25 +158,23 @@ async function bootstrap() {
       await app.close();
       await prisma.$disconnect();
       clearTimeout(forceKill);
+      logger.log('Application shutdown completed gracefully', 'Bootstrap');
       process.exit(0);
     } catch (err) {
       logger.error(
         'Shutdown failed',
-        err instanceof Error ? err.stack : undefined,
+        err instanceof Error ? err.stack : String(err),
         'Bootstrap',
       );
-      // Keep forceKill watchdog active during recovery disconnect
-      // Race the cleanup against the existing 20-second watchdog
       try {
         await prisma.$disconnect();
       } catch (disconnectErr) {
         logger.error(
           'Prisma disconnect error during shutdown',
-          disconnectErr instanceof Error ? disconnectErr.stack : undefined,
+          disconnectErr instanceof Error ? disconnectErr.stack : String(disconnectErr),
           'Bootstrap',
         );
       }
-      // forceKill timeout is still active - will trigger if we don't exit
       clearTimeout(forceKill);
       process.exit(1);
     }
@@ -195,7 +200,7 @@ void (async () => {
   } catch (err) {
     logger.error(
       'Bootstrap failed',
-      err instanceof Error ? err.stack : undefined,
+      err instanceof Error ? err.stack : String(err),
       'Bootstrap',
     );
     process.exit(1);

@@ -1,62 +1,77 @@
-import { LoggerService, Injectable } from '@nestjs/common';
-import * as process from 'process';
+import { LoggerService, LogLevel } from '@nestjs/common';
+import winstonLogger from './winston.logger';
 
-@Injectable()
 export class JsonLogger implements LoggerService {
-  private format(
-    level: string,
-    message: string,
-    context?: string,
-    trace?: string,
-    metadata?: Record<string, unknown>,
-  ): string {
-    const entry: Record<string, unknown> = {
-      level,
-      timestamp: new Date().toISOString(),
-      message,
-      context,
-      pid: process.pid,
-      hostname: process.env.HOSTNAME || 'localhost',
-      env: process.env.NODE_ENV || 'development',
+  private readonly context?: string;
+
+  constructor(context?: string) {
+    this.context = context;
+  }
+
+  log(message: string, context?: string, metadata?: Record<string, unknown>) {
+    const logContext = context || this.context;
+    winstonLogger.info(message, {
+      context: logContext,
       ...metadata,
-    };
-    if (trace) entry.trace = trace;
-    return JSON.stringify(entry);
+    });
   }
-  log(
-    message: string,
-    context?: string,
-    metadata?: Record<string, unknown>,
-  ): void {
-    console.log(this.format('info', message, context, undefined, metadata));
-  }
+
   error(
     message: string,
     trace?: string,
     context?: string,
     metadata?: Record<string, unknown>,
-  ): void {
-    console.error(this.format('error', message, context, trace, metadata));
+  ) {
+    const logContext = context || this.context;
+    winstonLogger.error(message, {
+      context: logContext,
+      trace,
+      ...metadata,
+    });
   }
-  warn(
+
+  warn(message: string, context?: string, metadata?: Record<string, unknown>) {
+    const logContext = context || this.context;
+    winstonLogger.warn(message, {
+      context: logContext,
+      ...metadata,
+    });
+  }
+
+  debug?(
     message: string,
     context?: string,
     metadata?: Record<string, unknown>,
-  ): void {
-    console.warn(this.format('warn', message, context, undefined, metadata));
+  ) {
+    const logContext = context || this.context;
+    winstonLogger.debug(message, {
+      context: logContext,
+      ...metadata,
+    });
   }
-  debug(
+
+  verbose?(
     message: string,
     context?: string,
     metadata?: Record<string, unknown>,
-  ): void {
-    console.debug(this.format('debug', message, context, undefined, metadata));
+  ) {
+    const logContext = context || this.context;
+    winstonLogger.verbose(message, {
+      context: logContext,
+      ...metadata,
+    });
   }
-  verbose(
-    message: string,
-    context?: string,
-    metadata?: Record<string, unknown>,
-  ): void {
-    console.log(this.format('verbose', message, context, undefined, metadata));
+
+  setLogLevels(levels: LogLevel[]) {
+    // Winston logger is configured at creation time
+    // To change levels dynamically, you would need to reconfigure the logger
+  }
+
+  isLevelEnabled(level: LogLevel): boolean {
+    const currentLevel = process.env.LOG_LEVEL || 'info';
+    const levels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
+    const currentIndex = levels.indexOf(currentLevel as LogLevel);
+    const levelIndex = levels.indexOf(level);
+    return levelIndex <= currentIndex;
   }
 }

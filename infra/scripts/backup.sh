@@ -1,174 +1,128 @@
 #!/bin/bash
+
+# =============================================================================
+# Ayantaraz Database Backup Script
+# Usage: ./backup.sh [--full] [--cleanup]
+# =============================================================================
+
 set -euo pipefail
 
-# ============================================
-# Ayantaraz Database Backup Script
-# ============================================
-# Usage:
-#   ./infra/scripts/backup.sh                   # Direct pg_dump (bare metal)
-#   ./infra/scripts/backup.sh --docker          # Backup via Docker container
-#   ./infra/scripts/backup.sh --list            # List available backups
-#   ./infra/scripts/backup.sh --clean           # Force clean old backups
-# ============================================
+# Configuration
+BACKUP_DIR="/backups/ayantaraz"
+DATE=$(date +%Y%m%d_%H%M%S)
+DB_NAME="${POSTGRES_DB:-ayantaraz}"
+DB_USER="${POSTGRES_USER:-ayantaraz}"
+DB_HOST="${POSTGRES_HOST:-postgres}"
+DB_PORT="${POSTGRES_PORT:-5432}"
+RETENTION_DAYS=7
+FULL_BACKUP=false
+CLEANUP_ONLY=false
 
-SCRIPT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
-BACKUP_DIR="${BACKUP_DIR:-${SCRIPT_DIR}/backups}"
-DB_HOST="${DB_HOST:-localhost}"
-DB_PORT="${DB_PORT:-5432}"
-DB_NAME="${DB_NAME:-ayantaraz}"
-DB_USER="${DB_USER:-postgres}"
-DB_PASSWORD="${DB_PASSWORD:-}"
-COMPOSE_FILE="${COMPOSE_FILE:-${SCRIPT_DIR}/docker-compose.yml}"
-CONTAINER_NAME="${CONTAINER_NAME:-ayantaraz-postgres}"
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-RETENTION_DAYS="${RETENTION_DAYS:-7}"
-RETENTION_WEEKLY="${RETENTION_WEEKLY:-4}"
-RETENTION_MONTHLY="${RETENTION_MONTHLY:-3}"
-
-MODE="${1:-}"
-
-# ---- Functions ----
-log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
-error() { log "ERROR: $*"; exit 1; }
-
-list_backups() {
-    echo "=== Daily Backups ==="
-    find "${BACKUP_DIR}" -maxdepth 1 -name "${DB_NAME}_*.sql.gz" -exec ls -lh {} \; 2>/dev/null | sort -k5,6 || echo "  (none)"
-    echo ""
-    echo "=== Weekly Backups ==="
-    find "${BACKUP_DIR}" -maxdepth 1 -name "weekly_*.sql.gz" -exec ls -lh {} \; 2>/dev/null | sort -k5,6 || echo "  (none)"
-    echo ""
-    echo "=== Monthly Backups ==="
-    find "${BACKUP_DIR}" -maxdepth 1 -name "monthly_*.sql.gz" -exec ls -lh {} \; 2>/dev/null | sort -k5,6 || echo "  (none)"
+# Logging functions
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
 }
 
-rotate_backups() {
-    local backup_file="$1"
-
-    # Daily rotation
-    find "${BACKUP_DIR}" -maxdepth 1 -name "${DB_NAME}_*.sql.gz" -mtime +${RETENTION_DAYS} -delete 2>/dev/null
-
-    # Weekly (Sunday = day 7)
-    local weekday
-    weekday=$(date +%u)
-    if [ "$weekday" -eq 7 ]; then
-        local weekly_file="${BACKUP_DIR}/weekly_${DB_NAME}_$(date +%Y%m%d).sql.gz"
-        cp "$backup_file" "$weekly_file"
-        find "${BACKUP_DIR}" -maxdepth 1 -name "weekly_*.sql.gz" -mtime +$((RETENTION_WEEKLY * 7)) -delete 2>/dev/null
-        log "Weekly backup saved: ${weekly_file}"
-    fi
-
-    # Monthly (1st of month)
-    local day
-    day=$(date +%d)
-    if [ "$day" -eq 1 ]; then
-        local monthly_file="${BACKUP_DIR}/monthly_${DB_NAME}_$(date +%Y%m%d).sql.gz"
-        cp "$backup_file" "$monthly_file"
-        find "${BACKUP_DIR}" -maxdepth 1 -name "monthly_*.sql.gz" -mtime +$((RETENTION_MONTHLY * 30)) -delete 2>/dev/null
-        log "Monthly backup saved: ${monthly_file}"
-    fi
-
-    log "Backup rotation completed (daily: ${RETENTION_DAYS}d, weekly: ${RETENTION_WEEKLY}w, monthly: ${RETENTION_MONTHLY}m)"
+log_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
-backup_direct() {
-    [ -n "$DB_PASSWORD" ] || error "DB_PASSWORD is required for direct backup"
-
-    local date_str
-    date_str=$(date +%Y%m%d_%H%M%S)
-    local filename="${BACKUP_DIR}/${DB_NAME}_${date_str}.sql.gz"
-
-    mkdir -p "$BACKUP_DIR"
-    log "Starting direct backup: ${DB_HOST}:${DB_PORT}/${DB_NAME} -> ${filename}"
-
-    PGPASSWORD="${DB_PASSWORD}" pg_dump \
-        -h "$DB_HOST" \
-        -p "$DB_PORT" \
-        -U "$DB_USER" \
-        -d "$DB_NAME" \
-        --no-owner \
-        --no-acl \
-        --clean \
-        --if-exists \
-        | gzip > "$filename"
-
-    local file_size
-    file_size=$(du -h "$filename" | cut -f1)
-    log "Backup complete: ${file_size}"
-
-    rotate_backups "$filename"
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
-backup_docker() {
-    # Try to get DB credentials from docker-compose
-    local docker_user="${DB_USER}"
-    local docker_db="${DB_NAME}"
-    local docker_password="${DB_PASSWORD}"
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --full)
+            FULL_BACKUP=true
+            shift
+            ;;
+        --cleanup)
+            CLEANUP_ONLY=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
 
-    # Fall back to docker-compose env vars if available
-    if command -v docker &>/dev/null; then
-        docker_user=$(docker compose -f "$COMPOSE_FILE" exec -T postgres printenv POSTGRES_USER 2>/dev/null || echo "$DB_USER")
-        docker_db=$(docker compose -f "$COMPOSE_FILE" exec -T postgres printenv POSTGRES_DB 2>/dev/null || echo "$DB_NAME")
-    fi
-
-    local date_str
-    date_str=$(date +%Y%m%d_%H%M%S)
-    local filename="${BACKUP_DIR}/${DB_NAME}_${date_str}.sql.gz"
-
-    mkdir -p "$BACKUP_DIR"
-    log "Starting Docker backup: ${CONTAINER_NAME} -> ${filename}"
-
-    docker compose -f "$COMPOSE_FILE" exec -T postgres \
-        pg_dump \
-        -U "$docker_user" \
-        -d "$docker_db" \
-        --no-owner \
-        --no-acl \
-        --clean \
-        --if-exists \
-        | gzip > "$filename"
-
-    local file_size
-    file_size=$(du -h "$filename" | cut -f1)
-    log "Backup complete: ${file_size}"
-
-    rotate_backups "$filename"
+# Cleanup old backups
+cleanup_backups() {
+    log_info "Cleaning up backups older than ${RETENTION_DAYS} days..."
+    find "$BACKUP_DIR" -name "db_*.sql.gz" -mtime +"$RETENTION_DAYS" -delete 2>/dev/null || true
+    find "$BACKUP_DIR" -name "db_*.sql" -mtime +"$RETENTION_DAYS" -delete 2>/dev/null || true
+    log_info "Cleanup completed"
 }
 
-# ---- Main ----
+# Create backup directory
 mkdir -p "$BACKUP_DIR"
 
-case "$MODE" in
-    --list|-l)
-        list_backups
-        exit 0
-        ;;
-    --clean|-c)
-        log "Force cleaning backups older than retention..."
-        find "${BACKUP_DIR}" -maxdepth 1 -name "${DB_NAME}_*.sql.gz" -mtime +${RETENTION_DAYS} -delete
-        find "${BACKUP_DIR}" -maxdepth 1 -name "weekly_*.sql.gz" -mtime +$((RETENTION_WEEKLY * 7)) -delete
-        find "${BACKUP_DIR}" -maxdepth 1 -name "monthly_*.sql.gz" -mtime +$((RETENTION_MONTHLY * 30)) -delete
-        log "Clean completed"
-        exit 0
-        ;;
-    --docker|-d)
-        backup_docker
-        ;;
-    --help|-h)
-        echo "Ayantaraz Database Backup Script"
-        echo ""
-        echo "Usage:"
-        echo "  $0                  Direct pg_dump (requires DB env vars)"
-        echo "  $0 --docker         Backup via Docker container"
-        echo "  $0 --list           List available backups"
-        echo "  $0 --clean          Force clean old backups"
-        echo "  $0 --help           Show this help"
-        exit 0
-        ;;
-    "")
-        backup_direct
-        ;;
-    *)
-        error "Unknown option: ${MODE}. Use --help for usage."
-        ;;
-esac
+# Check if we're running in Docker
+if [ -f /.dockerenv ]; then
+    log_info "Running in Docker environment"
+    # Use docker exec to run pg_dump
+    if ! command -v docker &> /dev/null; then
+        log_error "Docker command not found"
+        exit 1
+    fi
+
+    if [ -z "${POSTGRES_PASSWORD:-}" ]; then
+        log_error "POSTGRES_PASSWORD environment variable is required in Docker"
+        exit 1
+    fi
+
+    if [ "$FULL_BACKUP" = true ]; then
+        log_info "Creating full database backup..."
+        docker exec ayantaraz-postgres pg_dump -U "$DB_USER" -d "$DB_NAME" > "$BACKUP_DIR/db_${DATE}.sql"
+    else
+        log_info "Creating schema-only backup..."
+        docker exec ayantaraz-postgres pg_dump -U "$DB_USER" -d "$DB_NAME" --schema-only > "$BACKUP_DIR/db_${DATE}.sql"
+    fi
+else
+    # Local environment
+    if ! command -v pg_dump &> /dev/null; then
+        log_error "pg_dump command not found. Please install PostgreSQL client."
+        exit 1
+    fi
+
+    if [ "$FULL_BACKUP" = true ]; then
+        log_info "Creating full database backup..."
+        PGPASSWORD="${POSTGRES_PASSWORD:-}" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" > "$BACKUP_DIR/db_${DATE}.sql"
+    else
+        log_info "Creating schema-only backup..."
+        PGPASSWORD="${POSTGRES_PASSWORD:-}" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" --schema-only > "$BACKUP_DIR/db_${DATE}.sql"
+    fi
+fi
+
+# Compress the backup
+if [ "$CLEANUP_ONLY" = false ]; then
+    log_info "Compressing backup..."
+    gzip -f "$BACKUP_DIR/db_${DATE}.sql"
+    log_info "Backup created: $BACKUP_DIR/db_${DATE}.sql.gz"
+fi
+
+# Cleanup old backups
+cleanup_backups
+
+# Verify backup
+if [ "$CLEANUP_ONLY" = false ]; then
+    if [ -f "$BACKUP_DIR/db_${DATE}.sql.gz" ]; then
+        BACKUP_SIZE=$(stat -f%z "$BACKUP_DIR/db_${DATE}.sql.gz" 2>/dev/null || stat -c%s "$BACKUP_DIR/db_${DATE}.sql.gz")
+        log_info "Backup verified. Size: ${BACKUP_SIZE} bytes"
+    else
+        log_error "Backup file not found!"
+        exit 1
+    fi
+fi
+
+log_info "Backup process completed successfully"
+exit 0

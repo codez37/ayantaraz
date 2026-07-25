@@ -4,6 +4,7 @@ version: '3.8'
 # Server: 202.133.91.13
 # IP-based deployment (domain can be added later)
 # Usage: docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+# NOTE: All secrets must be provided via .env.production or environment variables
 
 services:
   api:
@@ -17,54 +18,52 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - API_URL=http://202.133.91.13:3001
-      - FRONTEND_URL=http://202.133.91.13:3000
-      - SITE_URL=http://202.133.91.13
+      - API_URL=${API_URL:-http://202.133.91.13:3001}
+      - FRONTEND_URL=${FRONTEND_URL:-http://202.133.91.13:3000}
+      - SITE_URL=${SITE_URL:-http://202.133.91.13}
       - INTERNAL_API_URL=http://api:3001/api
-      - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
-      - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
-      - DATABASE_URL=postgresql://ayantaraz:AyantarazDB@2025@postgres:5432/ayantaraz?schema=public&connection_limit=20&pool_timeout=10&statement_timeout=30000&idle_timeout=60
-      - POSTGRES_USER=ayantaraz
-      - POSTGRES_PASSWORD=AyantarazDB@2025
-      - POSTGRES_DB=ayantaraz
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=AyantarazRedis@2025
-      - REDIS_URL=redis://:AyantarazRedis@2025@redis:6379
-      - JWT_SECRET=AyantarazJWTSecretKey2025Production1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
-      - JWT_REFRESH_SECRET=AyantarazJWTRefreshSecretKey2025Production0987654321ZYXWVUTSRQPONMLKJIHGFEDCBA
-      - JWT_EXPIRATION=15m
-      - JWT_REFRESH_EXPIRATION=7d
-      - FILE_ENCRYPTION_KEY=AyantarazFileEncryptionKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ123456
-      - SESSION_SECRET=AyantarazSessionSecretKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ
-      - SMS_API_KEY=${SMS_API_KEY:-CHANGE_ME}
-      - SMS_PROVIDER=sms-panel
-      - SMS_FROM=Ayantaraz
-      - ADMIN_PHONE=09133374162,09134292329
-      - ALLOW_ALL_ORIGINS=true
-      - TRUSTED_ORIGINS=http://202.133.91.13,http://202.133.91.13:3000,http://202.133.91.13:3001
-      - COOKIE_SECURE=false
-      - COOKIE_HTTP_ONLY=true
-      - COOKIE_SAME_SITE=lax
-      - COOKIE_DOMAIN=202.133.91.13
-      - LOG_LEVEL=info
-      - TZ=Asia/Tehran
-      - MAX_FILE_SIZE=10485760
-      - UPLOAD_DIR=/app/uploads
-      - RATE_LIMIT_WINDOW_MS=900000
-      - RATE_LIMIT_MAX_REQUESTS=100
-      - RATE_LIMITER_FAIL_OPEN=true
-      - OTP_EXPIRY_SECONDS=300
-      - OTP_MAX_ATTEMPTS=5
-      - OTP_RESEND_LIMIT=3
-      - OTP_RESEND_WINDOW_MINUTES=10
-      - OTP_BLOCK_DURATION_MINUTES=30
-      - DB_POOL_MAX_CONNECTIONS=20
-      - DB_POOL_MIN_CONNECTIONS=5
-      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=100
-      - DB_POOL_IDLE_TIMEOUT_MS=30000
-      - DB_POOL_CONNECTION_TIMEOUT_MS=5000
-      - HEALTH_CHECK_INTERVAL=30000
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://202.133.91.13:3001}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://202.133.91.13}
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - SMS_API_KEY=${SMS_API_KEY}
+      - SMS_PROVIDER=${SMS_PROVIDER:-sms-panel}
+      - SMS_FROM=${SMS_FROM:-Ayantaraz}
+      - ADMIN_PHONE=${ADMIN_PHONE:-09133374162,09134292329}
+      - ALLOW_ALL_ORIGINS=${ALLOW_ALL_ORIGINS:-true}
+      - TRUSTED_ORIGINS=${TRUSTED_ORIGINS:-http://202.133.91.13,http://202.133.91.13:3000,http://202.133.91.13:3001}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      - COOKIE_HTTP_ONLY=${COOKIE_HTTP_ONLY:-true}
+      - COOKIE_SAME_SITE=${COOKIE_SAME_SITE:-lax}
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN:-202.133.91.13}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - TZ=${TZ:-Asia/Tehran}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE:-10485760}
+      - UPLOAD_DIR=${UPLOAD_DIR:-/app/uploads}
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
+      - RATE_LIMITER_FAIL_OPEN=${RATE_LIMITER_FAIL_OPEN:-true}
+      - OTP_EXPIRY_SECONDS=${OTP_EXPIRY_SECONDS:-300}
+      - OTP_MAX_ATTEMPTS=${OTP_MAX_ATTEMPTS:-5}
+      - OTP_RESEND_LIMIT=${OTP_RESEND_LIMIT:-3}
+      - OTP_RESEND_WINDOW_MINUTES=${OTP_RESEND_WINDOW_MINUTES:-10}
+      - OTP_BLOCK_DURATION_MINUTES=${OTP_BLOCK_DURATION_MINUTES:-30}
+      - DB_POOL_MAX_CONNECTIONS=${DB_POOL_MAX_CONNECTIONS:-20}
+      - DB_POOL_MIN_CONNECTIONS=${DB_POOL_MIN_CONNECTIONS:-5}
+      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=${DB_POOL_MAX_REQUESTS_PER_CONNECTION:-100}
+      - DB_POOL_IDLE_TIMEOUT_MS=${DB_POOL_IDLE_TIMEOUT_MS:-30000}
+      - DB_POOL_CONNECTION_TIMEOUT_MS=${DB_POOL_CONNECTION_TIMEOUT_MS:-5000}
+      - HEALTH_CHECK_INTERVAL=${HEALTH_CHECK_INTERVAL:-30000}
     ports:
       - '3001:3001'
     volumes:
@@ -77,8 +76,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     healthcheck:
       test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3001/health']
       interval: 30s
@@ -93,8 +92,8 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
-        - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
+        - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://202.133.91.13}
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://202.133.91.13:3001}
         - INTERNAL_API_URL=http://api:3001/api
     container_name: ayantaraz-web
     restart: unless-stopped
@@ -104,8 +103,8 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
-      - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
-      - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://202.133.91.13}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://202.133.91.13:3001}
       - INTERNAL_API_URL=http://api:3001/api
     depends_on:
       api:
@@ -113,8 +112,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 
@@ -123,21 +122,21 @@ services:
     container_name: ayantaraz-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ayantaraz
-      POSTGRES_PASSWORD: AyantarazDB@2025
-      POSTGRES_DB: ayantaraz
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ayantaraz']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
       timeout: 5s
       retries: 5
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 
@@ -145,19 +144,19 @@ services:
     image: redis:7-alpine
     container_name: ayantaraz-redis
     restart: unless-stopped
-    command: sh -c "redis-server --requirepass AyantarazRedis@2025"
+    command: sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD-SHELL', 'redis-cli -a AyantarazRedis@2025 ping']
+      test: ['CMD-SHELL', 'redis-cli -a ${REDIS_PASSWORD} ping']
       interval: 10s
       timeout: 5s
       retries: 5
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 
@@ -177,8 +176,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 

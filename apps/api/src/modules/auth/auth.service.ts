@@ -98,13 +98,10 @@ export class AuthService {
         newValue: { phone: normalized },
       },
     });
-    const sent = await this.sendSms(normalized, code);
+    await this.sendSms(normalized, code);
     return {
-      message: sent
-        ? 'OTP sent successfully'
-        : 'OTP sent, but SMS may be delayed',
+      message: 'OTP sent successfully',
     };
-  }
 
   async verifyOtp(
     phone: string,
@@ -381,16 +378,18 @@ export class AuthService {
     res.clearCookie('refreshToken', { path: '/' });
   }
 
-  private async sendSms(phone: string, code: string): Promise<boolean> {
+
+  private async sendSms(phone: string, code: string): Promise<void> {
     const apiKey = process.env.SMS_API_KEY;
     if (!apiKey) {
-      this.logger.warn('SMS_API_KEY not set');
-      return false;
+      throw new Error('SMS_API_KEY is not configured. OTP functionality requires a valid SMS provider API key.');
     }
+
     try {
       const url = 'https://s.api.ir/api/sw1/SmsOTP';
       const body = JSON.stringify({ code, mobile: phone, templateId: 1 });
-      const response = await new Promise<any>((resolve, reject) => {
+
+      const response = await new Promise<{ status: number; data: string }>((resolve, reject) => {
         const req = https.request(
           url,
           {
@@ -412,24 +411,24 @@ export class AuthService {
         req.on('error', reject);
         req.on('timeout', () => {
           req.destroy();
-          reject(new Error('SMS timeout'));
+          reject(new Error('SMS provider timeout after 10 seconds'));
         });
         req.write(body);
         req.end();
       });
+
       if (response.status !== 200) {
-        this.logger.warn(`SMS provider returned status ${response.status}`);
-        return false;
+        throw new Error(`SMS provider returned HTTP ${response.status}: ${response.data}`);
       }
+
       const result = JSON.parse(response.data);
       if (result.success === false) {
-        this.logger.warn('SMS provider rejected request');
-        return false;
+        throw new Error(`SMS provider rejected request: ${JSON.stringify(result)}`);
       }
-      return true;
     } catch (err) {
-      this.logger.error('SMS delivery failed', err as Error);
-      return false;
+      const errorMessage = err instanceof Error ? err.message : 'Unknown SMS delivery error';
+      this.logger.error(`SMS delivery failed for phone ${phone}: ${errorMessage}`);
+      throw new Error('Failed to send SMS. Please try again later or contact support.');
     }
   }
 }
