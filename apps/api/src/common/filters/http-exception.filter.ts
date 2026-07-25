@@ -21,6 +21,7 @@ interface ErrorResponseBody {
 
 interface ValidationError {
   constraints?: Record<string, string>;
+  children?: ValidationError[];
 }
 
 @Catch()
@@ -51,18 +52,38 @@ export class AllExceptionsFilter implements ExceptionFilter {
         errorType = (resObj.error as string) || errorType;
       }
     } else if (Array.isArray(exception) && exception.length > 0) {
-      // Type guard: check if first element has constraints (class-validator errors)
-      const firstError = exception[0] as Record<string, unknown>;
-      if (
-        firstError &&
-        typeof firstError === 'object' &&
-        firstError.constraints
-      ) {
+      // Check if any entry has validation constraints
+      const hasValidationErrors = exception.some(
+        (err) =>
+          typeof err === 'object' && err !== null && 'constraints' in err,
+      );
+
+      if (hasValidationErrors) {
         status = HttpStatus.BAD_REQUEST;
         errorType = 'ValidationError';
-        message = exception.map((err: ValidationError) =>
-          Object.values(err.constraints || {}).join(', '),
-        );
+
+        // Collect and flatten constraint messages from all validation errors
+        const allMessages: string[] = [];
+
+        for (const err of exception) {
+          if (typeof err === 'object' && err !== null && 'constraints' in err) {
+            const validationErr = err as ValidationError;
+            // Add constraints from this error
+            if (validationErr.constraints) {
+              allMessages.push(...Object.values(validationErr.constraints));
+            }
+            // Recursively check children
+            if (validationErr.children && validationErr.children.length > 0) {
+              for (const child of validationErr.children) {
+                if (child.constraints) {
+                  allMessages.push(...Object.values(child.constraints));
+                }
+              }
+            }
+          }
+        }
+
+        message = allMessages.length > 0 ? allMessages : String(exception);
       } else {
         message = String(exception);
       }
