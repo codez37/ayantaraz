@@ -171,8 +171,8 @@ export class HealthService {
     startTime: string;
   }> {
     this.logger.debug('Getting application info');
-    const totalMemory = require('os').totalmem();
-    const cpus = require('os').cpus();
+    const totalMemory = os.totalmem();
+    const cpus = os.cpus();
     return {
       name: process.env.npm_package_name || 'ayantaraz-api',
       version: process.env.npm_package_version || '1.0.0',
@@ -180,8 +180,8 @@ export class HealthService {
         process.env.npm_package_description || 'Ayantaraz API Service',
       environment: process.env.NODE_ENV || 'development',
       nodeVersion: process.version,
-      platform: require('os').platform(),
-      architecture: require('os').arch(),
+      platform: os.platform(),
+      architecture: os.arch(),
       cpuCores: cpus.length,
       totalMemory,
       startTime: new Date(process.uptime() * 1000).toISOString(),

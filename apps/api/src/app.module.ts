@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import redis from 'redis';
 
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -33,7 +34,6 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => {
-        const redis = require('redis');
         const redisClient = redis.createClient({
           socket: {
             host: process.env.REDIS_HOST || 'redis',
