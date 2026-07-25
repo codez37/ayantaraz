@@ -4,6 +4,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
@@ -27,7 +28,11 @@ async function waitForDatabase(prisma: PrismaService, retries = 10) {
         err instanceof Error ? err.stack : undefined,
         'Bootstrap',
       );
-      await sleep(1500 * (i + 1));
+      const delay = Math.min(
+        1000 * Math.pow(2, i) + Math.random() * 100,
+        10000
+      );
+      await sleep(delay);
     }
   }
   throw new Error('Database unreachable after retries');

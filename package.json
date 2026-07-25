@@ -41,7 +41,10 @@
     "zod": "^3.24.0"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0"
+    "@nestjs/swagger": "^11.4.6",
+    "@prisma/client": "^5.22.0",
+    "@types/winston": "^2.4.4",
+    "winston": "^3.19.0"
   },
   "packageManager": "pnpm@11.9.0",
   "engines": {

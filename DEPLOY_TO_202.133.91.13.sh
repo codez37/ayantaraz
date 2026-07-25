@@ -14,7 +14,7 @@ echo ""
 
 # Check if running as root
 if [ "$(id -u)" -ne 0 ]; then
-    echo "⚠️  Please run this script as root or with sudo"
+    echo "\u26a0\ufe0f  Please run this script as root or with sudo"
     echo "   Some commands require root privileges"
     exit 1
 fi
@@ -23,7 +23,7 @@ fi
 echo "[1/8] Installing system dependencies..."
 apt-get update -qq > /dev/null 2>&1
 apt-get install -y -qq git curl nodejs npm postgresql postgresql-contrib redis-server > /dev/null 2>&1
-echo "✓ System dependencies installed"
+echo "\u2713 System dependencies installed"
 
 # Step 2: Clone repository
 echo ""
@@ -32,11 +32,11 @@ REPO_DIR="/opt/ayantaraz"
 if [ -d "$REPO_DIR/.git" ]; then
     cd "$REPO_DIR"
     git pull origin main
-    echo "✓ Repository updated"
+    echo "\u2713 Repository updated"
 else
     git clone https://github.com/codez37/Ayantaraz- "$REPO_DIR"
     cd "$REPO_DIR"
-    echo "✓ Repository cloned"
+    echo "\u2713 Repository cloned"
 fi
 
 # Step 3: Create all directories
@@ -57,7 +57,7 @@ mkdir -p apps/api/src/modules/upload
 mkdir -p scripts
 mkdir -p uploads
 
-echo "✓ Directories created"
+echo "\u2713 Directories created"
 
 # Step 4: Create .env file for IP 202.133.91.13
 echo ""
@@ -70,22 +70,22 @@ API_URL=http://$SERVER_IP:3001
 FRONTEND_URL=http://$SERVER_IP:3000
 
 # Database
-DATABASE_URL=postgresql://ayantaraz:ayantaraz2024@localhost:5432/ayantaraz?schema=public
+DATABASE_URL=postgresql://ayantaraz:${POSTGRES_PASSWORD:-ayantaraz2024}@localhost:5432/ayantaraz?schema=public
 
 # JWT
-JWT_SECRET=ayantaraz-production-secret-key-2024-change-me
-JWT_REFRESH_SECRET=ayantaraz-production-refresh-secret-2024-change-me
+JWT_SECRET=${JWT_SECRET:-}
+JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-}
 JWT_EXPIRATION=15m
 JWT_REFRESH_EXPIRATION=7d
 
 # Redis
 REDIS_HOST=localhost
 REDIS_PORT=6379
-REDIS_PASSWORD=
+REDIS_PASSWORD=${REDIS_PASSWORD:-}
 
 # Security
-FILE_ENCRYPTION_KEY=ayantaraz-file-encryption-key-32-chars-2024
-CAPTCHA_SECRET=
+FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY:-}
+CAPTCHA_SECRET=${CAPTCHA_SECRET:-}
 ALLOW_ALL_ORIGINS=true
 TRUSTED_ORIGINS=http://$SERVER_IP,http://$SERVER_IP:3000,http://$SERVER_IP:3001
 
@@ -105,7 +105,9 @@ DB_POOL_CONNECTION_TIMEOUT_MS=5000
 # Server
 DOCKER_ENV=false
 ENVEOF
-echo "✓ .env file created for $SERVER_IP"
+echo "\u2713 .env file created for $SERVER_IP"
+echo "\u26a0\ufe0f  IMPORTANT: You must set all environment variables before starting!"
+echo "   Run: export JWT_SECRET=\"your-secret\" POSTGRES_PASSWORD=\"your-password\" REDIS_PASSWORD=\"your-password\" FILE_ENCRYPTION_KEY=\"your-key\""
 
 # Step 5: Create captcha.service.ts (DISABLED)
 echo ""
@@ -121,7 +123,7 @@ export class CaptchaService {
   async validateWithScore(response: string, action: string, minScore: number = 0.5): Promise<boolean> { return true; }
 }
 CAPTCHAEOF
-echo "✓ captcha.service.ts created (DISABLED)"
+echo "\u2713 captcha.service.ts created (DISABLED)"
 
 # Step 6: Create seed-admin.js with the two phone numbers
 echo ""
@@ -137,24 +139,23 @@ async function main() {
     if (existing) {
       if (existing.role !== 'admin') {
         await prisma.user.update({ where: { id: existing.id }, data: { role: 'admin', isActive: true } });
-        console.log('✓ Updated ' + phone + ' to admin');
+        console.log('\u2713 Updated ' + phone + ' to admin');
       } else {
-        console.log('✓ ' + phone + ' is already admin');
+        console.log('\u2713 ' + phone + ' is already admin');
       }
     } else {
       await prisma.user.create({ data: { phone, role: 'admin', isActive: true, firstName: 'Admin', lastName: 'User' } });
-      console.log('✓ Created admin: ' + phone);
+      console.log('\u2713 Created admin: ' + phone);
     }
   }
-  console.log('
-✅ Admin users seeded successfully!');
+  console.log('\n\u2705 Admin users seeded successfully!');
   console.log('Admin phone numbers:');
   ADMIN_PHONES.forEach(function(p) { console.log('  - ' + p); });
   await prisma.$disconnect();
 }
-main().catch(function(e) { console.error('❌ Error:', e); process.exit(1); });
+main().catch(function(e) { console.error('\u274c Error:', e); process.exit(1); });
 SEEDEOF
-echo "✓ Admin seed script created with phones: 09133374162, 09134292329"
+echo "\u2713 Admin seed script created with phones: 09133374162, 09134292329"
 
 # Step 7: Create start.sh
 echo ""
@@ -172,7 +173,7 @@ cd apps/api
 echo "[1/3] Running Prisma migrations..."
 npx prisma generate
 npx prisma migrate deploy
-echo "✓ Migrations applied"
+echo "\u2713 Migrations applied"
 
 # Seed admin users
 cd ../..
@@ -186,7 +187,7 @@ echo "[3/3] Starting application..."
 npm run start:prod
 STARTEOF
 chmod +x start.sh
-echo "✓ Start script created"
+echo "\u2713 Start script created"
 
 # Step 8: Create stop.sh
 echo ""
@@ -204,12 +205,12 @@ else
         echo "Process did not stop gracefully, killing..."
         kill -9 $PID
     else
-        echo "✓ Process stopped"
+        echo "\u2713 Process stopped"
     fi
 fi
 STOPEOF
 chmod +x stop.sh
-echo "✓ Stop script created"
+echo "\u2713 Stop script created"
 
 # Setup PostgreSQL
 echo ""
@@ -221,60 +222,61 @@ echo ""
 # Create database user and database
 if ! sudo -u postgres psql -lqt | cut -d | -f 1 | grep -qw "ayantaraz"; then
     echo "Creating database and user..."
-    sudo -u postgres psql -c "CREATE USER ayantaraz WITH PASSWORD 'ayantaraz2024';" 2>/dev/null || true
+    sudo -u postgres psql -c "CREATE USER ayantaraz WITH PASSWORD '${POSTGRES_PASSWORD:-ayantaraz2024}';" 2>/dev/null || true
     sudo -u postgres psql -c "CREATE DATABASE ayantaraz OWNER ayantaraz;" 2>/dev/null || true
     sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ayantaraz TO ayantaraz;" 2>/dev/null || true
-    echo "✓ Database and user created"
+    echo "\u2713 Database and user created"
 else
-    echo "✓ Database already exists"
+    echo "\u2713 Database already exists"
 fi
 
 # Setup Redis
 echo ""
 echo "Starting Redis..."
 systemctl restart redis-server 2>/dev/null || service redis-server restart 2>/dev/null || true
-echo "✓ Redis ready"
+echo "\u2713 Redis ready"
 
 # Install Node.js dependencies
 echo ""
 echo "[INSTALLING] Node.js dependencies..."
 cd /opt/ayantaraz
 npm install
-echo "✓ Dependencies installed"
+echo "\u2713 Dependencies installed"
 
 # Final summary
 echo ""
 echo "=============================================="
-echo "✅ DEPLOYMENT COMPLETE!"
+echo "\u2705 DEPLOYMENT COMPLETE!"
 echo "=============================================="
 echo ""
-echo "📍 Server: $SERVER_IP"
-echo "🌐 API URL: http://$SERVER_IP:3001/api"
-echo "🔍 Health: http://$SERVER_IP:3001/health"
+echo "\ud83d\udccd Server: $SERVER_IP"
+echo "\ud83c\udf10 API URL: http://$SERVER_IP:3001/api"
+echo "\ud83d\udd0d Health: http://$SERVER_IP:3001/health"
 echo ""
-echo "👤 Admin Phone Numbers:"
+echo "\ud83d\udc64 Admin Phone Numbers:"
 echo "   - 09133374162"
 echo "   - 09134292329"
 echo ""
-echo "🚀 To start the application:"
+echo "\ud83d\ude80 To start the application:"
 echo "   cd $REPO_DIR"
 echo "   ./start.sh"
 echo ""
-echo "⛔ To stop the application:"
+echo "\u26d4 To stop the application:"
 echo "   cd $REPO_DIR"
 echo "   ./stop.sh"
 echo ""
-echo "⚙️ Configuration:"
-echo "   - CAPTCHA: DISABLED ✓"
-echo "   - CORS: All origins allowed ✓"
-echo "   - IP-based: 202.133.91.13 ✓"
-echo "   - Admin phones: 09133374162, 09134292329 ✓"
+echo "\u2699\ufe0f Configuration:"
+echo "   - CAPTCHA: DISABLED \u2713"
+echo "   - CORS: All origins allowed \u2713"
+echo "   - IP-based: 202.133.91.13 \u2713"
+echo "   - Admin phones: 09133374162, 09134292329 \u2713"
 echo ""
-echo "⚠️  IMPORTANT SECURITY NOTES:"
-echo "   1. Change all secrets in .env BEFORE production use"
+echo "\u26a0\ufe0f  IMPORTANT SECURITY NOTES:"
+echo "   1. ALL secrets must be set in environment variables BEFORE production use"
 echo "   2. Enable HTTPS with Nginx when ready"
 echo "   3. Set COOKIE_SECURE=true when using HTTPS"
 echo "   4. Set ALLOW_ALL_ORIGINS=false in production"
 echo "   5. Enable CAPTCHA by setting CAPTCHA_SECRET"
+echo "   6. Set SMS_API_KEY for OTP functionality"
 echo ""
 echo "=============================================="
