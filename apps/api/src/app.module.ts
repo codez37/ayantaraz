@@ -34,7 +34,8 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
       isGlobal: true,
       useFactory: async () => ({
         store: 'redis',
-        host: process.env.REDIS_HOST || 'localhost',
+        // FIX: Use Docker service name 'redis' instead of localhost
+        host: process.env.REDIS_HOST || 'redis',
         port: parseInt(process.env.REDIS_PORT || '6379'),
         password: process.env.REDIS_PASSWORD,
         ttl: 300,

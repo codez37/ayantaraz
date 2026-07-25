@@ -4,14 +4,14 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
 
-  // فقط اگر واقعا نیاز داری
-  experimental: {},
-
+  // 	FIX: Use Docker service name 'api' instead of localhost for production
+  // In Docker production: api service is available at 'api:3001'
+  // In development: falls back to localhost:3001
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: process.env.INTERNAL_API_URL || 'http://localhost:3001/api/:path*',
+        destination: process.env.INTERNAL_API_URL || 'http://api:3001/api/:path*',
       },
     ];
   },

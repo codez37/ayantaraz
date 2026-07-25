@@ -4,7 +4,8 @@ import { getImageSitemap } from '@/lib/sitemap-images';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://202.133.91.13';
 
 async function fetchDynamicUrls(): Promise<MetadataRoute.Sitemap> {
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+  // FIX: Use Docker service name 'api' instead of localhost for production
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://api:3001/api';
 
   try {
     const res = await fetch(`${apiBase}/content?status=published&visibility=public&limit=100`, {

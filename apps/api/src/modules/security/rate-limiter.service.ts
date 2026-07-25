@@ -77,8 +77,7 @@ export class RateLimiterService implements OnModuleDestroy {
 
   private initializeRedis(): void {
     const redisUrl = this.configService.get<string>('REDIS_URL');
-    const redisHost =
-      this.configService.get<string>('REDIS_HOST') || 'localhost';
+    const redisHost = this.configService.get<string>('REDIS_HOST') || 'redis';
     const redisPort = parseInt(
       this.configService.get<string>('REDIS_PORT') || '6379',
     );
