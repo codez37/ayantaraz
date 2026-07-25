@@ -153,22 +153,24 @@ async function bootstrap() {
       clearTimeout(forceKill);
       process.exit(0);
     } catch (err) {
-      clearTimeout(forceKill);
       logger.error(
         'Shutdown failed',
         err instanceof Error ? err.stack : undefined,
         'Bootstrap',
       );
+      // Keep forceKill watchdog active during recovery disconnect
+      // Race the cleanup against the existing 20-second watchdog
       try {
         await prisma.$disconnect();
-      } catch (err) {
-        // Ignore disconnect errors during shutdown
+      } catch (disconnectErr) {
         logger.error(
           'Prisma disconnect error during shutdown',
-          err instanceof Error ? err.stack : undefined,
+          disconnectErr instanceof Error ? disconnectErr.stack : undefined,
           'Bootstrap',
         );
       }
+      // forceKill timeout is still active - will trigger if we don't exit
+      clearTimeout(forceKill);
       process.exit(1);
     }
   };
