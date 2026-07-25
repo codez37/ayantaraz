@@ -1,6 +1,8 @@
-import { IsString } from 'class-validator';
+import { IsString, IsNotEmpty, IsPhoneNumber } from 'class-validator';
 
 export class RequestOtpDto {
   @IsString()
+  @IsNotEmpty()
+  @IsPhoneNumber('IR')
   phone!: string;
 }

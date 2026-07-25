@@ -99,10 +99,13 @@ export class AuthService {
       },
     });
     const sent = await this.sendSms(normalized, code);
+    if (!sent) {
+      const errorMsg = 'Failed to send OTP. Please try again later.';
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
+    }
     return {
-      message: sent
-        ? 'OTP sent successfully'
-        : 'OTP sent, but SMS may be delayed',
+      message: 'OTP sent successfully',
     };
   }
 
@@ -384,8 +387,9 @@ export class AuthService {
   private async sendSms(phone: string, code: string): Promise<boolean> {
     const apiKey = process.env.SMS_API_KEY;
     if (!apiKey) {
-      this.logger.warn('SMS_API_KEY not set');
-      return false;
+      const errorMsg = 'SMS_API_KEY is required for OTP functionality';
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
     }
     try {
       const url = 'https://s.api.ir/api/sw1/SmsOTP';
@@ -428,8 +432,9 @@ export class AuthService {
       }
       return true;
     } catch (err) {
-      this.logger.error('SMS delivery failed', err as Error);
-      return false;
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      this.logger.error(`SMS delivery failed: ${errorMessage}`);
+      throw new Error('Failed to send SMS. Please try again later.');
     }
   }
 }

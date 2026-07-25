@@ -21,15 +21,15 @@ log() {
 }
 
 success() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}\u2713${NC} $1"
 }
 
 warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}\u26a0${NC} $1"
 }
 
 error() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}\u2717${NC} $1"
 }
 
 # Check if running as root
@@ -62,23 +62,23 @@ fi
 if [ ! -f "${SCRIPT_DIR}/.env.production" ]; then
     warning ".env.production not found, creating from template..."
     cp "${SCRIPT_DIR}/.env.production" "${SCRIPT_DIR}/.env.production.bak" 2>/dev/null || true
-    # Create minimal .env.production
+    # Create minimal .env.production with PLACEHOLDERS - user MUST set these
     cat > "${SCRIPT_DIR}/.env.production" << 'EOF'
 NODE_ENV=production
 PORT=3001
-DATABASE_URL=postgresql://ayantaraz:AyantarazDB@2025@postgres:5432/ayantaraz?schema=public
+DATABASE_URL=postgresql://ayantaraz:${POSTGRES_PASSWORD}@postgres:5432/ayantaraz?schema=public
 POSTGRES_USER=ayantaraz
-POSTGRES_PASSWORD=AyantarazDB@2025
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 POSTGRES_DB=ayantaraz
 REDIS_HOST=redis
 REDIS_PORT=6379
-REDIS_PASSWORD=AyantarazRedis@2025
-REDIS_URL=redis://:AyantarazRedis@2025@redis:6379
-JWT_SECRET=AyantarazJWTSecretKey2025Production1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
-JWT_REFRESH_SECRET=AyantarazJWTRefreshSecretKey2025Production0987654321ZYXWVUTSRQPONMLKJIHGFEDCBA
-FILE_ENCRYPTION_KEY=AyantarazFileEncryptionKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ123456
-SESSION_SECRET=AyantarazSessionSecretKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ
-SMS_API_KEY=CHANGE_ME_YOUR_SMS_API_KEY
+REDIS_PASSWORD=${REDIS_PASSWORD}
+REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+JWT_SECRET=${JWT_SECRET}
+JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY}
+SESSION_SECRET=${SESSION_SECRET}
+SMS_API_KEY=${SMS_API_KEY}
 SMS_PROVIDER=sms-panel
 SMS_FROM=Ayantaraz
 ADMIN_PHONE=09133374162,09134292329
@@ -113,12 +113,31 @@ DB_POOL_IDLE_TIMEOUT_MS=30000
 DB_POOL_CONNECTION_TIMEOUT_MS=5000
 HEALTH_CHECK_INTERVAL=30000
 EOF
-    success "Created .env.production with default values"
-    warning "PLEASE EDIT .env.production and set SMS_API_KEY before starting!"
+    success "Created .env.production with PLACEHOLDER values"
+    error "PLEASE EDIT .env.production and set ALL REQUIRED VALUES before starting!"
+    error "Required: POSTGRES_PASSWORD, REDIS_PASSWORD, JWT_SECRET, JWT_REFRESH_SECRET, FILE_ENCRYPTION_KEY, SESSION_SECRET, SMS_API_KEY"
+    exit 1
+fi
+
+# Check for unset critical variables
+MISSING_VARS=()
+for var in POSTGRES_PASSWORD REDIS_PASSWORD JWT_SECRET JWT_REFRESH_SECRET FILE_ENCRYPTION_KEY SESSION_SECRET; do
+    if ! grep -q "^${var}=" "${SCRIPT_DIR}/.env.production" 2>/dev/null || grep -q "^${var}=$" "${SCRIPT_DIR}/.env.production" 2>/dev/null; then
+        MISSING_VARS+=("$var")
+    fi
+done
+
+if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+    error "CRITICAL: The following environment variables are NOT set in .env.production:"
+    for var in "${MISSING_VARS[@]}"; do
+        error "  - $var"
+    done
+    error "Deployment cannot continue. Please set all required values."
+    exit 1
 fi
 
 # Check SMS_API_KEY
-if grep -q "CHANGE_ME" "${SCRIPT_DIR}/.env.production"; then
+if grep -q "CHANGE_ME\|YOUR_SMS_API_KEY\|^SMS_API_KEY=$" "${SCRIPT_DIR}/.env.production"; then
     warning "SMS_API_KEY is not configured in .env.production"
     warning "OTP/SMS functionality will NOT work until you set a valid SMS_API_KEY"
 fi
@@ -140,9 +159,6 @@ log "=== STEP 3: Cleaning up ==="
 
 # Remove old containers
 docker rm -f ayantaraz-api ayantaraz-web ayantaraz-postgres ayantaraz-redis ayantaraz-nginx 2>/dev/null || true
-
-# Remove old volumes (preserve data)
-# docker volume rm -f ayantaraz-postgres_data ayantaraz-redis_data 2>/dev/null || true
 
 # Prune system
 docker system prune -f 2>/dev/null || true
@@ -190,7 +206,7 @@ done
 # Wait for Redis
 log "Waiting for Redis..."
 for i in {1..30}; do
-    if docker compose -f docker-compose.yml -f docker-compose.production.yml exec redis redis-cli -a AyantarazRedis@2025 ping 2>/dev/null | grep -q "PONG"; then
+    if docker compose -f docker-compose.yml -f docker-compose.production.yml exec redis redis-cli -a "${REDIS_PASSWORD}" ping 2>/dev/null | grep -q "PONG"; then
         success "Redis is ready"
         break
     fi
@@ -274,7 +290,7 @@ log "  - API Direct:     http://202.133.91.13:3001"
 log "  - API via Nginx:  http://202.133.91.13/api"
 echo ""
 
-if grep -q "CHANGE_ME" "${SCRIPT_DIR}/.env.production"; then
+if grep -q "CHANGE_ME\|YOUR_SMS_API_KEY\|^SMS_API_KEY=$" "${SCRIPT_DIR}/.env.production"; then
     warning "IMPORTANT: SMS_API_KEY is not configured!"
     warning "OTP/SMS functionality will NOT work."
     warning "Edit .env.production and set SMS_API_KEY, then restart:"

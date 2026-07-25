@@ -23,27 +23,27 @@ services:
       - INTERNAL_API_URL=http://api:3001/api
       - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
       - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
-      - DATABASE_URL=postgresql://ayantaraz:AyantarazDB@2025@postgres:5432/ayantaraz?schema=public&connection_limit=20&pool_timeout=10&statement_timeout=30000&idle_timeout=60
+      - DATABASE_URL=postgresql://ayantaraz:${POSTGRES_PASSWORD}@postgres:5432/ayantaraz?schema=public&connection_limit=20&pool_timeout=10&statement_timeout=30000&idle_timeout=60
       - POSTGRES_USER=ayantaraz
-      - POSTGRES_PASSWORD=AyantarazDB@2025
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=ayantaraz
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=AyantarazRedis@2025
-      - REDIS_URL=redis://:AyantarazRedis@2025@redis:6379
-      - JWT_SECRET=AyantarazJWTSecretKey2025Production1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
-      - JWT_REFRESH_SECRET=AyantarazJWTRefreshSecretKey2025Production0987654321ZYXWVUTSRQPONMLKJIHGFEDCBA
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
       - JWT_EXPIRATION=15m
       - JWT_REFRESH_EXPIRATION=7d
-      - FILE_ENCRYPTION_KEY=AyantarazFileEncryptionKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ123456
-      - SESSION_SECRET=AyantarazSessionSecretKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ
-      - SMS_API_KEY=${SMS_API_KEY:-CHANGE_ME}
+      - FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - SMS_API_KEY=${SMS_API_KEY}
       - SMS_PROVIDER=sms-panel
       - SMS_FROM=Ayantaraz
       - ADMIN_PHONE=09133374162,09134292329
       - ALLOW_ALL_ORIGINS=true
       - TRUSTED_ORIGINS=http://202.133.91.13,http://202.133.91.13:3000,http://202.133.91.13:3001
-      - COOKIE_SECURE=false
+      - COOKIE_SECURE=true
       - COOKIE_HTTP_ONLY=true
       - COOKIE_SAME_SITE=lax
       - COOKIE_DOMAIN=202.133.91.13
@@ -77,8 +77,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     healthcheck:
       test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3001/health']
       interval: 30s
@@ -113,8 +113,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 
@@ -124,7 +124,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ayantaraz
-      POSTGRES_PASSWORD: AyantarazDB@2025
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ayantaraz
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -136,8 +136,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 
@@ -145,19 +145,19 @@ services:
     image: redis:7-alpine
     container_name: ayantaraz-redis
     restart: unless-stopped
-    command: sh -c "redis-server --requirepass AyantarazRedis@2025"
+    command: sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD-SHELL', 'redis-cli -a AyantarazRedis@2025 ping']
+      test: ['CMD-SHELL', 'redis-cli -a ${REDIS_PASSWORD} ping']
       interval: 10s
       timeout: 5s
       retries: 5
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 
@@ -177,8 +177,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '100m'
+        max-file: '10'
     networks:
       - ayantaraz-network
 

@@ -32,14 +32,35 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
     }),
     CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: () => ({
-        store: 'redis',
-        // FIX: Use Docker service name 'redis' instead of localhost
-        host: process.env.REDIS_HOST || 'redis',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD,
-        ttl: 300,
-      }),
+      useFactory: async () => {
+        const redis = require('redis');
+        const redisClient = redis.createClient({
+          socket: {
+            host: process.env.REDIS_HOST || 'redis',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
+          },
+          password: process.env.REDIS_PASSWORD,
+          retryStrategy: (times) => Math.min(times * 100, 5000),
+        });
+
+        await redisClient.connect();
+        
+        // Health check
+        try {
+          const pong = await redisClient.ping();
+          if (pong !== 'PONG') {
+            throw new Error('Redis connection failed: invalid response');
+          }
+        } catch (err) {
+          await redisClient.quit();
+          throw new Error('Redis connection failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+        }
+
+        return {
+          store: redisClient,
+          ttl: 300,
+        };
+      },
     }),
     EventEmitterModule.forRoot(),
     PrismaModule,

@@ -1,21 +1,31 @@
 import { plainToInstance } from 'class-transformer';
-import { IsString, IsOptional, IsIn, validateSync } from 'class-validator';
+import { 
+  IsString, 
+  IsOptional, 
+  IsIn, 
+  IsNotEmpty,
+  validateSync 
+} from 'class-validator';
 
 class EnvironmentVariables {
   @IsString()
+  @IsNotEmpty()
   DATABASE_URL!: string;
 
   @IsString()
+  @IsNotEmpty()
   REDIS_URL!: string;
 
   @IsString()
+  @IsNotEmpty()
   JWT_SECRET!: string;
 
   @IsString()
+  @IsNotEmpty()
   JWT_REFRESH_SECRET!: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   SMS_API_KEY!: string;
 
   @IsString()
@@ -30,6 +40,18 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   LOG_LEVEL!: string;
+
+  @IsString()
+  @IsOptional()
+  FILE_ENCRYPTION_KEY!: string;
+
+  @IsString()
+  @IsOptional()
+  SESSION_SECRET!: string;
+
+  @IsString()
+  @IsOptional()
+  CAPTCHA_SECRET!: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {
