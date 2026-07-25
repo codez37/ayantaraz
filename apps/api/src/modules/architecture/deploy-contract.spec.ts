@@ -1,15 +1,14 @@
 /**
- * ARCHITECTURE VALIDATION CONTRACT — TypeScript Layer
+ * ARCHITECTURE VALIDATION CONTRACT  TypeScript Layer
  *
  * These tests enforce that the codebase respects the production blueprint.
- * They do NOT test business logic — they test structural guarantees.
+ * They do NOT test business logic  they test structural guarantees.
  *
  * If any test FAILS, the architecture is broken, even if all business tests pass.
  */
 
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { join, basename } from 'path';
-import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const ROOT = join(__dirname, '../../../../../');
 const SCRIPTS_DIR = join(ROOT, 'scripts');
@@ -21,24 +20,6 @@ const SCRIPTS_DIR = join(ROOT, 'scripts');
  * No stage can be missing. No undocumented stage can exist.
  */
 describe('CONTRACT 1: Deploy Pipeline Stages', () => {
-  const REQUIRED_STAGES = [
-    'LOCK_ACQUIRE',
-    'TRACE_INIT',
-    'BUILD_ARTIFACT',
-    'EXTRACT',
-    'TX_BEGIN',
-    'GATE_EXECUTION',
-    'PRE_HEALTH_CHECK',
-    'GRACEFUL_DRAIN',
-    'ATOMIC_SWITCH',
-    'START_CONTAINERS',
-    'HEALTHCHECK',
-    'RUNTIME_CONSISTENCY',
-    'TX_COMMIT',
-    'EVENTS_FLUSH',
-    'RELEASE_ACTIVE',
-  ];
-
   it('deploy.sh redirects to ayan-deploy', () => {
     const deployScript = readFileSync(join(SCRIPTS_DIR, 'deploy.sh'), 'utf8');
     expect(deployScript).toContain('ayan-deploy');
@@ -73,19 +54,6 @@ describe('CONTRACT 1: Deploy Pipeline Stages', () => {
  * Invalid transitions must be rejected with an error.
  */
 describe('CONTRACT 2: State Machine Valid Transitions', () => {
-  const VALID_STATES = new Set([
-    'IDLE',
-    'LOCKED',
-    'EXTRACTING',
-    'PREPARING',
-    'ACTIVATING',
-    'HEALTHCHECK',
-    'ACTIVE',
-    'ROLLING_BACK',
-    'FAILED',
-    'ROLLBACK_FAILED',
-  ]);
-
   it('helper-part4.sh case statement has all required commands', () => {
     const helper = readFileSync(join(SCRIPTS_DIR, 'helper-part4.sh'), 'utf8');
     const REQUIRED_COMMANDS = [

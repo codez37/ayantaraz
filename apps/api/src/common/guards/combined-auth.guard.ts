@@ -34,8 +34,8 @@ export class CombinedAuthGuard implements CanActivate {
       return false;
     }
 
-    // Third: Roles Guard (authorization)
-    const rolesPassed = await this.rolesGuard.canActivate(context);
+    // Third: Roles Guard (authorization) - synchronous, no await needed
+    const rolesPassed = this.rolesGuard.canActivate(context);
     if (!rolesPassed) {
       return false;
     }

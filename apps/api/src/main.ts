@@ -133,7 +133,7 @@ async function bootstrap() {
 
   logger.log(`API running on 0.0.0.0:${port}`, 'Bootstrap');
 
-  const shutdown = async (signal: NodeJS.Signals) => {
+  const shutdown = async () => {
     if (isShuttingDown) return;
     isShuttingDown = true;
     const forceKill = setTimeout(() => {
@@ -161,16 +161,20 @@ async function bootstrap() {
       );
       try {
         await prisma.$disconnect();
-      } catch {}
+      } catch (err) {
+        // Ignore disconnect errors during shutdown
+        logger.error(
+          'Prisma disconnect error during shutdown',
+          err instanceof Error ? err.stack : undefined,
+          'Bootstrap',
+        );
+      }
       process.exit(1);
     }
   };
 
   ['SIGTERM', 'SIGINT'].forEach((sig) =>
-    process.on(
-      sig as NodeJS.Signals,
-      () => void shutdown(sig as NodeJS.Signals),
-    ),
+    process.on(sig, () => void shutdown()),
   );
   process.on('unhandledRejection', (reason: unknown) => {
     const errorMessage =
