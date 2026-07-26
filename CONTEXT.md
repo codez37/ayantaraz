@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-**Project:** آیان تراز (Ayantaraz) - Accounting, Tax Consultation & Education Platform  
+**Project:** آیان تراز (ayantaraz) - Accounting, Tax Consultation & Education Platform  
 **Status:** ✅ **100% PRODUCTION READY**  
 **Server IP:** 202.133.91.13  
 **Version:** 2.0  
@@ -260,16 +260,16 @@ Service DNS:
 
 ```env
 # JWT Configuration
-JWT_SECRET=AyantarazJWTSecretKey2025Production1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
-JWT_REFRESH_SECRET=AyantarazJWTRefreshSecretKey2025Production0987654321ZYXWVUTSRQPONMLKJIHGFEDCBA
+JWT_SECRET=ayantarazJWTSecretKey2025Production1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
+JWT_REFRESH_SECRET=ayantarazJWTRefreshSecretKey2025Production0987654321ZYXWVUTSRQPONMLKJIHGFEDCBA
 JWT_EXPIRATION=15m
 JWT_REFRESH_EXPIRATION=7d
 
 # File Encryption
-FILE_ENCRYPTION_KEY=AyantarazFileEncryptionKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ123456
+FILE_ENCRYPTION_KEY=ayantarazFileEncryptionKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ123456
 
 # Session
-SESSION_SECRET=AyantarazSessionSecretKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ
+SESSION_SECRET=ayantarazSessionSecretKey2025ProductionABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 # CAPTCHA (Disabled as requested)
 CAPTCHA_SECRET=
@@ -310,7 +310,7 @@ OTP_BLOCK_DURATION_MINUTES=30   # Block duration
 - **Port:** 5432
 - **Database:** ayantaraz
 - **User:** ayantaraz
-- **Password:** AyantarazDB@2025
+- **Password:** ayantarazDB@2025
 - **Schema:** public
 
 ### Connection Pool
@@ -325,7 +325,7 @@ DB_POOL_CONNECTION_TIMEOUT_MS=5000
 ### Redis
 - **Host:** redis (container)
 - **Port:** 6379
-- **Password:** AyantarazRedis@2025
+- **Password:** ayantarazRedis@2025
 - **Usage:** Caching, Rate Limiting, Session Storage
 
 ---
@@ -523,7 +523,7 @@ Healthcheck:
 #### Redis
 ```yaml
 Healthcheck:
-  test: ["CMD-SHELL", "redis-cli -a AyantarazRedis@2025 ping"]
+  test: ["CMD-SHELL", "redis-cli -a ayantarazRedis@2025 ping"]
   interval: 10s
   timeout: 5s
   retries: 5
@@ -646,7 +646,7 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml logs redis
 # Test connection manually
 docker exec -it ayantaraz-api sh
 apt update && apt install -y redis-tools
-redis-cli -h redis -a AyantarazRedis@2025 ping
+redis-cli -h redis -a ayantarazRedis@2025 ping
 ```
 
 #### 4. Build Failed

@@ -41,8 +41,8 @@ The Ayantaraz project has been successfully completed with all production requir
    - ✅ JWT_REFRESH_SECRET: `tA8xg1dLuDRtLPlTVhBKvAUUh0Yzr69/oIaHvZmhiB5EwC2CBVyWteeGj3DqSUKg`
    - ✅ FILE_ENCRYPTION_KEY: `+xehvmJjJcqdXBpM0I5XQDmRrpfteDDZj6e74IBVIwg=`
    - ✅ SESSION_SECRET: `chmkt/9SapY4u29Ast2Ef2FixamRHY7T/25Lf37kXNs=`
-   - ✅ POSTGRES_PASSWORD: `AyantarazDB@2025`
-   - ✅ REDIS_PASSWORD: `AyantarazRedis@2025`
+   - ✅ POSTGRES_PASSWORD: `ayantarazDB@2025`
+   - ✅ REDIS_PASSWORD: `ayantarazRedis@2025`
    - ✅ ADMIN_PHONE: `09133374162,09134292329`
    - ✅ CAPTCHA_SECRET: (empty - disabled)
    - ✅ ALLOW_ALL_ORIGINS: `true`

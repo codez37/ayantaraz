@@ -283,7 +283,7 @@ healthcheck:
 ### Redis
 ```yaml
 healthcheck:
-  test: ["CMD-SHELL", "redis-cli -a AyantarazRedis@2025 ping"]
+  test: ["CMD-SHELL", "redis-cli -a ayantarazRedis@2025 ping"]
   interval: 10s
   timeout: 5s
   retries: 5
@@ -472,7 +472,7 @@ docker ps | grep redis
 docker logs ayantaraz-redis
 
 # Test connection
-docker exec -it ayantaraz-api redis-cli -h redis -a AyantarazRedis@2025 ping
+docker exec -it ayantaraz-api redis-cli -h redis -a ayantarazRedis@2025 ping
 ```
 
 #### Issue: Port already in use

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# Ayantaraz Production Loop Script
+# ayantaraz Production Loop Script
 # Continuous Monitoring and Auto-Recovery System
 # Server: 202.133.91.13
 # =============================================================================
@@ -127,7 +127,7 @@ check_redis() {
     local success=false
     
     while [ $retries -lt $MAX_RETRIES ]; do
-        if docker compose -f docker-compose.yml -f docker-compose.production.yml exec redis redis-cli -a AyantarazRedis@2025 ping 2>/dev/null | grep -q "PONG"; then
+        if docker compose -f docker-compose.yml -f docker-compose.production.yml exec redis redis-cli -a ayantarazRedis@2025 ping 2>/dev/null | grep -q "PONG"; then
             success=true
             break
         fi

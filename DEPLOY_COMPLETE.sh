@@ -1,7 +1,18 @@
 #!/bin/bash
 
+# ayantaraz Complete Deployment Script
+# Server: 202.133.91.13
+# This script handles everything: Docker installation, repository setup,
+# configuration, building, and deployment
 # =============================================================================
-# Ayantaraz Complete Deployment Script
+=======
+# =============================================================================
+# ayantaraz Complete Deployment Script
+# Server: 202.133.91.13
+# This script handles everything: Docker installation, repository setup,
+# configuration, building, and deployment
+# ==========================================================================================================================================================
+# ayantaraz Complete Deployment Script
 # Server: 202.133.91.13
 # This script handles everything: Docker installation, repository setup,
 # configuration, building, and deployment
@@ -150,12 +161,12 @@ create_env_file() {
     JWT_REFRESH_SECRET=$(openssl rand -base64 48 2>/dev/null || echo "tA8xg1dLuDRtLPlTVhBKvAUUh0Yzr69/oIaHvZmhiB5EwC2CBVyWteeGj3DqSUKg")
     FILE_ENCRYPTION_KEY=$(openssl rand -base64 32 2>/dev/null || echo "+xehvmJjJcqdXBpM0I5XQDmRrpfteDDZj6e74IBVIwg=")
     SESSION_SECRET=$(openssl rand -base64 32 2>/dev/null || echo "chmkt/9SapY4u29Ast2Ef2FixamRHY7T/25Lf37kXNs=")
-    POSTGRES_PASSWORD=$(openssl rand -base64 16 2>/dev/null || echo "AyantarazDB@2025")
-    REDIS_PASSWORD=$(openssl rand -base64 16 2>/dev/null || echo "AyantarazRedis@2025")
+    POSTGRES_PASSWORD=$(openssl rand -base64 16 2>/dev/null || echo "ayantarazDB@2025")
+    REDIS_PASSWORD=$(openssl rand -base64 16 2>/dev/null || echo "ayantarazRedis@2025")
     
     cat > .env.production << 'EOF'
 # =============================================================================
-# Ayantaraz Production Environment Configuration
+# ayantaraz Production Environment Configuration
 # Server: 202.133.91.13
 # IP-based access (no domain initially, domain can be added later)
 # Admin phones: 09133374162, 09134292329
@@ -187,7 +198,7 @@ NEXT_PUBLIC_SITE_URL=http://202.133.91.13
 # DATABASE CONFIGURATION (PostgreSQL)
 # -----------------------------------------------------------------------------
 POSTGRES_USER=ayantaraz
-POSTGRES_PASSWORD=AyantarazDB@2025
+POSTGRES_PASSWORD=ayantarazDB@2025
 POSTGRES_DB=ayantaraz
 
 # -----------------------------------------------------------------------------
@@ -195,7 +206,7 @@ POSTGRES_DB=ayantaraz
 # -----------------------------------------------------------------------------
 REDIS_HOST=redis
 REDIS_PORT=6379
-REDIS_PASSWORD=AyantarazRedis@2025
+REDIS_PASSWORD=ayantarazRedis@2025
 
 # -----------------------------------------------------------------------------
 # JWT AUTHENTICATION
@@ -249,7 +260,7 @@ RATE_LIMITER_FAIL_OPEN=true
 # -----------------------------------------------------------------------------
 SMS_API_KEY=
 SMS_PROVIDER=sms-panel
-SMS_FROM=Ayantaraz
+SMS_FROM=ayantaraz
 
 # -----------------------------------------------------------------------------
 # ADMIN PHONE NUMBERS (Comma-separated, will be seeded in database)
@@ -340,7 +351,7 @@ wait_for_services() {
     # Wait for Redis
     log_info "Waiting for Redis..."
     for i in {1..30}; do
-        if docker compose -f docker-compose.yml -f docker-compose.production.yml exec redis redis-cli -a AyantarazRedis@2025 ping &>/dev/null; then
+        if docker compose -f docker-compose.yml -f docker-compose.production.yml exec redis redis-cli -a ayantarazRedis@2025 ping &>/dev/null; then
             log_success "Redis is ready"
             break
         fi

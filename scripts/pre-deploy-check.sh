@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Pre-Deployment Check Script for Ayantaraz
+# Pre-Deployment Check Script for ayantaraz
 # Ensures all conditions are met before production deployment
 
 set -e

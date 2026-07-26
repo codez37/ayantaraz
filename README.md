@@ -1,4 +1,4 @@
-# 				Ayantaraz
+# ayantaraz
 
 **Accounting, Tax Consultation & Education Platform**
 

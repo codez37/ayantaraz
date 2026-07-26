@@ -127,8 +127,8 @@ CAPTCHA_SECRET=your_captcha_secret_key
 | Variable | Description | Example | Required |
 |----------|-------------|---------|----------|
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` | Yes |
-| `POSTGRES_PASSWORD` | PostgreSQL password | `AyantarazDB@2025` | Yes |
-| `REDIS_PASSWORD` | Redis password | `AyantarazRedis@2025` | Yes |
+| `POSTGRES_PASSWORD` | PostgreSQL password | `ayantarazDB@2025` | Yes |
+| `REDIS_PASSWORD` | Redis password | `ayantarazRedis@2025` | Yes |
 | `JWT_SECRET` | JWT signing secret | `openssl rand -base64 48` | Yes |
 | `JWT_REFRESH_SECRET` | JWT refresh secret | `openssl rand -base64 48` | Yes |
 | `FILE_ENCRYPTION_KEY` | File encryption key | `openssl rand -base64 32` | Yes |
@@ -291,13 +291,13 @@ docker exec -it ayantaraz-postgres psql -U ayantaraz -d ayantaraz -c "\n  SELECT
 ### Redis Monitoring
 ```bash
 # Monitor Redis commands
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 MONITOR
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 MONITOR
 
 # Check Redis memory usage
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO memory
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO memory
 
 # Check Redis keys
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 KEYS "*"
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 KEYS "*"
 ```
 
 ## Incident Response

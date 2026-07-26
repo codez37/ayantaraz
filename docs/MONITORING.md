@@ -42,7 +42,7 @@ All services have health checks configured:
 - **Retries**: 5
 
 #### Redis Service
-- **Command**: `redis-cli -a AyantarazRedis@2025 ping`
+- **Command**: `redis-cli -a ayantarazRedis@2025 ping`
 - **Interval**: 10 seconds
 - **Timeout**: 5 seconds
 - **Retries**: 5
@@ -253,49 +253,49 @@ docker logs ayantaraz-postgres | grep -i "error\|fatal\|panic"
 #### Redis Commands
 ```bash
 # Connect to Redis
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025
 
 # Check Redis info
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO
 
 # Check memory usage
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO memory
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO memory
 
 # Check server info
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO server
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO server
 
 # Check clients
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO clients
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO clients
 
 # Check keyspace
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO keyspace
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO keyspace
 
 # Check all keys
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 KEYS "*"
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 KEYS "*"
 
 # Check memory usage by key
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 --bigkeys
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 --bigkeys
 
 # Check slow log
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 SLOWLOG GET
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 SLOWLOG GET
 ```
 
 #### Redis Monitoring Commands
 ```bash
 # Monitor all commands
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 MONITOR
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 MONITOR
 
 # Check connected clients
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 CLIENT LIST
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 CLIENT LIST
 
 # Check command stats
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO commandstats
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO commandstats
 
 # Check latency
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 --latency-history
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 --latency-history
 
 # Check latency percentile
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 --latency-percentile 50 90 99
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 --latency-percentile 50 90 99
 ```
 
 ### Nginx Monitoring
@@ -354,7 +354,7 @@ Create a script to check all services:
 ```bash
 #!/bin/bash
 
-# Health Check Script for Ayantaraz
+# Health Check Script for ayantaraz
 
 SERVER_IP=202.133.91.13
 
@@ -400,7 +400,7 @@ fi
 
 # Check Redis
 echo "Checking Redis..."
-REDIS_STATUS=$(docker exec ayantaraz-redis redis-cli -a AyantarazRedis@2025 ping 2>&1)
+REDIS_STATUS=$(docker exec ayantaraz-redis redis-cli -a ayantarazRedis@2025 ping 2>&1)
 if echo "$REDIS_STATUS" | grep -q "PONG"; then
     echo "✅ Redis: Healthy"
 else
@@ -431,7 +431,7 @@ chmod +x scripts/health-check.sh
 ```bash
 #!/bin/bash
 
-# Performance Monitoring Script for Ayantaraz
+# Performance Monitoring Script for ayantaraz
 
 SERVER_IP=202.133.91.13
 ITERATIONS=10
@@ -513,7 +513,7 @@ Create a script to send email alerts when services are down:
 ```bash
 #!/bin/bash
 
-# Alert Script for Ayantaraz
+# Alert Script for ayantaraz
 
 SERVER_IP=202.133.91.13
 EMAIL="admin@ayantaraz.ir"
@@ -537,7 +537,7 @@ if ! echo "$PG_STATUS" | grep -q "accepting connections"; then
 fi
 
 # Check Redis
-REDIS_STATUS=$(docker exec ayantaraz-redis redis-cli -a AyantarazRedis@2025 ping 2>&1)
+REDIS_STATUS=$(docker exec ayantaraz-redis redis-cli -a ayantarazRedis@2025 ping 2>&1)
 if ! echo "$REDIS_STATUS" | grep -q "PONG"; then
     echo "Redis is down! Status: $REDIS_STATUS" | mail -s "Ayantaraz Alert: Redis Down" $EMAIL
 fi

@@ -1,6 +1,6 @@
 version: '3.8'
 
-# Production Configuration for Ayantaraz
+# Production Configuration for ayantaraz
 # Server: 202.133.91.13
 # IP-based deployment (domain can be added later)
 # Usage: docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
@@ -39,7 +39,7 @@ services:
       - SESSION_SECRET=${SESSION_SECRET}
       - SMS_API_KEY=${SMS_API_KEY}
       - SMS_PROVIDER=sms-panel
-      - SMS_FROM=Ayantaraz
+      - SMS_FROM=ayantaraz
       - ADMIN_PHONE=09133374162,09134292329
       - ALLOW_ALL_ORIGINS=true
       - TRUSTED_ORIGINS=http://202.133.91.13,http://202.133.91.13:3000,http://202.133.91.13:3001
