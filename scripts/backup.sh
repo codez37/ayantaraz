@@ -25,15 +25,15 @@ echo -e "${BLUE}💾 Starting Database Backup: ${BACKUP_NAME}${NC}"
 echo "============================================"
 
 # Check if PostgreSQL container is running
-if ! docker ps | grep -q "ayantaraz-postgres"; then
+if ! docker-compose ps | grep -q "ayantaraz-postgres"; then
     echo -e "${RED}❌ PostgreSQL container is not running${NC}"
     exit 1
 fi
 
-echo -e "${YELLOW}🗄 Backing up PostgreSQL database...${NC}"
+echo -e "${YELLOW}🗄️ Backing up PostgreSQL database...${NC}"
 
 # Create backup using pg_dump
-docker exec ayantaraz-postgres pg_dump -U ayantaraz -d ayantaraz > "$BACKUP_FILE"
+docker-compose exec postgres pg_dump -U ${POSTGRES_USER} -d ${POSTGRES_DB} > "$BACKUP_FILE"
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Database backup created: ${BACKUP_FILE}${NC}"

@@ -12,16 +12,16 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - API_URL=http://202.133.91.13:3001
-      - FRONTEND_URL=http://202.133.91.13:3000
-      - SITE_URL=http://202.133.91.13
+      - API_URL=https://202.133.91.13/api
+      - FRONTEND_URL=https://202.133.91.13
+      - SITE_URL=https://202.133.91.13
       - INTERNAL_API_URL=http://api:3001/api
-      - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
-      - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
-      - DATABASE_URL=postgresql://ayantaraz:${POSTGRES_PASSWORD}@postgres:5432/ayantaraz?schema=public&connection_limit=50&pool_timeout=10&statement_timeout=30000&idle_timeout=60
-      - POSTGRES_USER=ayantaraz
+      - NEXT_PUBLIC_API_URL=https://202.133.91.13/api
+      - NEXT_PUBLIC_SITE_URL=https://202.133.91.13
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public&connection_limit=50&pool_timeout=10&statement_timeout=30000&idle_timeout=60
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=ayantaraz
+      - POSTGRES_DB=${POSTGRES_DB}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
@@ -37,7 +37,7 @@ services:
       - SMS_FROM=ayantaraz
       - ADMIN_PHONE=09133374162,09134292329
       - ALLOW_ALL_ORIGINS=false
-      - TRUSTED_ORIGINS=http://202.133.91.13,http://202.133.91.13:3000,http://202.133.91.13:3001
+      - TRUSTED_ORIGINS=https://202.133.91.13,https://www.ayantaraz.com
       - COOKIE_SECURE=true
       - COOKIE_HTTP_ONLY=true
       - COOKIE_SAME_SITE=lax
@@ -49,7 +49,7 @@ services:
       - RATE_LIMIT_WINDOW_MS=900000
       - RATE_LIMIT_MAX_REQUESTS=100
       - RATE_LIMITER_FAIL_OPEN=true
-      - OTP_EXPIRY_SECONDS=300
+      - OTP_EXPIRATION_SECONDS=300
       - OTP_MAX_ATTEMPTS=5
       - OTP_RESEND_LIMIT=3
       - OTP_RESEND_WINDOW_MINUTES=10
@@ -64,6 +64,7 @@ services:
       - '3001:3001'
     volumes:
       - ./uploads:/app/uploads
+      - ./logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -75,7 +76,7 @@ services:
         max-size: '100m'
         max-file: '10'
     healthcheck:
-      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3001/api/health']
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001/api/health']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -95,8 +96,8 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
-      - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
-      - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
+      - NEXT_PUBLIC_SITE_URL=https://202.133.91.13
+      - NEXT_PUBLIC_API_URL=https://202.133.91.13/api
       - INTERNAL_API_URL=http://api:3001/api
     depends_on:
       api:
@@ -107,7 +108,7 @@ services:
         max-size: '100m'
         max-file: '10'
     healthcheck:
-      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000']
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -120,13 +121,14 @@ services:
     container_name: ayantaraz-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ayantaraz
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ayantaraz
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ayantaraz']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -142,7 +144,7 @@ services:
     image: redis:7-alpine
     container_name: ayantaraz-redis
     restart: unless-stopped
-    command: sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     healthcheck:
