@@ -1,36 +1,44 @@
-node_modules
-.git
-.next
-dist
-build
-coverage
-tmp
-temp
+# Dependencies
+node_modules/
 
+# Build outputs
+dist/
+.next/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
-*.md
-!README.md
+logs/
 
+# Test
+coverage/
+
+# Environment
 .env
 .env.*
 !.env.example
 
-.vscode
-.idea
-*.swp
-*.swo
+# Git
+.git/
+.gitignore
 
-docker-data
-pgdata
+# Docker
+Dockerfile*
+docker-compose*.yml
 
-# Deploy artifacts
-.deploy_events.log
-.deploy_receipt_*.json
-.deploy_snapshot.json
+# Documentation
+docs/
+*.md
 
-.DS_Store
-Thumbs.db
-
-# Keep pnpm-lock.yaml and .npmrc for Docker builds
-!pnpm-lock.yaml
-!.npmrc
+# Temporary files
+tmp/
+temp/

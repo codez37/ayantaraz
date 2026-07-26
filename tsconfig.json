@@ -1,4 +1,32 @@
 {
-  "files": [],
-  "references": [{ "path": "packages/shared" }, { "path": "apps/api/tsconfig.build.json" }]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@web/*": ["src/web/*"],
+      "@common/*": ["src/app/common/*"],
+      "@modules/*": ["src/app/modules/*"],
+      "@config/*": ["src/config/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next"],
+  "include": ["src/**/*"]
 }
