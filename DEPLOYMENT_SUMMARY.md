@@ -4,7 +4,7 @@
 **Version:** 2.0  
 **Status:** ✅ **100% PRODUCTION READY**  
 **Server IP:** 202.133.91.13  
-**Repository:** https://github.com/codez37/Ayantaraz-  
+**Repository:** https://github.com/codez37/ayantaraz  
 
 ---
 
@@ -89,10 +89,10 @@ A complete, production-ready deployment script that handles everything:
 **Usage:**
 ```bash
 # On server 202.133.91.13 as root
-curl -fsSL https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh | bash
+curl -fsSL https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh | bash
 
 # Or download and run
-wget https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh
+wget https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh
 chmod +x DEPLOY_COMPLETE.sh
 sudo ./DEPLOY_COMPLETE.sh
 ```
@@ -113,14 +113,14 @@ sudo ./DEPLOY_COMPLETE.sh
 
 ```bash
 # On server 202.133.91.13 as root
-curl -fsSL https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh | bash
+curl -fsSL https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh | bash
 ```
 
 ### Method 2: Manual Download
 
 ```bash
 # On server 202.133.91.13
-wget https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh
+wget https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh
 chmod +x DEPLOY_COMPLETE.sh
 sudo ./DEPLOY_COMPLETE.sh
 ```
@@ -130,8 +130,8 @@ sudo ./DEPLOY_COMPLETE.sh
 ```bash
 # On server 202.133.91.13
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 git checkout main
 
 # Make scripts executable

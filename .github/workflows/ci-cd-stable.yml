@@ -203,8 +203,8 @@ jobs:
           SERVER_IP: 202.133.91.13
         run: |
           ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} "
-            cd /opt/Ayantaraz- || mkdir -p /opt/Ayantaraz- && cd /opt/Ayantaraz-
-            git fetch origin main 2>/dev/null || git clone https://github.com/codez37/Ayantaraz-.git .
+            cd /opt/ayantaraz || mkdir -p /opt/ayantaraz && cd /opt/ayantaraz
+            git fetch origin main 2>/dev/null || git clone https://github.com/codez37/ayantaraz.git .
             git checkout main
             git pull origin main
             

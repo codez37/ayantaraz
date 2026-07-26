@@ -18,7 +18,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configuration
-PROJECT_DIR="/opt/Ayantaraz-"
+PROJECT_DIR="/opt/ayantaraz"
 SERVER_IP="202.133.91.13"
 CHECK_INTERVAL=60
 MAX_RETRIES=3

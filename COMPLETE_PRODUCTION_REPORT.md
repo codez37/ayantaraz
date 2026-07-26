@@ -4,7 +4,7 @@
 **Version:** 2.0  
 **Status:** ✅ **100% PRODUCTION READY & STABLE**  
 **Server:** 202.133.91.13  
-**Repository:** https://github.com/codez37/Ayantaraz-  
+**Repository:** https://github.com/codez37/ayantaraz  
 
 ---
 
@@ -85,13 +85,13 @@ The Ayantaraz project has undergone a **complete production hardening** process.
 ### Method 1: Single Command (Recommended)
 ```bash
 # On server 202.133.91.13 as root
-curl -fsSL https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh | bash
+curl -fsSL https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh | bash
 ```
 
 ### Method 2: Manual Download
 ```bash
 # On server 202.133.91.13
-wget https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh
+wget https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh
 chmod +x DEPLOY_COMPLETE.sh
 sudo ./DEPLOY_COMPLETE.sh
 ```
@@ -100,8 +100,8 @@ sudo ./DEPLOY_COMPLETE.sh
 ```bash
 # On server 202.133.91.13
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 git checkout main
 chmod +x DEPLOY_COMPLETE.sh deploy-production.sh validate-production.sh PRODUCTION_LOOP.sh
 sudo ./DEPLOY_COMPLETE.sh
@@ -116,7 +116,7 @@ Run the monitoring loop for continuous health checks and auto-recovery:
 
 ```bash
 # On server 202.133.91.13
-cd /opt/Ayantaraz-
+cd /opt/ayantaraz
 chmod +x PRODUCTION_LOOP.sh
 nohup ./PRODUCTION_LOOP.sh > /var/log/ayantaraz-loop.log 2>&1 &
 ```

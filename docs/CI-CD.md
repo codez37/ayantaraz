@@ -209,8 +209,8 @@ The `main` branch has the following protection rules:
 ### Setup
 ```bash
 # Clone repository
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 
 # Install dependencies
 pnpm install --shamefully-hoist
@@ -282,7 +282,7 @@ pnpm lint && pnpm typecheck && pnpm format:check
 ## Monitoring and Logging
 
 ### GitHub Actions
-View pipeline status at: https://github.com/codez37/Ayantaraz-/actions
+View pipeline status at: https://github.com/codez37/ayantaraz/actions
 
 ### Docker Logs
 ```bash

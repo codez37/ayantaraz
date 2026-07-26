@@ -189,7 +189,7 @@ $ git log --oneline origin/main -3
 ## 🚀 Deployment Verification
 
 ### Deployment Methods Available
-1. ✅ **Single Command:** `curl -fsSL https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh | bash`
+1. ✅ **Single Command:** `curl -fsSL https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh | bash`
 2. ✅ **Manual Download:** `wget` + `chmod +x` + `sudo ./DEPLOY_COMPLETE.sh`
 3. ✅ **Manual Setup:** Clone repo + run script
 

@@ -269,7 +269,7 @@ jobs:
           SERVER_IP: 202.133.91.13
         run: |
           ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP} "
-            cd /opt/Ayantaraz- || exit 1
+            cd /opt/ayantaraz || exit 1
             git fetch origin main
             git checkout main
             git pull origin main

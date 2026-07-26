@@ -41,8 +41,8 @@ ayantaraz/
 
 ```bash
 # Clone repository
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 
 # Install dependencies (pnpm)
 pnpm install --shamefully-hoist
@@ -88,8 +88,8 @@ The project is **100% production-ready** for deployment on server **202.133.91.1
 ```bash
 # On server 202.133.91.13
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 
 # Configure environment
 cp .env.production .env
@@ -373,7 +373,7 @@ The project has been thoroughly reviewed and is **100% ready for production depl
 1. **Check logs**: `docker compose logs -f`
 2. **Verify health**: `curl http://202.133.91.13:3001/health`
 3. **Review documentation**: See [DEPLOY-RUNBOOK.md](DEPLOY-RUNBOOK.md)
-4. **GitHub Actions**: https://github.com/codez37/Ayantaraz-/actions
+4. **GitHub Actions**: https://github.com/codez37/ayantaraz/actions
 
 ### Common Issues
 
@@ -423,7 +423,7 @@ This project is proprietary software. All rights reserved.
 
 ## [32mContact[0m
 
-- **GitHub**: https://github.com/codez37/Ayantaraz-
+- **GitHub**: https://github.com/codez37/ayantaraz
 - **Server**: 202.133.91.13
 - **Status**: 100% Production Ready
 

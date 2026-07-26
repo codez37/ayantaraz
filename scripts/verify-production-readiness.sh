@@ -263,7 +263,7 @@ if [ $FAIL -eq 0 ]; then
     echo "The Ayantaraz project is 100% production ready for deployment on server 202.133.91.13"
     echo ""
     echo "To deploy:"
-    echo "  cd /opt/Ayantaraz-"
+    echo "  cd /opt/ayantaraz"
     echo "  git pull origin main"
     echo "  cp .env.production .env"
     echo "  nano .env  # Set SMS_API_KEY"

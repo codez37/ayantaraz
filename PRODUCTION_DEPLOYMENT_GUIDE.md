@@ -31,13 +31,13 @@ This guide provides **100% production-ready** deployment instructions for Ayanta
 ### Step 1: Clone Repository
 ```bash
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
+git clone https://github.com/codez37/ayantaraz.git
 git checkout main
 ```
 
 ### Step 2: Configure Environment
 ```bash
-cd Ayantaraz-
+cd ayantaraz
 
 # Copy production environment file
 cp .env.production .env
@@ -330,7 +330,7 @@ docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 MONITOR
 
 ### Update Code
 ```bash
-cd /opt/Ayantaraz-
+cd /opt/ayantaraz
 git pull origin main
 
 # Rebuild and restart
@@ -372,7 +372,7 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml down
 ### Restore from Backup
 ```bash
 # If you have a previous working version
-cd /opt/Ayantaraz-
+cd /opt/ayantaraz
 git checkout <previous-working-commit>
 docker compose -f docker-compose.yml -f docker-compose.production.yml build --no-cache
 docker compose -f docker-compose.yml -f docker-compose.production.yml up -d

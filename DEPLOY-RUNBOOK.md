@@ -29,8 +29,8 @@ This document provides step-by-step instructions for deploying Ayantaraz to prod
 ```bash
 ssh root@202.133.91.13
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 ```
 
 #### Step 2: Configure Environment
@@ -88,8 +88,8 @@ apt-get install -y curl
 #### Step 2: Clone and Configure
 ```bash
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 cp .env.production .env
 nano .env  # Set SMS_API_KEY
 ```
@@ -202,7 +202,7 @@ curl http://202.133.91.13/auth
 ### View Logs
 ```bash
 # All containers
-cd /opt/Ayantaraz-
+cd /opt/ayantaraz
 docker compose -f docker-compose.yml -f docker-compose.production.yml logs -f
 
 # Specific container
@@ -255,7 +255,7 @@ docker exec ayantaraz-postgres pg_dump -U ayantaraz -d ayantaraz > ayantaraz_bac
 docker exec ayantaraz-postgres pg_dump -U ayantaraz -d ayantaraz | gzip > ayantaraz_backup_$(date +%Y%m%d_%H%M%S).sql.gz
 
 # Automated daily backup (add to crontab)
-0 2 * * * cd /opt/Ayantaraz- && docker exec ayantaraz-postgres pg_dump -U ayantaraz -d ayantaraz | gzip > /backup/ayantaraz_$(date +\%Y\%m\%d).sql.gz
+0 2 * * * cd /opt/ayantaraz && docker exec ayantaraz-postgres pg_dump -U ayantaraz -d ayantaraz | gzip > /backup/ayantaraz_$(date +\%Y\%m\%d).sql.gz
 ```
 
 ### Database Restore
@@ -279,7 +279,7 @@ docker run --rm --volumes-from ayantaraz-redis -v $(pwd):/backup alpine tar cvf 
 
 ### Update Application
 ```bash
-cd /opt/Ayantaraz-
+cd /opt/ayantaraz
 
 # Pull latest changes
 git pull origin main
@@ -432,7 +432,7 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml restart
 
 ### Quick Rollback
 ```bash
-cd /opt/Ayantaraz-
+cd /opt/ayantaraz
 
 # Stop all containers
 docker compose -f docker-compose.yml -f docker-compose.production.yml down
@@ -555,7 +555,7 @@ For issues or questions:
 - Check logs: `docker compose logs -f`
 - Verify health: `curl http://202.133.91.13:3001/health`
 - Review documentation: See PRODUCTION_DEPLOYMENT_GUIDE.md
-- GitHub Actions: https://github.com/codez37/Ayantaraz-/actions
+- GitHub Actions: https://github.com/codez37/ayantaraz/actions
 
 ## Checklist
 

@@ -119,7 +119,7 @@ docs/
 For questions or issues with documentation:
 - Check the relevant documentation file
 - Review the [main README](../README.md)
-- Check [GitHub Issues](https://github.com/codez37/Ayantaraz-/issues)
+- Check [GitHub Issues](https://github.com/codez37/ayantaraz/issues)
 - Contact the development team
 
 ---

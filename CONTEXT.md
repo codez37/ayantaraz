@@ -144,12 +144,12 @@ ayantaraz/
 
 ```bash
 # On server 202.133.91.13 as root
-curl -fsSL https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_TO_202.133.91.13.sh | bash
+curl -fsSL https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_TO_202.133.91.13.sh | bash
 ```
 
 Or download and run:
 ```bash
-wget https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_TO_202.133.91.13.sh
+wget https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_TO_202.133.91.13.sh
 chmod +x DEPLOY_TO_202.133.91.13.sh
 sudo ./DEPLOY_TO_202.133.91.13.sh
 ```
@@ -159,7 +159,7 @@ sudo ./DEPLOY_TO_202.133.91.13.sh
 #### Step 1: Clone Repository
 ```bash
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
+git clone https://github.com/codez37/ayantaraz.git
 git checkout main
 ```
 
@@ -774,7 +774,7 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml restart ap
 1. Check logs: `docker compose logs`
 2. Check health: `curl http://202.133.91.13:3001/health`
 3. Review documentation: See `DEPLOY-RUNBOOK.md`
-4. Check GitHub Actions: https://github.com/codez37/Ayantaraz-/actions
+4. Check GitHub Actions: https://github.com/codez37/ayantaraz/actions
 
 ### Emergency Procedures
 

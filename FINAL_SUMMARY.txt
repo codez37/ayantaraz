@@ -6,7 +6,7 @@
 Date: July 2026
 Status: 100% PRODUCTION READY
 Server: 202.133.91.13
-Repository: https://github.com/codez37/Ayantaraz-
+Repository: https://github.com/codez37/ayantaraz
 Branch: main
 
 ================================================================================
@@ -112,13 +112,13 @@ METHOD 1: Single Command (Recommended)
 ------------------------------------
 On server 202.133.91.13 as root:
 
-    curl -fsSL https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh | bash
 
 METHOD 2: Manual Download
 --------------------------
 On server 202.133.91.13:
 
-    wget https://raw.githubusercontent.com/codez37/Ayantaraz-/main/DEPLOY_COMPLETE.sh
+    wget https://raw.githubusercontent.com/codez37/ayantaraz/main/DEPLOY_COMPLETE.sh
     chmod +x DEPLOY_COMPLETE.sh
     sudo ./DEPLOY_COMPLETE.sh
 
@@ -127,8 +127,8 @@ METHOD 3: Manual Setup
 On server 202.133.91.13:
 
     cd /opt
-    git clone https://github.com/codez37/Ayantaraz-.git
-    cd Ayantaraz-
+    git clone https://github.com/codez37/ayantaraz.git
+    cd ayantaraz
     git checkout main
     chmod +x DEPLOY_COMPLETE.sh deploy-production.sh validate-production.sh
     sudo ./DEPLOY_COMPLETE.sh

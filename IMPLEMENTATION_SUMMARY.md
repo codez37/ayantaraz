@@ -345,8 +345,8 @@ All deployment configurations are specifically tailored for server IP **202.133.
 ```bash
 # On server 202.133.91.13
 cd /opt
-git clone https://github.com/codez37/Ayantaraz-.git
-cd Ayantaraz-
+git clone https://github.com/codez37/ayantaraz.git
+cd ayantaraz
 
 # Configure environment
 cp .env.production .env
@@ -451,7 +451,7 @@ bash validate-production.sh
 1. Check logs: `docker compose logs -f`
 2. Verify health: `curl http://202.133.91.13:3001/health`
 3. Review documentation: See [DEPLOY-RUNBOOK.md](DEPLOY-RUNBOOK.md)
-4. GitHub Actions: https://github.com/codez37/Ayantaraz-/actions
+4. GitHub Actions: https://github.com/codez37/ayantaraz/actions
 
 ### Common Issues
 | Issue | Solution |
@@ -473,7 +473,7 @@ bash validate-production.sh
 - **Message**: feat: add comprehensive CI/CD pipeline and production documentation
 
 ### GitHub Repository
-- **URL**: https://github.com/codez37/Ayantaraz-
+- **URL**: https://github.com/codez37/ayantaraz
 - **Branch**: main
 - **Status**: Up to date
 

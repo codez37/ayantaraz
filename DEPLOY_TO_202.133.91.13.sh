@@ -34,7 +34,7 @@ if [ -d "$REPO_DIR/.git" ]; then
     git pull origin main
     echo "\u2713 Repository updated"
 else
-    git clone https://github.com/codez37/Ayantaraz- "$REPO_DIR"
+    git clone https://github.com/codez37/ayantaraz "$REPO_DIR"
     cd "$REPO_DIR"
     echo "\u2713 Repository cloned"
 fi

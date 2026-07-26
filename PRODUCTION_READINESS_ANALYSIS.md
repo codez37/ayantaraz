@@ -607,7 +607,7 @@ For deployment issues:
 1. **Check logs:** `docker-compose -f docker-compose.prod.yml logs`
 2. **Check health:** `curl http://202.133.91.13:3001/health`
 3. **Review documentation:** See DEPLOYMENT_GUIDE.md
-4. **Check GitHub Actions:** https://github.com/codez37/Ayantaraz-/actions
+4. **Check GitHub Actions:** https://github.com/codez37/ayantaraz/actions
 
 ---
 

@@ -18,8 +18,8 @@ NC='\033[0m' # No Color
 
 # Configuration
 SERVER_IP="202.133.91.13"
-REPO_URL="https://github.com/codez37/Ayantaraz-.git"
-PROJECT_DIR="/opt/Ayantaraz-"
+REPO_URL="https://github.com/codez37/ayantaraz.git"
+PROJECT_DIR="/opt/ayantaraz"
 BRANCH="main"
 
 # =============================================================================

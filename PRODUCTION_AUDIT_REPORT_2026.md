@@ -578,7 +578,7 @@ const api = axios.create({
 ## 📞 اطلاعات تماس
 
 **سرور تولید:** 202.133.91.13  
-**مخزن:** https://github.com/codez37/Ayantaraz-  
+**مخزن:** https://github.com/codez37/ayantaraz  
 **داکیومنت:** [CONTEXT.md](CONTEXT.md), [PRODUCTION_READINESS_ANALYSIS.md](PRODUCTION_READINESS_ANALYSIS.md)  
 
 ---
