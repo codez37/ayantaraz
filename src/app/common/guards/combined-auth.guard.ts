@@ -1,42 +1,36 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RolesGuard } from './roles.guard';
-import { SecurityGuard } from '../../modules/security/security.guard';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
-/**
- * Combined Authentication Guard
- *
- * Combines SecurityGuard, JwtAuthGuard, and RolesGuard into a single guard
- * to ensure all security checks are applied.
- *
- * This is necessary because NestJS only uses the LAST registered APP_GUARD.
- */
 @Injectable()
 export class CombinedAuthGuard implements CanActivate {
   constructor(
-    private readonly jwtGuard: JwtAuthGuard,
-    private readonly rolesGuard: RolesGuard,
-    private readonly securityGuard: SecurityGuard,
-    private readonly reflector: Reflector,
+    private reflector: Reflector,
+    private jwtAuthGuard: JwtAuthGuard,
+    private rolesGuard: RolesGuard,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // First: Security Guard (IP validation, rate limiting, etc.)
-    const securityPassed = await this.securityGuard.canActivate(context);
-    if (!securityPassed) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
+    // First check JWT authentication
+    const jwtResult = await this.jwtAuthGuard.canActivate(context);
+    if (!jwtResult) {
       return false;
     }
 
-    // Second: JWT Authentication Guard
-    const jwtPassed = await this.jwtGuard.canActivate(context);
-    if (!jwtPassed) {
-      return false;
-    }
-
-    // Third: Roles Guard (authorization) - synchronous, no await needed
-    const rolesPassed = this.rolesGuard.canActivate(context);
-    if (!rolesPassed) {
+    // Then check roles
+    const rolesResult = this.rolesGuard.canActivate(context);
+    if (!rolesResult) {
       return false;
     }
 

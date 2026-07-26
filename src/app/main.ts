@@ -7,12 +7,18 @@ import * as csurf from 'csurf';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
+import { StructuredLoggerService } from './common/logger/structured-logger.service';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  // Get Prisma service for health check
+  const logger = app.get(StructuredLoggerService);
   const prismaService = app.get(PrismaService);
+
+  // Get context logger
+  const contextLogger = logger.createContextLogger('Bootstrap');
+
+  contextLogger.log('Starting application bootstrap...');
 
   // Security Middlewares
   app.use(helmet());
@@ -22,6 +28,7 @@ async function bootstrap() {
   // CSRF Protection (enable in production)
   if (process.env.NODE_ENV === 'production' && process.env.ENABLE_CSRF === 'true') {
     app.use(csurf({ cookie: true }));
+    contextLogger.log('CSRF protection enabled');
   }
 
   // Enable CORS
@@ -35,12 +42,14 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
     maxAge: 86400,
   });
+  contextLogger.log('CORS enabled');
 
   // API Versioning
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
+  contextLogger.log('API versioning enabled');
 
   // Global Validation Pipe
   app.useGlobalPipes(
@@ -54,9 +63,15 @@ async function bootstrap() {
       disableErrorMessages: process.env.NODE_ENV === 'production',
     }),
   );
+  contextLogger.log('Global validation pipe enabled');
+
+  // Global exception filter
+  app.useGlobalFilters(new AllExceptionsFilter(logger));
+  contextLogger.log('Global exception filter enabled');
 
   // API Prefix
   app.setGlobalPrefix('api');
+  contextLogger.log('API prefix set to /api');
 
   // Health Check Endpoint
   app.getHttpAdapter().get('/api/health', async (req, res) => {
@@ -71,6 +86,7 @@ async function bootstrap() {
         version: '2.0.0',
       });
     } catch (error) {
+      contextLogger.error('Health check failed', error.message);
       res.status(503).json({
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
@@ -78,6 +94,7 @@ async function bootstrap() {
       });
     }
   });
+  contextLogger.log('Health check endpoint registered');
 
   // Swagger Documentation (only in development)
   if (process.env.NODE_ENV !== 'production') {
@@ -103,14 +120,25 @@ async function bootstrap() {
       deepScanRoutes: true,
     });
     SwaggerModule.setup('api/docs', app, document);
+    contextLogger.log('Swagger documentation enabled at /api/docs');
   }
 
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
 
-  console.log(`✅ Application is running on: http://0.0.0.0:${port}`);
-  console.log(`📖 Swagger docs available at: http://0.0.0.0:${port}/api/docs`);
-  console.log(`🔍 Health check available at: http://0.0.0.0:${port}/api/health`);
+  contextLogger.log(`Application is running on: http://0.0.0.0:${port}`);
+  contextLogger.log(`Swagger docs available at: http://0.0.0.0:${port}/api/docs`);
+  contextLogger.log(`Health check available at: http://0.0.0.0:${port}/api/health`);
+
+  // Log startup information
+  console.log('\n' + '='.repeat(60));
+  console.log('🚀 Ayantaraz Application Started Successfully');
+  console.log('='.repeat(60));
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 Server: http://0.0.0.0:${port}`);
+  console.log(`📖 API Docs: http://0.0.0.0:${port}/api/docs`);
+  console.log(`🔍 Health: http://0.0.0.0:${port}/api/health`);
+  console.log('='.repeat(60) + '\n');
 }
 
 bootstrap().catch((error) => {

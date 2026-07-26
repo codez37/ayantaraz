@@ -1,40 +1,60 @@
-import {
-  Injectable,
-  ExecutionContext,
-  UnauthorizedException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
-import type { Request } from 'express';
+import { AuthService } from '../../../infrastructure/services/auth.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  private readonly logger = new Logger(JwtAuthGuard.name);
-  constructor(private reflector: Reflector) {
-    super();
-  }
-  canActivate(context: ExecutionContext) {
+export class JwtAuthGuard implements CanActivate {
+  constructor(
+    private reflector: Reflector,
+    private authService: AuthService,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-    if (isPublic) return true;
-    return super.canActivate(context);
+
+    if (isPublic) {
+      return true;
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const token = this.extractToken(request);
+
+    if (!token) {
+      throw new UnauthorizedException('No authorization token provided');
+    }
+
+    try {
+      const payload = await this.authService.validateAccessToken(token);
+      request.user = payload;
+      return true;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid authorization token');
+    }
   }
-  handleRequest<TUser = unknown>(err: unknown, user: TUser): TUser {
-    if (err || !user) {
-      const errorMessage = err instanceof Error ? err.message : 'No user';
-      this.logger.warn(`Authentication failed: ${errorMessage}`);
-      throw err instanceof Error
-        ? err
-        : new UnauthorizedException('Invalid token');
+
+  private extractToken(request: Request): string | null {
+    // Check Authorization header
+    if (request.headers && 'authorization' in request.headers) {
+      const authHeader = request.headers['authorization'];
+      if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+        return authHeader.split(' ')[1];
+      }
     }
-    if (!(user as { id?: unknown }).id) {
-      this.logger.warn('Authenticated user missing ID');
-      throw new UnauthorizedException('Invalid token');
+
+    // Check cookies
+    if (request.cookies && 'accessToken' in request.cookies) {
+      return request.cookies['accessToken'];
     }
-    return user;
+
+    // Check query parameters (for development)
+    if (request.query && 'token' in request.query) {
+      return request.query['token'] as string;
+    }
+
+    return null;
   }
 }

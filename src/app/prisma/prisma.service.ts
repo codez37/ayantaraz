@@ -11,6 +11,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         ? ['query', 'info', 'warn', 'error'] 
         : ['error'],
       errorFormat: 'pretty',
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+          pool: {
+            max_connections: parseInt(process.env.DB_POOL_MAX_CONNECTIONS || '50'),
+            min_connections: parseInt(process.env.DB_POOL_MIN_CONNECTIONS || '10'),
+            max_requests_per_connection: parseInt(process.env.DB_POOL_MAX_REQUESTS_PER_CONNECTION || '100'),
+            idle_timeout_ms: parseInt(process.env.DB_POOL_IDLE_TIMEOUT_MS || '30000'),
+            connection_timeout_ms: parseInt(process.env.DB_POOL_CONNECTION_TIMEOUT_MS || '5000'),
+          },
+        },
+      },
     });
   }
 
@@ -70,5 +82,15 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       this.logger.error('❌ Database health check failed', error);
       return { status: 'unhealthy', database: 'disconnected', error: error.message };
     }
+  }
+
+  async startTransaction() {
+    return this.$transaction([]);
+  }
+
+  async withTransaction<T>(fn: (tx: any) => Promise<T>): Promise<T> {
+    return this.$transaction(async (tx) => {
+      return fn(tx);
+    });
   }
 }

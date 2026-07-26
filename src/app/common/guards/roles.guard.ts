@@ -1,40 +1,33 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '@prisma/client';
 import { ROLES_KEY } from '../decorators/roles.decorator';
-import type { AuthenticatedUser } from '../types/authenticated-user';
+import { UnauthorizedException, ForbiddenException } from '../exceptions/http-exception';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  private readonly logger = new Logger(RolesGuard.name);
   constructor(private reflector: Reflector) {}
+
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
-      ROLES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
-    if (!requiredRoles || requiredRoles.length === 0) return true;
-    const request = context
-      .switchToHttp()
-      .getRequest<{ user?: AuthenticatedUser }>();
-    const user = request.user;
+    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (!requiredRoles) {
+      return true;
+    }
+
+    const { user } = context.switchToHttp().getRequest();
+
     if (!user) {
-      this.logger.warn('Access denied: No authenticated user');
-      throw new ForbiddenException('Access denied');
+      throw new UnauthorizedException('Authentication required');
     }
-    const hasRequiredRole = requiredRoles.includes(user.role as UserRole);
-    if (!hasRequiredRole) {
-      this.logger.warn(
-        `Access denied: User ${user.id} with role ${user.role} requires one of [${requiredRoles.join(', ')}]`,
-      );
-      throw new ForbiddenException('Access denied');
+
+    if (!requiredRoles.some((role) => user.role === role)) {
+      throw new ForbiddenException('Insufficient permissions');
     }
+
     return true;
   }
 }

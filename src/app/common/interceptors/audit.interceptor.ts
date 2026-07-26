@@ -1,53 +1,94 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
-import type { Request } from 'express';
+import { CurrentUser } from '../decorators/current-user.decorator';
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(AuditInterceptor.name);
-
   constructor(private prisma: PrismaService) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const req = context
-      .switchToHttp()
-      .getRequest<Request & { user?: { id?: number } }>();
-    const method = req.method;
-    const url = req.url;
-    const user = req.user;
-    const ip = req.ip;
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
+    const request = context.switchToHttp().getRequest();
+    const startTime = Date.now();
 
     return next.handle().pipe(
-      tap((responseBody: Record<string, unknown>) => {
-        if (method !== 'GET' && user?.id) {
-          this.prisma.auditLog
-            .create({
-              data: {
-                actorId: user.id,
-                action: `${method} ${url}`,
-                entityType: (url ?? '').split('/')[2] || 'unknown',
-                ipAddress: ip,
-                newValue: {
-                  method,
-                  url,
-                  statusCode: responseBody?.statusCode,
-                } as Prisma.InputJsonValue,
+      tap(async (data) => {
+        const duration = Date.now() - startTime;
+        const response = context.switchToHttp().getResponse();
+        const statusCode = response.statusCode;
+
+        // Skip audit logging for health check and options requests
+        if (request.url.includes('/health') || request.method === 'OPTIONS') {
+          return;
+        }
+
+        try {
+          await this.prisma.auditLog.create({
+            data: {
+              action: `${request.method} ${request.url}`,
+              userId: request.user?.id,
+              ipAddress: request.ip,
+              userAgent: request.headers['user-agent'],
+              statusCode,
+              requestBody: this.sanitizeRequestBody(request.body),
+              responseBody: this.sanitizeResponseBody(data),
+              duration: duration,
+              metadata: {
+                path: request.url,
+                method: request.method,
+                params: request.params,
+                query: request.query,
               },
-            })
-            .catch((err: Error) => {
-              this.logger.error('Audit log failed:', err?.message || err);
-            });
+            },
+          });
+        } catch (error) {
+          // Don't fail the request if audit logging fails
+          console.error('Failed to create audit log:', error);
         }
       }),
     );
+  }
+
+  private sanitizeRequestBody(body: any): any {
+    if (!body) return null;
+    
+    const sensitiveFields = ['password', 'token', 'refreshToken', 'accessToken', 'oldPassword', 'newPassword'];
+    
+    if (typeof body === 'object') {
+      const sanitized: any = {};
+      for (const key in body) {
+        if (sensitiveFields.includes(key)) {
+          sanitized[key] = '***';
+        } else {
+          sanitized[key] = body[key];
+        }
+      }
+      return sanitized;
+    }
+    
+    return body;
+  }
+
+  private sanitizeResponseBody(data: any): any {
+    if (!data) return null;
+    
+    const sensitiveFields = ['password', 'token', 'refreshToken', 'accessToken'];
+    
+    if (typeof data === 'object') {
+      const sanitized: any = {};
+      for (const key in data) {
+        if (sensitiveFields.includes(key)) {
+          sanitized[key] = '***';
+        } else if (typeof data[key] === 'object') {
+          sanitized[key] = this.sanitizeResponseBody(data[key]);
+        } else {
+          sanitized[key] = data[key];
+        }
+      }
+      return sanitized;
+    }
+    
+    return data;
   }
 }
