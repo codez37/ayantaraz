@@ -10,7 +10,7 @@ warn(){ echo -e "${YELLOW}⚠${NC} $1"; }
 fail(){ echo -e "${RED}✗${NC} $1"; exit 1; }
 
 # ========== 1. Validate .env ==========
-echo "=== Ayantaraz Deploy ==="
+echo "=== ayantaraz Deploy ==="
 echo ""
 
 [ -f .env ] || fail ".env not found — create from .env.example"

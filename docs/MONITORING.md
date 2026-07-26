@@ -1,8 +1,8 @@
-# Ayantaraz Monitoring and Alerting Documentation
+# ayantaraz Monitoring and Alerting Documentation
 
 ## Overview
 
-This document describes the monitoring and alerting setup for the Ayantaraz production deployment on server **202.133.91.13**.
+This document describes the monitoring and alerting setup for the ayantaraz production deployment on server **202.133.91.13**.
 
 ## Monitoring Architecture
 
@@ -70,7 +70,7 @@ All services have health checks configured:
   "status": "healthy",
   "timestamp": "2026-07-22T18:49:00.000Z",
   "application": {
-    "name": "Ayantaraz API",
+    "name": "ayantaraz API",
     "version": "1.0.0",
     "uptime": 123456
   },
@@ -358,7 +358,7 @@ Create a script to check all services:
 
 SERVER_IP=202.133.91.13
 
-echo "=== Ayantaraz Health Check ==="
+echo "=== ayantaraz Health Check ==="
 echo "Date: $(date)"
 echo ""
 
@@ -436,7 +436,7 @@ chmod +x scripts/health-check.sh
 SERVER_IP=202.133.91.13
 ITERATIONS=10
 
-echo "=== Ayantaraz Performance Monitoring ==="
+echo "=== ayantaraz Performance Monitoring ==="
 echo "Date: $(date)"
 echo ""
 
@@ -521,25 +521,25 @@ EMAIL="admin@ayantaraz.ir"
 # Check API
 API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${SERVER_IP}:3001/health)
 if [ "$API_STATUS" != "200" ]; then
-    echo "API is down! Status: $API_STATUS" | mail -s "Ayantaraz Alert: API Down" $EMAIL
+    echo "API is down! Status: $API_STATUS" | mail -s "ayantaraz Alert: API Down" $EMAIL
 fi
 
 # Check Web
 WEB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${SERVER_IP}:3000)
 if [ "$WEB_STATUS" != "200" ]; then
-    echo "Web is down! Status: $WEB_STATUS" | mail -s "Ayantaraz Alert: Web Down" $EMAIL
+    echo "Web is down! Status: $WEB_STATUS" | mail -s "ayantaraz Alert: Web Down" $EMAIL
 fi
 
 # Check PostgreSQL
 PG_STATUS=$(docker exec ayantaraz-postgres pg_isready -U ayantaraz 2>&1)
 if ! echo "$PG_STATUS" | grep -q "accepting connections"; then
-    echo "PostgreSQL is down! Status: $PG_STATUS" | mail -s "Ayantaraz Alert: PostgreSQL Down" $EMAIL
+    echo "PostgreSQL is down! Status: $PG_STATUS" | mail -s "ayantaraz Alert: PostgreSQL Down" $EMAIL
 fi
 
 # Check Redis
 REDIS_STATUS=$(docker exec ayantaraz-redis redis-cli -a ayantarazRedis@2025 ping 2>&1)
 if ! echo "$REDIS_STATUS" | grep -q "PONG"; then
-    echo "Redis is down! Status: $REDIS_STATUS" | mail -s "Ayantaraz Alert: Redis Down" $EMAIL
+    echo "Redis is down! Status: $REDIS_STATUS" | mail -s "ayantaraz Alert: Redis Down" $EMAIL
 fi
 ```
 

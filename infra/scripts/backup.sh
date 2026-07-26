@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# Ayantaraz Database Backup Script
+# ayantaraz Database Backup Script
 # This script creates compressed backups of PostgreSQL database
 # Usage: ./infra/scripts/backup.sh
 # =============================================================================

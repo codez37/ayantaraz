@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================
-# Ayantaraz Local Test Runner
+# ayantaraz Local Test Runner
 # ============================================
 # Usage: ./infra/scripts/run-tests.sh [options]
 #   Options:
@@ -70,7 +70,7 @@ case "$MODE" in
 esac
 
 if [ "$SHOW_HELP" = true ]; then
-    echo "Ayantaraz Test Runner"
+    echo "ayantaraz Test Runner"
     echo ""
     echo "Usage: ./infra/scripts/run-tests.sh [options]"
     echo ""

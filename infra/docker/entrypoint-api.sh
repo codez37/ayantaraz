@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Ayantaraz API Entrypoint Script
+# ayantaraz API Entrypoint Script
 # Production-Ready | Server: 202.133.91.13
 # Version: 2.0 - Stabilized
 
@@ -8,7 +8,7 @@
 # set -e
 
 echo "=========================================="
-echo "Ayantaraz API Entrypoint"
+echo "ayantaraz API Entrypoint"
 echo "Server: 202.133.91.13"
 echo "=========================================="
 
@@ -45,7 +45,7 @@ else
 fi
 
 # Start the application
-echo "[4/4] Starting Ayantaraz API..."
+echo "[4/4] Starting ayantaraz API..."
 echo "=========================================="
 
 # Try to start the application, continue on error

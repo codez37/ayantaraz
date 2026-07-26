@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# Ayantaraz Production Deployment Script
+# ayantaraz Production Deployment Script
 # Server: 202.133.91.13
 # This script deploys the complete production stack
 # =============================================================================
@@ -282,7 +282,7 @@ curl -s http://localhost/ | head -20
 echo ""
 log "=== DEPLOYMENT COMPLETE ==="
 echo ""
-success "Ayantaraz is now running in production mode!"
+success "ayantaraz is now running in production mode!"
 echo ""
 log "Access points:"
 log "  - Web Application: http://202.133.91.13"

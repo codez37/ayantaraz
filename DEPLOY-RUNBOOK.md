@@ -1,8 +1,8 @@
-# Ayantaraz Production Deployment Runbook
+# ayantaraz Production Deployment Runbook
 
 ## Overview
 
-This document provides step-by-step instructions for deploying Ayantaraz to production on server **202.133.91.13**.
+This document provides step-by-step instructions for deploying ayantaraz to production on server **202.133.91.13**.
 
 ## Prerequisites
 
@@ -167,7 +167,7 @@ Expected admin users:
 ### 3. Verify Redis
 ```bash
 # Connect to Redis
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025
 
 # Test connection
 ping
@@ -235,13 +235,13 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml exec api n
 ### Redis Management
 ```bash
 # Connect to Redis
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025
 
 # Monitor commands
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 MONITOR
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 MONITOR
 
 # Check memory usage
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO memory
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO memory
 ```
 
 ## Backup and Restore
@@ -355,7 +355,7 @@ docker ps | grep redis
 docker logs ayantaraz-redis
 
 # Test connection manually
-docker exec -it ayantaraz-api redis-cli -h redis -a AyantarazRedis@2025 ping
+docker exec -it ayantaraz-api redis-cli -h redis -a ayantarazRedis@2025 ping
 ```
 
 #### Issue: OTP not being sent
@@ -529,10 +529,10 @@ CREATE INDEX idx_content_slug ON "Content"(slug);
 ### Redis Optimization
 ```bash
 # Check Redis memory usage
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 INFO memory
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 INFO memory
 
 # Configure maxmemory policy
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 CONFIG SET maxmemory-policy allkeys-lru
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 CONFIG SET maxmemory-policy allkeys-lru
 ```
 
 ### Docker Optimization

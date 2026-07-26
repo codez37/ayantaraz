@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Ayantaraz Production Load Test
+# ayantaraz Production Load Test
 # Usage: ./scripts/load-test.sh [base_url] [concurrent_requests]
 #   base_url:         default http://localhost:3001/api
 #   concurrent_requests: default 100
@@ -16,7 +16,7 @@ RESULTS_FILE=$(mktemp)
 trap 'rm -f "$RESULTS_FILE"' EXIT
 
 echo "=========================================="
-echo "  Ayantaraz Load Test"
+echo "  ayantaraz Load Test"
 echo "------------------------------------------"
 echo "  Target:       ${BASE_URL}"
 echo "  Concurrent:   ${CONCURRENT}"

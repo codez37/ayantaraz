@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================
-# Ayantaraz — Rollback (trace-correlated, WAL)
+# ayantaraz — Rollback (trace-correlated, WAL)
 # ============================================
 set -euo pipefail
 

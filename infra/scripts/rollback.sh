@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================
-# Ayantaraz Rollback Script
+# ayantaraz Rollback Script
 # ============================================
 # Usage:
 #   ./infra/scripts/rollback.sh              # interactive mode
@@ -30,7 +30,7 @@ set +a
 MODE="${1:---full}"
 
 if [ "$MODE" = "--help" ] || [ "$MODE" = "-h" ]; then
-    echo "Ayantaraz Rollback Script"
+    echo "ayantaraz Rollback Script"
     echo ""
     echo "Usage:"
     echo "  $0                     Interactive mode"
@@ -162,7 +162,7 @@ case "$MODE" in
         log "Full rollback completed successfully"
         ;;
     *)
-        echo "Ayantaraz Rollback Script"
+        echo "ayantaraz Rollback Script"
         echo ""
         echo "Select rollback mode:"
         echo "  1) Database only"

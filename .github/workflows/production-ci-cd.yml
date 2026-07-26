@@ -1,4 +1,4 @@
-name: Ayantaraz Production CI/CD Pipeline
+name: ayantaraz Production CI/CD Pipeline
 
 on:
   push:

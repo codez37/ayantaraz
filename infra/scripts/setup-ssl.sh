@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================
-# Ayantaraz SSL Setup — Let's Encrypt + Auto-Renew
+# ayantaraz SSL Setup — Let's Encrypt + Auto-Renew
 # ============================================
 # Usage:
 #   ./infra/scripts/setup-ssl.sh                        # Interactive SSL setup
@@ -119,7 +119,7 @@ case "$MODE" in
         show_status
         ;;
     --help|-h|"")
-        echo "Ayantaraz SSL Setup Script"
+        echo "ayantaraz SSL Setup Script"
         echo ""
         echo "Usage:"
         echo "  $0                        Interactive SSL setup"

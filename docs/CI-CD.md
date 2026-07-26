@@ -1,8 +1,8 @@
-# Ayantaraz CI/CD Documentation
+# ayantaraz CI/CD Documentation
 
 ## Overview
 
-This document describes the Continuous Integration and Continuous Deployment (CI/CD) pipeline for the Ayantaraz project.
+This document describes the Continuous Integration and Continuous Deployment (CI/CD) pipeline for the ayantaraz project.
 
 ## Pipeline Architecture
 

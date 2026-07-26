@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================
-# Ayantaraz — Server Setup Redirect
+# ayantaraz — Server Setup Redirect
 # ============================================
 # This file is kept for backward compatibility.
 # Use: sudo bash bootstrap.sh

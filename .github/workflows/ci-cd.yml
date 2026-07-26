@@ -1,4 +1,4 @@
-name: Ayantaraz CI/CD Pipeline
+name: ayantaraz CI/CD Pipeline
 
 on:
   push:

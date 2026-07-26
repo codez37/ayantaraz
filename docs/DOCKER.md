@@ -1,8 +1,8 @@
-# Ayantaraz Docker Documentation
+# ayantaraz Docker Documentation
 
 ## Overview
 
-This document describes the Docker architecture and best practices for the Ayantaraz project.
+This document describes the Docker architecture and best practices for the ayantaraz project.
 
 ## Architecture
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "=== Ayantaraz Project Initialization ==="
+echo "=== ayantaraz Project Initialization ==="
 echo ""
 
 # Check prerequisites

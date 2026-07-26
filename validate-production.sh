@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# Ayantaraz Production Validation Script
+# ayantaraz Production Validation Script
 # This script validates that the production deployment is working correctly
 # =============================================================================
 
@@ -48,7 +48,7 @@ check() {
 
 echo ""
 echo "============================================================================"
-echo "  Ayantaraz Production Validation"
+echo "  ayantaraz Production Validation"
 echo "  Server: 202.133.91.13"
 echo "============================================================================"
 echo ""
@@ -160,10 +160,10 @@ echo ""
 # =============================================================================
 echo "--- Redis Validation ---"
 
-check "Redis is accessible" "docker exec ayantaraz-redis redis-cli -a AyantarazRedis@2025 ping | grep -q PONG"
+check "Redis is accessible" "docker exec ayantaraz-redis redis-cli -a ayantarazRedis@2025 ping | grep -q PONG"
 
 # Check Redis keys
-KEY_COUNT=$(docker exec ayantaraz-redis redis-cli -a AyantarazRedis@2025 DBSIZE | awk '{print $2}')
+KEY_COUNT=$(docker exec ayantaraz-redis redis-cli -a ayantarazRedis@2025 DBSIZE | awk '{print $2}')
 pass "Redis has ${KEY_COUNT} keys"
 
 echo ""

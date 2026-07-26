@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Ayantaraz Web Entrypoint Script
+# ayantaraz Web Entrypoint Script
 # Production-Ready | Server: 202.133.91.13
 # Version: 2.0 - Stabilized
 
@@ -8,7 +8,7 @@
 # set -e
 
 echo "=========================================="
-echo "Ayantaraz Web Entrypoint"
+echo "ayantaraz Web Entrypoint"
 echo "Server: 202.133.91.13"
 echo "=========================================="
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ayantaraz - Complete Deployment Script for Server 202.133.91.13
+# ayantaraz - Complete Deployment Script for Server 202.133.91.13
 # This script does EVERYTHING: installs dependencies, clones repo, creates files, configures, seeds admins, and starts
 # Run this script as root: sudo bash DEPLOY_TO_202.133.91.13.sh
 
@@ -8,7 +8,7 @@ set -e
 
 SERVER_IP="202.133.91.13"
 echo "=============================================="
-echo "  Ayantaraz - Complete Deployment for $SERVER_IP"
+echo "  ayantaraz - Complete Deployment for $SERVER_IP"
 echo "=============================================="
 echo ""
 
@@ -165,7 +165,7 @@ cat > start.sh << 'STARTEOF'
 set -e
 cd /opt/ayantaraz
 
-echo "Starting Ayantaraz API on 202.133.91.13..."
+echo "Starting ayantaraz API on 202.133.91.13..."
 echo ""
 
 # Run database migrations

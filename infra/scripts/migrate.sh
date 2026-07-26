@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================
-# Ayantaraz Database Migration Script
+# ayantaraz Database Migration Script
 # ============================================
 # Usage: ./infra/scripts/migrate.sh [environment]
 #   environment: development | staging | production (default: development)
@@ -11,7 +11,7 @@ set -euo pipefail
 ENV="${1:-development}"
 SCRIPT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 
-echo "=== Ayantaraz DB Migration ==="
+echo "=== ayantaraz DB Migration ==="
 echo "Environment: ${ENV}"
 echo "Working dir: ${SCRIPT_DIR}"
 echo ""

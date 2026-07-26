@@ -2,7 +2,7 @@
 cd /opt/ayantaraz
 while true; do
   clear
-  echo "=== Ayantaraz Production Monitor ==="
+  echo "=== ayantaraz Production Monitor ==="
   echo "Time: $(date '+%Y-%m-%d %H:%M:%S')"
   echo ""
   echo "--- Container Status ---"

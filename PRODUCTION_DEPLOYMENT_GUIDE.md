@@ -1,8 +1,8 @@
-# 🚀 Ayantaraz Production Deployment Guide
+# 🚀 ayantaraz Production Deployment Guide
 
 ## 📋 Overview
 
-This guide provides **100% production-ready** deployment instructions for Ayantaraz on server **202.133.91.13** with:
+This guide provides **100% production-ready** deployment instructions for ayantaraz on server **202.133.91.13** with:
 - ✅ IP-based access (no domain required initially)
 - ✅ Easy domain addition later
 - ✅ Admin phones: `09133374162`, `09134292329`
@@ -318,10 +318,10 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml exec api n
 ### Redis Management
 ```bash
 # Connect to Redis
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025
 
 # Monitor Redis
-docker exec -it ayantaraz-redis redis-cli -a AyantarazRedis@2025 MONITOR
+docker exec -it ayantaraz-redis redis-cli -a ayantarazRedis@2025 MONITOR
 ```
 
 ---
@@ -419,7 +419,7 @@ docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
 
 ## 🎉 Success!
 
-Once all checks pass, your Ayantaraz production deployment is complete! 🎉
+Once all checks pass, your ayantaraz production deployment is complete! 🎉
 
 - **Web Application:** http://202.133.91.13
 - **API:** http://202.133.91.13:3001

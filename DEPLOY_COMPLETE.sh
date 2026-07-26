@@ -440,7 +440,7 @@ verify_deployment() {
 main() {
     echo ""
     echo "=========================================="
-    echo "  Ayantaraz Complete Deployment Script"
+    echo "  ayantaraz Complete Deployment Script"
     echo "  Server: $SERVER_IP"
     echo "  Project: $PROJECT_DIR"
     echo "=========================================="

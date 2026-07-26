@@ -1,8 +1,8 @@
-# Ayantaraz Documentation
+# ayantaraz Documentation
 
 ## Overview
 
-This directory contains comprehensive documentation for the Ayantaraz project, covering all aspects of development, deployment, security, and operations.
+This directory contains comprehensive documentation for the ayantaraz project, covering all aspects of development, deployment, security, and operations.
 
 ## Documentation Structure
 

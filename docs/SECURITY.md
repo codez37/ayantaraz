@@ -1,8 +1,8 @@
-# Ayantaraz Security Documentation
+# ayantaraz Security Documentation
 
 ## Overview
 
-This document describes the security measures implemented in the Ayantaraz project and provides guidelines for maintaining security in production.
+This document describes the security measures implemented in the ayantaraz project and provides guidelines for maintaining security in production.
 
 ## Security Architecture
 

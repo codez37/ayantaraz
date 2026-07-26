@@ -6,7 +6,7 @@
 set -e
 
 echo "=========================================="
-echo "Ayantaraz Pre-Deployment Verification"
+echo "ayantaraz Pre-Deployment Verification"
 echo "=========================================="
 
 # Function to print error

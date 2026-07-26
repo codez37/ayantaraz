@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ayantaraz Production Readiness Verification Script
+# ayantaraz Production Readiness Verification Script
 # This script verifies that all production readiness requirements are met
 
 # set -euo pipefail
@@ -29,7 +29,7 @@ warning() {
 
 echo ""
 echo "============================================================================"
-echo "  Ayantaraz Production Readiness Verification"
+echo "  ayantaraz Production Readiness Verification"
 echo "  Server: 202.133.91.13"
 echo "============================================================================"
 echo ""
@@ -54,7 +54,7 @@ for workflow in "${WORKFLOWS[@]}"; do
     fi
 done
 
-if grep -q "name: Ayantaraz CI/CD Pipeline" "${PROJECT_DIR}/.github/workflows/ci-cd.yml"; then
+if grep -q "name: ayantaraz CI/CD Pipeline" "${PROJECT_DIR}/.github/workflows/ci-cd.yml"; then
     pass "Main CI/CD workflow is properly configured"
 else
     fail "Main CI/CD workflow is not properly configured"
@@ -260,7 +260,7 @@ echo ""
 if [ $FAIL -eq 0 ]; then
     echo "SUCCESS: All checks passed - Production is ready!"
     echo ""
-    echo "The Ayantaraz project is 100% production ready for deployment on server 202.133.91.13"
+    echo "The ayantaraz project is 100% production ready for deployment on server 202.133.91.13"
     echo ""
     echo "To deploy:"
     echo "  cd /opt/ayantaraz"
