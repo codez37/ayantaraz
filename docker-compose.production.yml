@@ -59,8 +59,8 @@ services:
       - OTP_RESEND_LIMIT=3
       - OTP_RESEND_WINDOW_MINUTES=10
       - OTP_BLOCK_DURATION_MINUTES=30
-      - DB_POOL_MAX_CONNECTIONS=20
-      - DB_POOL_MIN_CONNECTIONS=5
+      - DB_POOL_MAX_CONNECTIONS=50
+      - DB_POOL_MIN_CONNECTIONS=10
       - DB_POOL_MAX_REQUESTS_PER_CONNECTION=100
       - DB_POOL_IDLE_TIMEOUT_MS=30000
       - DB_POOL_CONNECTION_TIMEOUT_MS=5000
@@ -110,6 +110,12 @@ services:
     depends_on:
       api:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     logging:
       driver: json-file
       options:

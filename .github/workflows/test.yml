@@ -12,12 +12,46 @@ concurrency:
 
 env:
   NODE_VERSION: 22
+  PNPM_VERSION: 11.9.0
 
 jobs:
-  test:
-    name: Run All Tests
+  # =============================================================================
+  # Job 1: Unit Tests
+  # =============================================================================
+  unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        run: pnpm test:unit
+
+  # =============================================================================
+  # Job 2: Integration Tests
+  # =============================================================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: unit-tests
 
     services:
       postgres:
@@ -60,17 +94,17 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --shamefully-hoist
+        run: pnpm install --frozen-lockfile
 
       - name: Generate Prisma client
-        run: npx prisma generate --schema=prisma/schema.prisma || echo "Prisma client generated"
+        run: npx prisma generate --schema=prisma/schema.prisma
 
       - name: Run database migrations
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
-        run: npx prisma migrate deploy --schema=prisma/schema.prisma || echo "Migrations deployed"
+        run: npx prisma migrate deploy --schema=prisma/schema.prisma
 
-      - name: Run unit tests
+      - name: Run integration tests
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
           REDIS_URL: redis://localhost:6379
@@ -79,12 +113,16 @@ jobs:
           FILE_ENCRYPTION_KEY: test_encryption_key
           SESSION_SECRET: test_session_secret
           NODE_ENV: test
-        run: pnpm test || echo "Tests completed successfully"
+        run: pnpm test:integration
 
-  test-api:
-    name: API Module Tests
+  # =============================================================================
+  # Job 3: E2E Tests
+  # =============================================================================
+  e2e-tests:
+    name: E2E Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
+    needs: integration-tests
 
     services:
       postgres:
@@ -114,6 +152,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Enable Corepack
         run: corepack enable
@@ -125,9 +165,17 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --shamefully-hoist
+        run: pnpm install --frozen-lockfile
 
-      - name: Run API tests
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=prisma/schema.prisma
+
+      - name: Run database migrations
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+        run: npx prisma migrate deploy --schema=prisma/schema.prisma
+
+      - name: Start API server in background
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
           REDIS_URL: redis://localhost:6379
@@ -136,32 +184,14 @@ jobs:
           FILE_ENCRYPTION_KEY: test_encryption_key
           SESSION_SECRET: test_session_secret
           NODE_ENV: test
+          PORT: 3002
         run: |
-          cd apps/api
-          pnpm test || echo "API tests completed"
+          pnpm build:api
+          pnpm start:api &
+          sleep 10
 
-  test-web:
-    name: Web Module Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --shamefully-hoist
-
-      - name: Run Web tests
-        run: |
-          cd apps/web
-          pnpm test || echo "Web tests completed"
+      - name: Run E2E tests
+        env:
+          API_URL: http://localhost:3002
+          NODE_ENV: test
+        run: pnpm test:e2e
