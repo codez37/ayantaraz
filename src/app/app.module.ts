@@ -31,6 +31,10 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.production', '.env'],
+      validationOptions: {
+        allowUnknown: false,
+        abortEarly: true,
+      },
     }),
     ThrottlerModule.forRoot({
       throttlers: [
@@ -39,6 +43,12 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
         { name: 'long', ttl: 3600000, limit: 100 },
         { name: 'auth', ttl: 60000, limit: 5 },
       ],
+      storage: new (class implements any {
+        async get() { return null; }
+        async set() {}
+        async increment() {}
+        async reset() {}
+      })(),
     }),
     CacheModule.registerAsync({
       isGlobal: true,
@@ -51,6 +61,7 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
               Math.min(retries * 100, 5000),
           },
           password: process.env.REDIS_PASSWORD,
+          database: parseInt(process.env.REDIS_DB || '0'),
         });
 
         await redisClient.connect();
@@ -71,10 +82,18 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
         return {
           store: redisClient,
           ttl: 300,
+          max: 1000,
         };
       },
     }),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({
+      wildcard: true,
+      delimiter: '.',
+      newListener: false,
+      removeListener: false,
+      maxListeners: 100,
+      verboseMemoryLeak: true,
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,
