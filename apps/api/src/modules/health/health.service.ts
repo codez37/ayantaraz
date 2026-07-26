@@ -1,12 +1,16 @@
 import * as os from 'os';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CircuitBreakerService, CircuitStats } from '../../common/circuit-breaker/circuit-breaker.service';
 
 @Injectable()
 export class HealthService {
   private readonly logger = new Logger(HealthService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly circuitBreaker: CircuitBreakerService,
+  ) {}
 
   async checkHealth(): Promise<{
     status: 'healthy' | 'degraded' | 'unhealthy';
@@ -16,6 +20,7 @@ export class HealthService {
       database: {
         status: 'up' | 'down';
         responseTime: number;
+        circuit?: CircuitStats;
       };
       cache: {
         status: 'up' | 'down';
@@ -28,6 +33,7 @@ export class HealthService {
         usagePercent: number;
       };
     };
+    circuits: Record<string, CircuitStats>;
     version: string;
   }> {
     this.logger.debug('Running health check');
@@ -51,6 +57,9 @@ export class HealthService {
       databaseResponseTime = 0;
     }
 
+    // Get database circuit stats
+    const databaseCircuit = this.circuitBreaker.getStats('database');
+
     try {
       cacheStatus = 'up';
       cacheResponseTime = 0;
@@ -70,7 +79,11 @@ export class HealthService {
     memoryUsagePercent = parseFloat(usagePercent.toFixed(2));
 
     const checks = {
-      database: { status: databaseStatus, responseTime: databaseResponseTime },
+      database: { 
+        status: databaseStatus, 
+        responseTime: databaseResponseTime,
+        circuit: databaseCircuit,
+      },
       cache: { status: cacheStatus, responseTime: cacheResponseTime },
       memory: {
         status: memoryStatus,
@@ -79,6 +92,9 @@ export class HealthService {
         usagePercent: memoryUsagePercent,
       },
     };
+
+    // Get all circuit stats
+    const circuits = this.circuitBreaker.getAllStats();
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (checks.database.status === 'down' || checks.cache.status === 'down') {
       status = 'unhealthy';
@@ -93,6 +109,7 @@ export class HealthService {
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       checks,
+      circuits,
       version: process.env.npm_package_version || '1.0.0',
     };
   }

@@ -48,6 +48,17 @@ services:
       - COOKIE_SAME_SITE=lax
       - COOKIE_DOMAIN=202.133.91.13
       - LOG_LEVEL=info
+      # Content Security Policy headers
+      - CSP_DEFAULT_SRC="'self'"
+      - CSP_SCRIPT_SRC="'self' 'unsafe-inline' https://cdn.jsdelivr.net"
+      - CSP_STYLE_SRC="'self' 'unsafe-inline' https://cdn.jsdelivr.net"
+      - CSP_IMG_SRC="'self' data: https://cdn.jsdelivr.net"
+      - CSP_FONT_SRC="'self' https://cdn.jsdelivr.net"
+      - CSP_CONNECT_SRC="'self' http://202.133.91.13:3001 https://202.133.91.13"
+      - CSP_FRAME_SRC="'none'"
+      - CSP_OBJECT_SRC="'none'"
+      - CSP_BASE_URI="'self'"
+      - CSP_FORM_ACTION="'self'"
       - TZ=Asia/Tehran
       - MAX_FILE_SIZE=10485760
       - UPLOAD_DIR=/app/uploads

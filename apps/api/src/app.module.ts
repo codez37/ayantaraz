@@ -19,6 +19,8 @@ import { CombinedAuthGuard } from './common/guards/combined-auth.guard';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
+import { XssProtectionMiddleware } from './common/middleware/xss-protection.middleware';
+import { CircuitBreakerModule } from './common/circuit-breaker/circuit-breaker.module';
 
 @Module({
   imports: [
@@ -30,6 +32,12 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
         { name: 'long', ttl: 3600000, limit: 100 },
         { name: 'auth', ttl: 60000, limit: 5 },
       ],
+    }),
+    CircuitBreakerModule.forRoot({
+      failureThreshold: 5,
+      recoveryTimeout: 30000,
+      successThreshold: 2,
+      autoRecover: true,
     }),
     CacheModule.registerAsync({
       isGlobal: true,
@@ -84,6 +92,8 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
+    consumer
+      .apply(CorrelationIdMiddleware, XssProtectionMiddleware)
+      .forRoutes('*');
   }
 }

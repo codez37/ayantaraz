@@ -13,7 +13,7 @@ import { JWT_EXPIRATION } from './auth.constants';
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET || '',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: JWT_EXPIRATION },
     }),
   ],
