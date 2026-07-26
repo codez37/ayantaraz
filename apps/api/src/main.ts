@@ -63,7 +63,7 @@ async function bootstrap() {
     app.use(
       csrf({
         cookie: {
-          name: CSRF_COOKIE_NAME,
+          key: CSRF_COOKIE_NAME,
           httpOnly: true,
           secure: true,
           sameSite: 'lax',

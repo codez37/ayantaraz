@@ -244,7 +244,7 @@ export class AuthService {
     try {
       payload = this.jwtService.verify(refreshToken, {
         secret: process.env.JWT_REFRESH_SECRET,
-        algorithms: [TOKEN_ALGORITHM],
+        algorithms: [TOKEN_ALGORITHM as any],
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_REFRESH,
         clockTolerance: REFRESH_CLOCK_TOLERANCE,
@@ -331,21 +331,17 @@ export class AuthService {
     };
     return {
       accessToken: this.jwtService.sign(payload, {
-        algorithm: TOKEN_ALGORITHM,
         secret: JWT_SECRET,
         expiresIn: JWT_EXPIRATION,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_ACCESS,
-        header: { typ: 'JWT', alg: TOKEN_ALGORITHM },
-      }),
+      } as any),
       refreshToken: this.jwtService.sign(payload, {
-        algorithm: TOKEN_ALGORITHM,
         secret: process.env.JWT_REFRESH_SECRET,
         expiresIn: JWT_REFRESH_EXPIRATION,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_REFRESH,
-        header: { typ: 'JWT', alg: TOKEN_ALGORITHM },
-      }),
+      } as any),
     };
   }
 
