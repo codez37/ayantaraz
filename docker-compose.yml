@@ -72,6 +72,7 @@ services:
       redis:
         condition: service_healthy
     deploy:
+      replicas: 2
       resources:
         limits:
           cpus: '1.5'

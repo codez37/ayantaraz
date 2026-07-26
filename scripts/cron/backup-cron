@@ -1,0 +1,1 @@
+0 2 * * * /workspace/codez37__ayantaraz/scripts/backup.sh ayantaraz_backup_$(date +\%Y\%m\%d) >> /var/log/ayantaraz_backup.log 2>&1
