@@ -9,6 +9,26 @@ import type { Content } from '@/types';
 
 const SITE_URL = 'https://ayantaraz.ir';
 
+// Safe HTML renderer - strips all HTML tags and returns plain text
+// This is the most secure approach for production
+function SafeHtmlRenderer({ html }: { html: string }) {
+  if (!html) return null;
+  
+  // Remove all HTML tags and return plain text
+  const plainText = html.replace(/<[^>]*>/g, '');
+  
+  // Split by newlines and render as paragraphs
+  const paragraphs = plainText.split('\n\n').filter(p => p.trim());
+  
+  return (
+    <div className="prose prose-lg max-w-none text-gray-200 [&_p]:text-gray-300">
+      {paragraphs.map((paragraph, index) => (
+        <p key={index} className="mb-4">{paragraph}</p>
+      ))}
+    </div>
+  );
+}
+
 export default function ArticleDetailPage() {
   const { slug } = useParams();
   const [article, setArticle] = useState<Content | null>(null);
@@ -67,10 +87,7 @@ export default function ArticleDetailPage() {
     <article className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-black text-gold-gradient mb-4">{article.title}</h1>
       <p className="text-gray-500 mb-8">{new Date(article.publishedAt!).toLocaleDateString('fa-IR')}</p>
-      <div
-        className="prose prose-lg max-w-none text-gray-200 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_p]:text-gray-300 [&_li]:text-gray-300"
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.body) }}
-      />
+      <SafeHtmlRenderer html={article.body} />
     </article>
   );
 }

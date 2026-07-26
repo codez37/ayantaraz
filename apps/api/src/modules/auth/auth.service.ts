@@ -26,6 +26,10 @@ import {
   COOKIE_REFRESH_TOKEN_MAX_AGE,
   JWT_EXPIRATION,
   JWT_REFRESH_EXPIRATION,
+  JWT_SECRET,
+  SMS_API_URL,
+  SMS_TEMPLATE_ID,
+  SMS_TIMEOUT_MS,
 } from './auth.constants';
 
 export interface TokensResult {
@@ -328,6 +332,7 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload, {
         algorithm: TOKEN_ALGORITHM,
+        secret: JWT_SECRET,
         expiresIn: JWT_EXPIRATION,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_ACCESS,
@@ -392,18 +397,17 @@ export class AuthService {
       throw new Error(errorMsg);
     }
     try {
-      const url = 'https://s.api.ir/api/sw1/SmsOTP';
-      const body = JSON.stringify({ code, mobile: phone, templateId: 1 });
+      const body = JSON.stringify({ code, mobile: phone, templateId: SMS_TEMPLATE_ID });
       const response = await new Promise<any>((resolve, reject) => {
         const req = https.request(
-          url,
+          SMS_API_URL,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${apiKey}`,
             },
-            timeout: 10000,
+            timeout: SMS_TIMEOUT_MS,
           },
           (res) => {
             let data = '';

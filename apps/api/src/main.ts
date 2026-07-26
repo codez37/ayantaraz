@@ -4,6 +4,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import csrf from 'csurf';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
@@ -11,6 +12,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { RequestLoggerInterceptor } from './common/interceptors/request-logger.interceptor';
 import { JsonLogger } from './common/logger/json-logger.service';
 import { PrismaService } from './prisma/prisma.service';
+import { CSRF_COOKIE_NAME, CSRF_COOKIE_MAX_AGE } from './modules/auth/auth.constants';
 
 const logger = new JsonLogger();
 
@@ -55,6 +57,22 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  // Enable CSRF protection for production
+  if (isProduction) {
+    app.use(
+      csrf({
+        cookie: {
+          name: CSRF_COOKIE_NAME,
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: CSRF_COOKIE_MAX_AGE,
+        },
+      }),
+    );
+    logger.log('CSRF protection enabled', 'Security');
+  }
 
   app.use(
     helmet({

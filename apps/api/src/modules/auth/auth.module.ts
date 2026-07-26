@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { SessionService } from './session.service';
 import { JwtStrategy } from './jwt.strategy';
+import { RolesGuard } from './guards/roles.guard';
 import { JWT_EXPIRATION } from './auth.constants';
 
 @Module({
@@ -16,8 +18,17 @@ import { JWT_EXPIRATION } from './auth.constants';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, SessionService, JwtStrategy],
-  exports: [AuthService, SessionService],
+  providers: [
+    AuthService,
+    SessionService,
+    JwtStrategy,
+    RolesGuard,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
+  exports: [AuthService, SessionService, RolesGuard],
 })
 export class AuthModule {
   constructor() {
