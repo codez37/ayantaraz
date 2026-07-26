@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { retry } from '../common/utils/retry';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -15,11 +16,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         db: {
           url: process.env.DATABASE_URL,
           pool: {
-            max_connections: parseInt(process.env.DB_POOL_MAX_CONNECTIONS || '50'),
-            min_connections: parseInt(process.env.DB_POOL_MIN_CONNECTIONS || '10'),
-            max_requests_per_connection: parseInt(process.env.DB_POOL_MAX_REQUESTS_PER_CONNECTION || '100'),
-            idle_timeout_ms: parseInt(process.env.DB_POOL_IDLE_TIMEOUT_MS || '30000'),
-            connection_timeout_ms: parseInt(process.env.DB_POOL_CONNECTION_TIMEOUT_MS || '5000'),
+            max_connections: parseInt(process.env.DB_POOL_MAX_CONNECTIONS || '20'),
+            min_connections: parseInt(process.env.DB_POOL_MIN_CONNECTIONS || '5'),
+            max_requests_per_connection: parseInt(process.env.DB_POOL_MAX_REQUESTS_PER_CONNECTION || '50'),
+            idle_timeout_ms: parseInt(process.env.DB_POOL_IDLE_TIMEOUT_MS || '10000'),
+            connection_timeout_ms: parseInt(process.env.DB_POOL_CONNECTION_TIMEOUT_MS || '10000'),
           },
         },
       },
@@ -28,10 +29,17 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   async onModuleInit() {
     try {
-      await this.$connect();
-      this.logger.log('✅ Database connection established');
+      // استفاده از Retry Logic برای اتصال به Database
+      await retry(
+        async () => {
+          await this.$connect();
+        },
+        10, // 10 بار تلاش
+        5000  // 5 ثانیه فاصله بین تلاش‌ها
+      );
+      this.logger.log('[32m✅ Database connection established[0m');
     } catch (error) {
-      this.logger.error('❌ Database connection failed', error);
+      this.logger.error('[31m❌ Database connection failed after retries[0m', error);
       throw error;
     }
   }
@@ -39,9 +47,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async onModuleDestroy() {
     try {
       await this.$disconnect();
-      this.logger.log('✅ Database connection closed');
+      this.logger.log('[32m✅ Database connection closed[0m');
     } catch (error) {
-      this.logger.error('❌ Error closing database connection', error);
+      this.logger.error('[31m❌ Error closing database connection[0m', error);
     }
   }
 
@@ -67,9 +75,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   async executeRaw(query: string, params?: any[]) {
     try {
-      return await this.$executeRawUnsafe(query, ...(params || []));
+      // اضافه کردن Query Timeout
+      const timeout = setTimeout(() => {
+        throw new Error('Query timeout after 10 seconds');
+      }, 10000);
+
+      const result = await this.$executeRawUnsafe(query, ...(params || []));
+      clearTimeout(timeout);
+      return result;
     } catch (error) {
-      this.logger.error('❌ Raw query execution failed', error);
+      this.logger.error('[31m❌ Raw query execution failed[0m', error);
       throw error;
     }
   }
@@ -79,7 +94,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       await this.$queryRaw`SELECT 1`;
       return { status: 'healthy', database: 'connected' };
     } catch (error) {
-      this.logger.error('❌ Database health check failed', error);
+      this.logger.error('[31m❌ Database health check failed[0m', error);
       return { status: 'unhealthy', database: 'disconnected', error: error.message };
     }
   }

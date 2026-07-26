@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.api
     container_name: ayantaraz-api
     restart: unless-stopped
+    user: "nodejs"
     env_file:
       - .env.production
     environment:
@@ -54,11 +55,11 @@ services:
       - OTP_RESEND_LIMIT=3
       - OTP_RESEND_WINDOW_MINUTES=10
       - OTP_BLOCK_DURATION_MINUTES=30
-      - DB_POOL_MAX_CONNECTIONS=50
-      - DB_POOL_MIN_CONNECTIONS=10
-      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=100
-      - DB_POOL_IDLE_TIMEOUT_MS=30000
-      - DB_POOL_CONNECTION_TIMEOUT_MS=5000
+      - DB_POOL_MAX_CONNECTIONS=20
+      - DB_POOL_MIN_CONNECTIONS=5
+      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=50
+      - DB_POOL_IDLE_TIMEOUT_MS=10000
+      - DB_POOL_CONNECTION_TIMEOUT_MS=10000
       - HEALTH_CHECK_INTERVAL=30000
     ports:
       - '3001:3001'
@@ -70,6 +71,20 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1.5G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    mem_limit: 1.5g
+    memswap_limit: 1.5g
     logging:
       driver: json-file
       options:
@@ -77,10 +92,10 @@ services:
         max-file: '10'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:3001/api/health']
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 60s
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 45s
     networks:
       - ayantaraz-network
 
@@ -90,6 +105,7 @@ services:
       dockerfile: Dockerfile.web
     container_name: ayantaraz-web
     restart: unless-stopped
+    user: "nodejs"
     env_file:
       - .env.production
     environment:
@@ -102,6 +118,20 @@ services:
     depends_on:
       api:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.3'
+          memory: 300M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    mem_limit: 1g
+    memswap_limit: 1g
     logging:
       driver: json-file
       options:
@@ -109,10 +139,10 @@ services:
         max-file: '10'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:3000']
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 60s
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 45s
     networks:
       - ayantaraz-network
 
@@ -120,6 +150,7 @@ services:
     image: postgres:15-alpine
     container_name: ayantaraz-postgres
     restart: unless-stopped
+    user: "postgres"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -127,6 +158,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    mem_limit: 1g
+    memswap_limit: 1g
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
@@ -144,9 +189,24 @@ services:
     image: redis:7-alpine
     container_name: ayantaraz-redis
     restart: unless-stopped
+    user: "redis"
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    mem_limit: 512m
+    memswap_limit: 512m
     healthcheck:
       test: ['CMD-SHELL', 'redis-cli -a ${REDIS_PASSWORD} ping']
       interval: 10s
@@ -164,6 +224,7 @@ services:
     image: nginx:alpine
     container_name: ayantaraz-nginx
     restart: unless-stopped
+    user: "nginx"
     ports:
       - '80:80'
       - '443:443'
@@ -174,7 +235,27 @@ services:
       api:
         condition: service_healthy
       web:
-        condition: service_started
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    mem_limit: 256m
+    memswap_limit: 256m
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     logging:
       driver: json-file
       options:

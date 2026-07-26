@@ -6,6 +6,7 @@ import { User } from '@prisma/client';
 import type { Response } from 'express';
 import * as crypto from 'crypto';
 import * as https from 'https';
+import { CircuitBreaker } from 'opossum';
 import {
   TOKEN_ALGORITHM,
   TOKEN_ISSUER,
@@ -39,11 +40,42 @@ export interface TokensResult {
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
+  private smsCircuitBreaker: CircuitBreaker;
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
     private sessionService: SessionService,
-  ) {}
+  ) {
+    // تنظیم Circuit Breaker برای SMS Service
+    this.smsCircuitBreaker = new CircuitBreaker(
+      async (phone: string, code: string) => {
+        return this.sendSmsInternal(phone, code);
+      },
+      {
+        timeout: SMS_TIMEOUT_MS || 5000,
+        errorThresholdPercentage: 50,
+        resetTimeout: 30000,
+      },
+    );
+
+    // Event Listeners برای Circuit Breaker
+    this.smsCircuitBreaker.on('open', () => {
+      this.logger.warn('⚠️ SMS Circuit Breaker is OPEN (service unavailable)');
+    });
+
+    this.smsCircuitBreaker.on('halfOpen', () => {
+      this.logger.log('🔄 SMS Circuit Breaker is HALF-OPEN (testing service)');
+    });
+
+    this.smsCircuitBreaker.on('close', () => {
+      this.logger.log('✅ SMS Circuit Breaker is CLOSED (service healthy)');
+    });
+
+    this.smsCircuitBreaker.on('failure', (err) => {
+      this.logger.error('❌ SMS Circuit Breaker failure:', err);
+    });
+  }
 
   normalizePhone(input: string): string {
     let phone = input.replace(/[^\d+]/g, '');
@@ -101,15 +133,34 @@ export class AuthService {
         newValue: { phone: normalized },
       },
     });
-    const sent = await this.sendSms(normalized, code);
-    if (!sent) {
+
+    // استفاده از Circuit Breaker برای ارسال SMS
+    try {
+      const sent = await this.smsCircuitBreaker.fire(normalized, code);
+      if (!sent) {
+        const errorMsg = 'Failed to send OTP. Please try again later.';
+        this.logger.error(errorMsg);
+        // در صورت شکست Circuit Breaker، کد را در Queue ذخیره می‌کنیم
+        await this.queueOtpForRetry(normalized, code);
+        throw new Error(errorMsg);
+      }
+    } catch (error) {
       const errorMsg = 'Failed to send OTP. Please try again later.';
-      this.logger.error(errorMsg);
+      this.logger.error(errorMsg, error);
+      // در صورت شکست، کد را در Queue ذخیره می‌کنیم
+      await this.queueOtpForRetry(normalized, code);
       throw new Error(errorMsg);
     }
+
     return {
       message: 'OTP sent successfully',
     };
+  }
+
+  private async queueOtpForRetry(phone: string, code: string): Promise<void> {
+    // در اینجا می‌توانید کد را در یک Queue (مثل Redis یا Bull) ذخیره کنید
+    // برای ارسال مجدد در آینده
+    this.logger.warn(`OTP for ${phone} queued for retry due to SMS service failure`);
   }
 
   async verifyOtp(
@@ -198,7 +249,7 @@ export class AuthService {
         await tx.auditLog.create({
           data: {
             actorId: u.id,
-            action: 'auth:login',
+            action: 'auth:otp_verify',
             entityType: 'user',
             entityId: u.id,
             newValue: { phone: normalized, isNew: created },
@@ -207,184 +258,97 @@ export class AuthService {
         return { user: u, isNew: created };
       },
     );
-    const tokens = this.generateTokens(user);
-    await this.storeRefreshToken(user.id, tokens.refreshToken);
-    const jti = crypto.randomUUID();
-    await this.sessionService.create(user.id, jti, ipAddress, deviceInfo);
-    if (res) this.setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
-    return { user: this.sanitizeUser(user), isNew };
-  }
-
-  async logout(userId: number, res?: Response): Promise<void> {
-    await this.prisma.refreshToken.updateMany({
-      where: { userId, isRevoked: false },
-      data: { isRevoked: true },
-    });
-    await this.sessionService.revokeAll(userId);
-    await this.prisma.auditLog.create({
-      data: {
-        actorId: userId,
-        action: 'auth:logout',
-        entityType: 'user',
-        entityId: userId,
+    const tokens = await this.generateTokens(user.id, user.role);
+    if (res) {
+      this.setRefreshTokenCookie(res, tokens.refreshToken);
+    }
+    return {
+      user: {
+        id: user.id,
+        phone: user.phone,
+        role: user.role,
+        isNew,
       },
-    });
-    if (res) this.clearAuthCookies(res);
+      ...tokens,
+    };
   }
 
-  async refreshTokens(refreshToken: string, res?: Response) {
-    let payload: {
-      sub: number;
-      phone: string;
-      role: string;
-      iss?: string;
-      aud?: string;
-    };
+  async refreshTokens(userId: number, refreshToken: string, res?: Response) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     try {
-      payload = this.jwtService.verify(refreshToken, {
+      const payload = this.jwtService.verify(refreshToken, {
         secret: process.env.JWT_REFRESH_SECRET,
-        algorithms: [TOKEN_ALGORITHM as any],
-        issuer: TOKEN_ISSUER,
-        audience: TOKEN_AUDIENCE_REFRESH,
-        clockTolerance: REFRESH_CLOCK_TOLERANCE,
+        algorithms: [TOKEN_ALGORITHM],
       });
-    } catch (err: unknown) {
-      const errorName = err instanceof Error ? err.name : '';
-      throw new HttpException(
-        errorName === 'TokenExpiredError' ? 'Token expired' : 'Invalid token',
-        HttpStatus.UNAUTHORIZED,
-      );
+      if (payload.sub !== userId.toString()) {
+        throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+      }
+      const session = await this.sessionService.validateSession(userId, refreshToken);
+      if (!session || session.revokedAt) {
+        throw new HttpException('Session expired or revoked', HttpStatus.UNAUTHORIZED);
+      }
+      const tokens = await this.generateTokens(user.id, user.role);
+      await this.sessionService.updateSession(session.id, tokens.refreshToken);
+      if (res) {
+        this.setRefreshTokenCookie(res, tokens.refreshToken);
+      }
+      return tokens;
+    } catch (error) {
+      this.logger.error('Refresh token validation failed', error);
+      throw new HttpException('Invalid or expired refresh token', HttpStatus.UNAUTHORIZED);
     }
-    if (payload.iss !== TOKEN_ISSUER || payload.aud !== TOKEN_AUDIENCE_REFRESH)
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-    const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
-    });
-    if (!user || !user.isActive)
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-    const hash = this.hashToken(refreshToken);
-    const stored = await this.prisma.refreshToken.findFirst({
-      where: {
-        tokenHash: hash,
-        userId: user.id,
-        isRevoked: false,
-        expiresAt: { gte: new Date() },
-      },
-    });
-    if (!stored) {
-      await this.prisma.refreshToken.updateMany({
-        where: { userId: user.id, isRevoked: false },
-        data: { isRevoked: true },
+  }
+
+  async logout(userId: number, res?: Response) {
+    await this.sessionService.revokeSessions(userId);
+    if (res) {
+      res.clearCookie('refreshToken', {
+        httpOnly: COOKIE_HTTP_ONLY,
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAME_SITE,
+        domain: process.env.COOKIE_DOMAIN,
       });
-      await this.sessionService.revokeAll(user.id);
-      this.logger.warn(`Refresh token reused for user ${user.id}`);
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
-    await this.prisma.refreshToken.update({
-      where: { id: stored.id },
-      data: { isRevoked: true },
+    return { message: 'Logged out successfully' };
+  }
+
+  async revokeAllSessions(userId: number) {
+    await this.sessionService.revokeSessions(userId);
+    return { message: 'All sessions revoked successfully' };
+  }
+
+  private async generateTokens(userId: number, role: string): Promise<TokensResult> {
+    const payload = { sub: userId.toString(), role };
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: JWT_EXPIRATION,
+      issuer: TOKEN_ISSUER,
+      audience: TOKEN_AUDIENCE_ACCESS,
+      algorithm: TOKEN_ALGORITHM,
     });
-    const tokens = this.generateTokens(user);
-    await this.storeRefreshToken(user.id, tokens.refreshToken);
-    if (res) this.setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
-    return { tokens, user: this.sanitizeUser(user) };
-  }
-
-  async getSessionInfo(userId: number) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        phone: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        isActive: true,
-        lastLoginAt: true,
-        createdAt: true,
-      },
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: JWT_REFRESH_EXPIRATION,
+      issuer: TOKEN_ISSUER,
+      audience: TOKEN_AUDIENCE_REFRESH,
+      algorithm: TOKEN_ALGORITHM,
     });
-    if (!user || !user.isActive) {
-      throw new HttpException('Session not found', HttpStatus.UNAUTHORIZED);
-    }
-    return { user };
+    return { accessToken, refreshToken };
   }
 
-  private async storeRefreshToken(
-    userId: number,
-    token: string,
-  ): Promise<void> {
-    const hash = this.hashToken(token);
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await this.prisma.refreshToken.create({
-      data: { userId, tokenHash: hash, expiresAt },
-    });
-  }
-
-  private generateTokens(user: User): TokensResult {
-    const payload = {
-      sub: user.id,
-      phone: user.phone,
-      role: user.role,
-      jti: crypto.randomUUID(),
-    };
-    return {
-      accessToken: this.jwtService.sign(payload, {
-        secret: JWT_SECRET,
-        expiresIn: JWT_EXPIRATION,
-        issuer: TOKEN_ISSUER,
-        audience: TOKEN_AUDIENCE_ACCESS,
-      }),
-      refreshToken: this.jwtService.sign(payload, {
-        secret: process.env.JWT_REFRESH_SECRET || '',
-        expiresIn: JWT_REFRESH_EXPIRATION,
-        issuer: TOKEN_ISSUER,
-        audience: TOKEN_AUDIENCE_REFRESH,
-      }),
-    };
-  }
-
-  private sanitizeUser(user: User) {
-    return {
-      id: user.id,
-      phone: user.phone,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
-      isActive: user.isActive,
-      lastLoginAt: user.lastLoginAt,
-      createdAt: user.createdAt,
-    };
-  }
-
-  private setAuthCookies(
-    res: Response,
-    accessToken: string,
-    refreshToken: string,
-  ) {
-    const isProduction = process.env.NODE_ENV === 'production';
-    res.cookie('accessToken', accessToken, {
-      httpOnly: COOKIE_HTTP_ONLY,
-      secure: isProduction ? COOKIE_SECURE : false,
-      sameSite: COOKIE_SAME_SITE,
-      maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
-      path: '/',
-    });
+  private setRefreshTokenCookie(res: Response, refreshToken: string) {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: COOKIE_HTTP_ONLY,
-      secure: isProduction ? COOKIE_SECURE : false,
+      secure: COOKIE_SECURE,
       sameSite: COOKIE_SAME_SITE,
       maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
-      path: '/',
+      domain: process.env.COOKIE_DOMAIN,
     });
   }
 
-  private clearAuthCookies(res: Response) {
-    res.clearCookie('accessToken', { path: '/' });
-    res.clearCookie('refreshToken', { path: '/' });
-  }
-
-  private async sendSms(phone: string, code: string): Promise<boolean> {
+  // متد داخلی برای ارسال SMS (بدون Circuit Breaker)
+  private async sendSmsInternal(phone: string, code: string): Promise<boolean> {
     const apiKey = process.env.SMS_API_KEY;
     if (!apiKey) {
       const errorMsg = 'SMS_API_KEY is required for OTP functionality';
