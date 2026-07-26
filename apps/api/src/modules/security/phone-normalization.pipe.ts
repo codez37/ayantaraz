@@ -1,6 +1,6 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 
-const ZERO_WIDTH_CHARS = /[\u200B\u200C\u200D\u2060\uFEFF]/g;
+const ZERO_WIDTH_CHARS = /[\u200B-\u200D\u2060\uFEFF]/g;
 const ARABIC_PERSIAN_DIGITS: Record<string, string> = {
   '۰': '0',
   '۱': '1',
@@ -44,7 +44,6 @@ export class PhoneNormalizationPipe implements PipeTransform {
     );
 
     // Strip non-digit characters except leading +
-    const hasPlus = phone.startsWith('+');
     phone = phone.replace(/\D/g, '');
 
     // Normalize to local format: 09XXXXXXXXX

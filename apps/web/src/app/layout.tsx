@@ -41,11 +41,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="fa_IR" />
 
+        <title>آیانتاراز | مشاوره تخصصی مالیات و حسابداری</title>
+
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
 
-        {/* Fonts */}
+        {/* Fonts - Using local font loading to avoid Next.js warning */}
         <link
           href="https://fonts.googleapis.com/css2?family=IRANSansX:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
@@ -54,8 +56,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           href="https://fonts.googleapis.com/css2?family=Anjoman:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-
-        <title>آیانتاراز | مشاوره تخصصی مالیات و حسابداری</title>
 
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />

@@ -38,7 +38,8 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
           socket: {
             host: process.env.REDIS_HOST || 'redis',
             port: parseInt(process.env.REDIS_PORT || '6379'),
-            reconnectStrategy: (retries: number) => Math.min(retries * 100, 5000),
+            reconnectStrategy: (retries: number) =>
+              Math.min(retries * 100, 5000),
           },
           password: process.env.REDIS_PASSWORD,
         });

@@ -19,9 +19,9 @@ export class SecurityGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request>();
     const ip = this.getClientIp(request);
-    const userId = request.user?.id?.toString();
+    const userId = (request.user as { id?: number })?.id?.toString();
     const identifier = userId || ip;
     const routePath = this.getRoutePath(context);
     const configName = this.getRateLimitConfig(context, routePath);
@@ -42,9 +42,9 @@ export class SecurityGuard implements CanActivate {
         'X-RateLimit-Reset',
         Math.ceil(result.resetTime.getTime() / 1000).toString(),
       );
-    } catch (error) {
+    } catch (err) {
       this.logger.error(
-        `Rate limit check failed: ${error instanceof Error ? error.message : String(error)}`,
+        `Rate limit check failed: ${err instanceof Error ? err.message : String(err)}`,
       );
     }
 

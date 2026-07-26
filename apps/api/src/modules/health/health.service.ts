@@ -45,8 +45,8 @@ export class HealthService {
       await this.prisma.$queryRaw`SELECT 1`;
       databaseStatus = 'up';
       databaseResponseTime = Date.now() - dbStart;
-    } catch (error) {
-      this.logger.error(`Database health check failed: ${error}`);
+    } catch (err) {
+      this.logger.error(`Database health check failed: ${err}`);
       databaseStatus = 'down';
       databaseResponseTime = 0;
     }
@@ -54,8 +54,8 @@ export class HealthService {
     try {
       cacheStatus = 'up';
       cacheResponseTime = 0;
-    } catch (error) {
-      this.logger.error(`Cache health check failed: ${error}`);
+    } catch (err) {
+      this.logger.error(`Cache health check failed: ${err}`);
       cacheStatus = 'down';
       cacheResponseTime = 0;
     }
@@ -139,6 +139,7 @@ export class HealthService {
     };
   }> {
     this.logger.debug('Getting application metrics');
+    await Promise.resolve();
     const memoryUsage = process.memoryUsage();
     return {
       timestamp: new Date().toISOString(),
@@ -171,6 +172,7 @@ export class HealthService {
     startTime: string;
   }> {
     this.logger.debug('Getting application info');
+    await Promise.resolve();
     const totalMemory = os.totalmem();
     const cpus = os.cpus();
     return {
@@ -194,6 +196,7 @@ export class HealthService {
     uptime: number;
   }> {
     this.logger.debug('Ping received');
+    await Promise.resolve();
     return {
       message: 'pong',
       timestamp: new Date().toISOString(),
@@ -215,8 +218,8 @@ export class HealthService {
     try {
       await this.prisma.$queryRaw`SELECT 1`;
       databaseReady = true;
-    } catch (error) {
-      this.logger.error(`Database readiness check failed: ${error}`);
+    } catch (err) {
+      this.logger.error(`Database readiness check failed: ${err}`);
     }
     cacheReady = true;
     return {

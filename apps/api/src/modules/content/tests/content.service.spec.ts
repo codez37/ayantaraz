@@ -44,7 +44,7 @@ describe('ContentService', () => {
       const expected = { id: 1, ...input, status: 'draft', authorId: 1 };
       mockPrisma.content.create.mockResolvedValue(expected);
 
-      const result = await service.create(input as any, 1);
+      const result = await service.create(input, 1);
       expect(result.status).toBe('draft');
       expect(mockPrisma.content.create).toHaveBeenCalled();
       expect(mockPrisma.auditLog.create).toHaveBeenCalled();

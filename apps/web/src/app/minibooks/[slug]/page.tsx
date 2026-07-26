@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import { setPageMeta, injectJsonLd } from '@/lib/seo';
 import type { Content } from '@/types';
@@ -88,7 +89,14 @@ export default function MinibookDetailPage() {
 
         {minibook.thumbnailUrl && (
           <div className="mb-6 rounded-xl overflow-hidden">
-            <img src={minibook.thumbnailUrl} alt={minibook.title} className="w-full h-auto" />
+            <Image
+              src={minibook.thumbnailUrl}
+              alt={minibook.title}
+              className="w-full h-auto"
+              width={800}
+              height={450}
+              unoptimized
+            />
           </div>
         )}
 

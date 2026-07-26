@@ -11,7 +11,7 @@ export class CsrfMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: NextFunction) {
     if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
-    const cookieToken = req.cookies?.[CSRF_COOKIE_NAME];
+    const cookieToken = req.cookies?.[CSRF_COOKIE_NAME] as string;
     const headerToken = req.headers[CSRF_HEADER_NAME.toLowerCase()] as string;
     const csrfToken = headerToken || cookieToken;
 

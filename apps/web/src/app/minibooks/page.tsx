@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import type { Content, PaginatedResponse } from '@/types';
 
@@ -88,7 +89,13 @@ export default function MinibooksPage() {
                 >
                   <div className="aspect-[3/4] bg-gradient-to-br from-[#C9A227]/20 to-[#1C1C1C] flex items-center justify-center relative overflow-hidden">
                     {img ? (
-                      <img src={img} alt={book.title} className="w-full h-full object-cover absolute inset-0" />
+                      <Image
+                        src={img}
+                        alt={book.title}
+                        className="w-full h-full object-cover absolute inset-0"
+                        fill
+                        unoptimized
+                      />
                     ) : (
                       <div className="w-14 h-14 flex items-center justify-center text-4xl select-none drop-shadow-lg">
                         📕

@@ -13,17 +13,19 @@ const SITE_URL = 'https://ayantaraz.ir';
 // This is the most secure approach for production
 function SafeHtmlRenderer({ html }: { html: string }) {
   if (!html) return null;
-  
+
   // Remove all HTML tags and return plain text
   const plainText = html.replace(/<[^>]*>/g, '');
-  
+
   // Split by newlines and render as paragraphs
-  const paragraphs = plainText.split('\n\n').filter(p => p.trim());
-  
+  const paragraphs = plainText.split('\n\n').filter((p) => p.trim());
+
   return (
     <div className="prose prose-lg max-w-none text-gray-200 [&_p]:text-gray-300">
       {paragraphs.map((paragraph, index) => (
-        <p key={index} className="mb-4">{paragraph}</p>
+        <p key={index} className="mb-4">
+          {paragraph}
+        </p>
       ))}
     </div>
   );

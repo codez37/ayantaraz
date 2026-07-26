@@ -98,8 +98,10 @@ export class RateLimiterService implements OnModuleDestroy {
           reconnectStrategy: (retries) => Math.min(retries * 100, 5000),
         },
       });
-      this.redisClient.on('error', (error) =>
-        this.logger.error(`Redis error: ${error.message}`),
+      this.redisClient.on('error', (err) =>
+        this.logger.error(
+          `Redis error: ${err instanceof Error ? err.message : String(err)}`,
+        ),
       );
       this.redisClient.on('connect', () =>
         this.logger.log('Connected to Redis for rate limiting'),
@@ -155,7 +157,7 @@ export class RateLimiterService implements OnModuleDestroy {
           `Rate limit exceeded for ${identifier} on ${configName}: ${currentCount}/${config.max}`,
         );
       return { allowed, remaining, resetTime };
-    } catch (error) {
+    } catch {
       return this.failOpen
         ? {
             allowed: true,
@@ -198,12 +200,12 @@ export class RateLimiterService implements OnModuleDestroy {
       multi.zCard(key);
       multi.expire(key, Math.ceil(config.windowMs / 1000));
       const results = await multi.exec();
-      const currentCount = results[2] as unknown as number;
+      const currentCount = results[2] as number;
       const allowed = currentCount <= config.max;
       const remaining = Math.max(0, config.max - currentCount);
       const resetTime = new Date(now + config.windowMs);
       return { allowed, remaining, resetTime };
-    } catch (error) {
+    } catch {
       return this.failOpen
         ? {
             allowed: true,

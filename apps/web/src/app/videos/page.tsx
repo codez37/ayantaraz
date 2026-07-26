@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import type { Content, PaginatedResponse } from '@/types';
 
@@ -89,12 +90,14 @@ export default function VideosPage() {
               >
                 <div className="relative aspect-video bg-gradient-to-br from-[#C9A227]/30 to-[#FFA000]/10 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
                   {video.thumbnailUrl ? (
-                    <img
+                    <Image
                       src={
                         video.thumbnailUrl.startsWith('http') ? video.thumbnailUrl : `${API_BASE}${video.thumbnailUrl}`
                       }
                       alt={video.title}
                       className="w-full h-full object-cover absolute inset-0"
+                      fill
+                      unoptimized
                     />
                   ) : null}
                   <svg className="w-16 h-16 text-[#C9A227]/50 relative z-10" fill="currentColor" viewBox="0 0 24 24">

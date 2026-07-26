@@ -5,14 +5,16 @@ import { join } from 'path';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { RequestLoggerInterceptor } from './common/interceptors/request-logger.interceptor';
 import { JsonLogger } from './common/logger/json-logger.service';
 import { PrismaService } from './prisma/prisma.service';
-import { CSRF_COOKIE_NAME, CSRF_COOKIE_MAX_AGE } from './modules/auth/auth.constants';
+import {
+  CSRF_COOKIE_NAME,
+  CSRF_COOKIE_MAX_AGE,
+} from './modules/auth/auth.constants';
 
 const logger = new JsonLogger();
 

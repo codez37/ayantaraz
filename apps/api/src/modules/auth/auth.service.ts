@@ -12,7 +12,6 @@ import {
   TOKEN_AUDIENCE_ACCESS,
   TOKEN_AUDIENCE_REFRESH,
   REFRESH_CLOCK_TOLERANCE,
-  OTP_CODE_LENGTH,
   OTP_EXPIRATION_MS,
   OTP_REQUEST_LIMIT,
   OTP_REQUEST_WINDOW_MS,
@@ -335,13 +334,13 @@ export class AuthService {
         expiresIn: JWT_EXPIRATION,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_ACCESS,
-      } as any),
+      }),
       refreshToken: this.jwtService.sign(payload, {
-        secret: process.env.JWT_REFRESH_SECRET,
+        secret: process.env.JWT_REFRESH_SECRET || '',
         expiresIn: JWT_REFRESH_EXPIRATION,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_REFRESH,
-      } as any),
+      }),
     };
   }
 
@@ -393,39 +392,47 @@ export class AuthService {
       throw new Error(errorMsg);
     }
     try {
-      const body = JSON.stringify({ code, mobile: phone, templateId: SMS_TEMPLATE_ID });
-      const response = await new Promise<any>((resolve, reject) => {
-        const req = https.request(
-          SMS_API_URL,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${apiKey}`,
-            },
-            timeout: SMS_TIMEOUT_MS,
-          },
-          (res) => {
-            let data = '';
-            res.on('data', (chunk) => {
-              data += chunk;
-            });
-            res.on('end', () => resolve({ status: res.statusCode || 0, data }));
-          },
-        );
-        req.on('error', reject);
-        req.on('timeout', () => {
-          req.destroy();
-          reject(new Error('SMS timeout'));
-        });
-        req.write(body);
-        req.end();
+      const body = JSON.stringify({
+        code,
+        mobile: phone,
+        templateId: SMS_TEMPLATE_ID,
       });
+      const response = await new Promise<{ status: number; data: string }>(
+        (resolve, reject) => {
+          const req = https.request(
+            SMS_API_URL,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${apiKey}`,
+              },
+              timeout: SMS_TIMEOUT_MS,
+            },
+            (res) => {
+              let data = '';
+              res.on('data', (chunk) => {
+                data += chunk;
+              });
+              res.on('end', () =>
+                resolve({ status: res.statusCode || 0, data }),
+              );
+            },
+          );
+          req.on('error', reject);
+          req.on('timeout', () => {
+            req.destroy();
+            reject(new Error('SMS timeout'));
+          });
+          req.write(body);
+          req.end();
+        },
+      );
       if (response.status !== 200) {
         this.logger.warn(`SMS provider returned status ${response.status}`);
         return false;
       }
-      const result = JSON.parse(response.data);
+      const result = JSON.parse(response.data) as { success: boolean };
       if (result.success === false) {
         this.logger.warn('SMS provider rejected request');
         return false;

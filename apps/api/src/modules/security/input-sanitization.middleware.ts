@@ -13,15 +13,15 @@ export class InputSanitizationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     try {
       if (req.body && typeof req.body === 'object')
-        this.sanitizeObject(req.body);
+        this.sanitizeObject(req.body as Record<string, unknown>);
       if (req.query && typeof req.query === 'object')
         this.sanitizeObject(req.query);
       if (req.params && typeof req.params === 'object')
         this.sanitizeObject(req.params);
       next();
-    } catch (error) {
+    } catch (err) {
       this.logger.error(
-        `Input sanitization failed: ${error instanceof Error ? error.message : String(error)}`,
+        `Input sanitization failed: ${err instanceof Error ? err.message : String(err)}`,
       );
       throw new BadRequestException('Invalid input data');
     }

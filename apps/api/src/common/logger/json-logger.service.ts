@@ -14,7 +14,7 @@ export class JsonLogger implements LoggerService {
     try {
       // Note: In production, this will be handled by Docker volume mounts
       // For local development, ensure the directory exists
-    } catch (err) {
+    } catch {
       // Ignore directory creation errors in Docker environments
     }
 

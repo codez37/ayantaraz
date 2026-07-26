@@ -247,7 +247,6 @@ describe('CONTRACT 23: env_file Resolution', () => {
   });
 
   it('services use relative env_file path (not absolute)', () => {
-    const envFileLines = compose.match(/env_file:/g) || [];
     const absoluteEnvFiles = compose.match(/env_file:\s*\/[^/]/g) || [];
     expect(absoluteEnvFiles.length).toBe(0);
   });
