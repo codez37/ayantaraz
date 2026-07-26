@@ -12,6 +12,54 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
+      - API_URL=http://202.133.91.13:3001
+      - FRONTEND_URL=http://202.133.91.13:3000
+      - SITE_URL=http://202.133.91.13
+      - INTERNAL_API_URL=http://api:3001/api
+      - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
+      - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
+      - DATABASE_URL=postgresql://ayantaraz:${POSTGRES_PASSWORD}@postgres:5432/ayantaraz?schema=public&connection_limit=50&pool_timeout=10&statement_timeout=30000&idle_timeout=60
+      - POSTGRES_USER=ayantaraz
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=ayantaraz
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - JWT_EXPIRATION=15m
+      - JWT_REFRESH_EXPIRATION=7d
+      - FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - SMS_API_KEY=${SMS_API_KEY}
+      - SMS_PROVIDER=sms-panel
+      - SMS_FROM=ayantaraz
+      - ADMIN_PHONE=09133374162,09134292329
+      - ALLOW_ALL_ORIGINS=false
+      - TRUSTED_ORIGINS=http://202.133.91.13,http://202.133.91.13:3000,http://202.133.91.13:3001
+      - COOKIE_SECURE=true
+      - COOKIE_HTTP_ONLY=true
+      - COOKIE_SAME_SITE=lax
+      - COOKIE_DOMAIN=202.133.91.13
+      - LOG_LEVEL=info
+      - TZ=Asia/Tehran
+      - MAX_FILE_SIZE=10485760
+      - UPLOAD_DIR=/app/uploads
+      - RATE_LIMIT_WINDOW_MS=900000
+      - RATE_LIMIT_MAX_REQUESTS=100
+      - RATE_LIMITER_FAIL_OPEN=true
+      - OTP_EXPIRY_SECONDS=300
+      - OTP_MAX_ATTEMPTS=5
+      - OTP_RESEND_LIMIT=3
+      - OTP_RESEND_WINDOW_MINUTES=10
+      - OTP_BLOCK_DURATION_MINUTES=30
+      - DB_POOL_MAX_CONNECTIONS=50
+      - DB_POOL_MIN_CONNECTIONS=10
+      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=100
+      - DB_POOL_IDLE_TIMEOUT_MS=30000
+      - DB_POOL_CONNECTION_TIMEOUT_MS=5000
+      - HEALTH_CHECK_INTERVAL=30000
     ports:
       - '3001:3001'
     volumes:
@@ -47,6 +95,9 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      - NEXT_PUBLIC_SITE_URL=http://202.133.91.13
+      - NEXT_PUBLIC_API_URL=http://202.133.91.13:3001
+      - INTERNAL_API_URL=http://api:3001/api
     depends_on:
       api:
         condition: service_healthy
@@ -69,13 +120,13 @@ services:
     container_name: ayantaraz-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-ayantaraz}
+      POSTGRES_USER: ayantaraz
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-ayantaraz}
+      POSTGRES_DB: ayantaraz
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER:-ayantaraz}']
+      test: ['CMD-SHELL', 'pg_isready -U ayantaraz']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -91,13 +142,11 @@ services:
     image: redis:7-alpine
     container_name: ayantaraz-redis
     restart: unless-stopped
-    command: sh -c "redis-server --requirepass $${REDIS_PASSWORD}"
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD-SHELL', 'redis-cli -a $${REDIS_PASSWORD} ping']
+      test: ['CMD-SHELL', 'redis-cli -a ${REDIS_PASSWORD} ping']
       interval: 10s
       timeout: 5s
       retries: 5

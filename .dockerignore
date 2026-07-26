@@ -1,9 +1,13 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
 # Build outputs
 dist/
 .next/
+out/
+build/
 
 # IDE
 .idea/
@@ -21,11 +25,13 @@ logs/
 
 # Test
 coverage/
+.nyc_output/
 
 # Environment
 .env
 .env.*
 !.env.example
+!.env.production
 
 # Git
 .git/
@@ -34,11 +40,44 @@ coverage/
 # Docker
 Dockerfile*
 docker-compose*.yml
+.dockerignore
 
 # Documentation
-docs/
 *.md
+*.txt
 
 # Temporary files
 tmp/
 temp/
+*.tmp
+
+# Cache
+.cache/
+.pnpm-store/
+
+# Prisma migrations (keep schema.prisma)
+prisma/migrations/
+prisma/database-graph.projection.json
+prisma/database-graph.projection.ts
+
+# Next.js cache
+.next/cache/
+
+# Uploads (handled by volume mount)
+uploads/
+
+# SSL certificates (handled by volume mount)
+infra/nginx/ssl/
+
+# IDE specific
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+
+# OS specific
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
