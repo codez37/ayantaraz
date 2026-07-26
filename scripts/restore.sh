@@ -26,7 +26,7 @@ echo -e "${BLUE}🔄 Starting Database Restore from: ${BACKUP_FILE}${NC}"
 echo "=================================================="
 
 # Check if PostgreSQL container is running
-if ! docker ps | grep -q "ayantaraz-postgres"; then
+if ! docker-compose ps | grep -q "ayantaraz-postgres"; then
     echo -e "${RED}❌ PostgreSQL container is not running${NC}"
     exit 1
 fi
@@ -54,10 +54,10 @@ if [ "$CONFIRM" != "yes" ]; then
 fi
 
 echo ""
-echo -e "${YELLOW}🗄 Restoring database...${NC}"
+echo -e "${YELLOW}🗄️ Restoring database...${NC}"
 
 # Restore database using psql
-docker exec -i ayantaraz-postgres psql -U ayantaraz -d ayantaraz < "$BACKUP_FILE"
+docker-compose exec postgres psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} < "$BACKUP_FILE"
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Database restored successfully${NC}"

@@ -41,14 +41,14 @@ echo -e "${GREEN}✅ Dependencies installed${NC}"
 echo ""
 
 # Step 3: Generate Prisma client
-echo -e "${YELLOW}🗄 Step 3: Generating Prisma client...${NC}"
+echo -e "${YELLOW}🗃️ Step 3: Generating Prisma client...${NC}"
 pnpm run db:generate
 
 echo -e "${GREEN}✅ Prisma client generated${NC}"
 echo ""
 
 # Step 4: Run database migrations
-echo -e "${YELLOW}🔄 Step 4: Running database migrations...${NC}"
+echo -e "${YELLOW}🗄️ Step 4: Running database migrations...${NC}"
 
 if [ "$ENVIRONMENT" = "production" ]; then
     pnpm run db:migrate:prod
@@ -63,7 +63,9 @@ echo ""
 echo -e "${YELLOW}🌱 Step 5: Seeding database...${NC}"
 
 if [ "$ENVIRONMENT" = "production" ]; then
-    echo "Skipping seed in production (data already exists)"
+    echo "Seeding database in production..."
+    pnpm run db:seed
+    echo -e "${GREEN}✅ Database seeded${NC}"
 else
     pnpm run db:seed
     echo -e "${GREEN}✅ Database seeded${NC}"
@@ -72,7 +74,7 @@ fi
 echo ""
 
 # Step 6: Build application
-echo -e "${YELLOW}🏗 Step 6: Building application...${NC}"
+echo -e "${YELLOW}🏗️ Step 6: Building application...${NC}"
 
 pnpm run build
 
@@ -80,15 +82,15 @@ echo -e "${GREEN}✅ Application built${NC}"
 echo ""
 
 # Step 7: Stop existing containers
-echo -e "${YELLOW}⏹ Step 7: Stopping existing containers...${NC}"
+echo -e "${YELLOW}⏹️ Step 7: Stopping existing containers...${NC}"
 
-docker compose down
+docker-compose down
 
 echo -e "${GREEN}✅ Containers stopped${NC}"
 echo ""
 
 # Step 8: Remove old images
-echo -e "${YELLOW}🗑 Step 8: Removing old images...${NC}"
+echo -e "${YELLOW}🗑️ Step 8: Removing old images...${NC}"
 
 docker system prune -f
 
@@ -99,9 +101,9 @@ echo ""
 echo -e "${YELLOW}🚀 Step 9: Starting containers...${NC}"
 
 if [ "$ENVIRONMENT" = "production" ]; then
-    docker compose -f docker-compose.yml up -d --build
+    docker-compose -f docker-compose.yml up -d --build
 else
-    docker compose up -d --build
+    docker-compose up -d --build
 fi
 
 echo -e "${GREEN}✅ Containers started${NC}"
@@ -115,7 +117,7 @@ sleep 30
 echo ""
 
 # Step 11: Run health check
-echo -e "${YELLOW}🔍 Step 11: Running health check...${NC}"
+echo -e "${YELLOW}🏥 Step 11: Running health check...${NC}"
 
 ./scripts/healthcheck.sh
 
@@ -124,14 +126,14 @@ echo "================================================"
 echo -e "${GREEN}🎉 Deployment Completed Successfully!${NC}"
 echo ""
 echo "Services:"
-echo "  - API:     http://202.133.91.13:3001"
-echo "  - Web:     http://202.133.91.13:3000"
-echo "  - Nginx:   http://202.133.91.13"
-echo "  - Health:  http://202.133.91.13/api/health"
-echo "  - Swagger: http://202.133.91.13:3001/api/docs"
+echo "  - API:     https://202.133.91.13/api"
+echo "  - Web:     https://202.133.91.13"
+echo "  - Nginx:   https://202.133.91.13"
+echo "  - Health:  https://202.133.91.13/api/health"
+echo "  - Swagger: https://202.133.91.13/api/docs"
 echo ""
 echo "To check logs:"
-echo "  docker compose logs -f"
+echo "  docker-compose logs -f"
 echo ""
 echo "To stop services:"
-echo "  docker compose down"
+echo "  docker-compose down"

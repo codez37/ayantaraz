@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🔍 Starting Health Check for Ayantaraz..."
+echo "🏥 Starting Health Check for Ayantaraz..."
 echo "=========================================="
 
 # Colors for output
@@ -20,7 +20,7 @@ check_service() {
     local url=$2
     local expected_status=$3
     
-    echo -n "🔄 Checking ${name}... "
+    echo -n "🔍 Checking ${name}... "
     
     if curl -s --head --request GET "$url" | grep "HTTP/1.1 ${expected_status}"; then
         echo -e "${GREEN}✅ Healthy${NC}"
@@ -33,9 +33,9 @@ check_service() {
 
 # Function to check database connection
 check_database() {
-    echo -n "🔄 Checking PostgreSQL connection... "
+    echo -n "🔍 Checking PostgreSQL connection... "
     
-    if docker exec -i ayantaraz-postgres pg_isready -U ayantaraz -d ayantaraz >/dev/null 2>&1; then
+    if docker-compose exec postgres pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} >/dev/null 2>&1; then
         echo -e "${GREEN}✅ Connected${NC}"
         return 0
     else
@@ -46,9 +46,9 @@ check_database() {
 
 # Function to check Redis connection
 check_redis() {
-    echo -n "🔄 Checking Redis connection... "
+    echo -n "🔍 Checking Redis connection... "
     
-    if docker exec -i ayantaraz-redis redis-cli -a "${REDIS_PASSWORD}" ping >/dev/null 2>&1; then
+    if docker-compose exec redis redis-cli -a "${REDIS_PASSWORD}" ping >/dev/null 2>&1; then
         echo -e "${GREEN}✅ Connected${NC}"
         return 0
     else
@@ -61,9 +61,9 @@ check_redis() {
 check_container() {
     local name=$1
     
-    echo -n "🔄 Checking ${name} container... "
+    echo -n "🔍 Checking ${name} container... "
     
-    if docker ps | grep -q "${name}"; then
+    if docker-compose ps | grep -q "${name}"; then
         echo -e "${GREEN}✅ Running${NC}"
         return 0
     else
@@ -94,7 +94,7 @@ check_service "Web" "http://localhost:3000" "200" || FAILED=$((FAILED + 1))
 check_service "Nginx" "http://localhost" "200" || FAILED=$((FAILED + 1))
 
 echo ""
-echo "🗄 Database Status:"
+echo "🗄️ Database Status:"
 echo "------------------"
 
 check_database || FAILED=$((FAILED + 1))
