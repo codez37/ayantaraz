@@ -220,7 +220,7 @@ jobs:
             git checkout main
             git pull origin main
             chmod +x deploy-production.sh
-            docker compose -f docker-compose.yml -f docker-compose.production.yml down || true
+            docker compose -f docker-compose.yml -f docker-compose.production.yml down
             docker compose -f docker-compose.yml -f docker-compose.production.yml pull
             docker compose -f docker-compose.yml -f docker-compose.production.yml up -d --build
           "
@@ -231,7 +231,7 @@ jobs:
           SERVER_IP: 202.133.91.13
         run: |
           for i in {1..10}; do
-            HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${SERVER_IP}:3001/health || echo "000")
+            HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${SERVER_IP}:3001/health) || HEALTH_STATUS="000"
             if [ "$HEALTH_STATUS" = "200" ]; then
               echo "✅ Health check passed"
               exit 0
