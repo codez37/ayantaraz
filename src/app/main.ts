@@ -3,7 +3,6 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
-import * as csurf from 'csurf';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
@@ -25,16 +24,11 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(compression());
 
-  // CSRF Protection (enable in production)
-  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_CSRF === 'true') {
-    app.use(csurf({ cookie: true }));
-    contextLogger.log('CSRF protection enabled');
-  }
-
-  // Enable CORS
+  // Enable CORS with secure settings
+  const isProduction = process.env.NODE_ENV === 'production';
   app.enableCors({
-    origin: process.env.ALLOW_ALL_ORIGINS === 'true' 
-      ? true 
+    origin: process.env.ALLOW_ALL_ORIGINS === 'true'
+      ? true
       : process.env.TRUSTED_ORIGINS?.split(',') || [],
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -42,6 +36,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
     maxAge: 86400,
   });
+
   contextLogger.log('CORS enabled');
 
   // API Versioning
@@ -60,7 +55,7 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-      disableErrorMessages: process.env.NODE_ENV === 'production',
+      disableErrorMessages: isProduction,
     }),
   );
   contextLogger.log('Global validation pipe enabled');
@@ -131,14 +126,14 @@ async function bootstrap() {
   contextLogger.log(`Health check available at: http://0.0.0.0:${port}/api/health`);
 
   // Log startup information
-  console.log('\n' + '='.repeat(60));
-  console.log('🚀 Ayantaraz Application Started Successfully');
-  console.log('='.repeat(60));
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 Server: http://0.0.0.0:${port}`);
-  console.log(`📖 API Docs: http://0.0.0.0:${port}/api/docs`);
-  console.log(`🔍 Health: http://0.0.0.0:${port}/api/health`);
-  console.log('='.repeat(60) + '\n');
+  logger.log('\n' + '='.repeat(60));
+  logger.log('🚀 Ayantaraz Application Started Successfully');
+  logger.log('='.repeat(60));
+  logger.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.log(`🌐 Server: http://0.0.0.0:${port}`);
+  logger.log(`📚 API Docs: http://0.0.0.0:${port}/api/docs`);
+  logger.log(`❤️ Health: http://0.0.0.0:${port}/api/health`);
+  logger.log('='.repeat(60) + '\n');
 }
 
 bootstrap().catch((error) => {
