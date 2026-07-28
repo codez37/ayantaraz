@@ -1,5 +1,5 @@
 import { PrismaClient, UserRole, ContentType, ContentStatus, ContentVisibility } from '@prisma/client';
-import * as bcrypt from 'bcrypto';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -15,6 +15,7 @@ async function main() {
       phone: '09120000000',
       firstName: 'Admin',
       lastName: 'Ayantaraz',
+      password: adminPassword,
       role: UserRole.admin,
       isActive: true,
       isStaff: true,
@@ -50,15 +51,12 @@ async function main() {
       contentType: ContentType.article,
       title: 'قوانین مالیاتی 1403',
       slug: 'tax-laws-2024',
-      summary: 'مروری بر آخرین تغییرات قوانین مالیاتی در سال 1403',
-      body: '<p>در سال 1403، تغییرات مهمی در قوانین مالیاتی اعمال شده است...</p>',
-      metaDescription: 'آخرین تغییرات قوانین مالیاتی 1403',
-      tags: 'مالیاتی,قوانین,1403',
+      excerpt: 'آشنایی با آخرین تغییرات قوانین مالیاتی در سال 1403',
+      content: 'محتوا در مورد قوانین مالیاتی...',
       status: ContentStatus.published,
       visibility: ContentVisibility.public,
-      publishedAt: new Date(),
-      authorId: admin.id,
       categoryId: taxCategory.id,
+      authorId: admin.id,
     },
   });
 
@@ -67,21 +65,18 @@ async function main() {
     update: {},
     create: {
       contentType: ContentType.article,
-      title: 'اصول حسابداری مدرن',
+      title: 'اصول حسابداری',
       slug: 'accounting-basics',
-      summary: 'آشنایی با اصول پایه حسابداری',
-      body: '<p>حسابداری مدرن بر پایه استانداردهای بین‌المللی...</p>',
-      metaDescription: 'اصول پایه حسابداری مدرن',
-      tags: 'حسابداری,مبانی,آموزش',
+      excerpt: 'مبانی و اصول اولیه حسابداری',
+      content: 'محتوا در مورد اصول حسابداری...',
       status: ContentStatus.published,
       visibility: ContentVisibility.public,
-      publishedAt: new Date(),
-      authorId: admin.id,
       categoryId: accountingCategory.id,
+      authorId: admin.id,
     },
   });
 
-  console.log('Database seeded successfully!');
+  console.log('Database seeding completed!');
 }
 
 main()

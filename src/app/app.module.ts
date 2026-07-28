@@ -4,16 +4,13 @@ import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import redis from 'redis';
+import { createClient } from 'redis';
 
 import { PrismaModule } from './prisma/prisma.module';
 
-// Core Module
-import { IUserRepository, IContentRepository } from './core/repositories';
-import { IAuthService } from './core/services';
-
 // Infrastructure Module
-import { PrismaUserRepository, PrismaContentRepository } from './infrastructure/persistence/prisma';
+import { PrismaUserRepository } from './infrastructure/persistence/prisma/prisma-user.repository';
+import { PrismaContentRepository } from './infrastructure/persistence/prisma/prisma-content.repository';
 import { AuthService } from './infrastructure/services/auth.service';
 
 // Common Module
@@ -67,7 +64,7 @@ import { SeoModule } from './modules/seo/seo.module';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => {
-        const redisClient = redis.createClient({
+        const redisClient = createClient({
           socket: {
             host: process.env.REDIS_HOST || 'redis',
             port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -126,11 +123,11 @@ import { SeoModule } from './modules/seo/seo.module';
   controllers: [],
   providers: [
     // Repository bindings
-    { provide: IUserRepository, useClass: PrismaUserRepository },
-    { provide: IContentRepository, useClass: PrismaContentRepository },
+    PrismaUserRepository,
+    PrismaContentRepository,
     
     // Service bindings
-    { provide: IAuthService, useClass: AuthService },
+    AuthService,
     
     // Common services
     AdvancedCacheService,
@@ -154,9 +151,9 @@ import { SeoModule } from './modules/seo/seo.module';
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
   ],
   exports: [
-    IUserRepository,
-    IContentRepository,
-    IAuthService,
+    PrismaUserRepository,
+    PrismaContentRepository,
+    AuthService,
     AdvancedCacheService,
     QueryOptimizerService,
     AdvancedRateLimiterService,

@@ -1,6 +1,9 @@
 version: '3.8'
 
 services:
+  # ==========================================
+  # API Service (NestJS Backend)
+  # ==========================================
   api:
     build:
       context: .
@@ -10,55 +13,78 @@ services:
     env_file:
       - .env.production
     environment:
+      # Server Configuration
       - NODE_ENV=production
       - PORT=3001
+      - HOST=0.0.0.0
+      
+      # API URLs
       - API_URL=https://202.133.91.13/api
       - FRONTEND_URL=https://202.133.91.13
       - SITE_URL=https://202.133.91.13
       - INTERNAL_API_URL=http://api:3001/api
       - NEXT_PUBLIC_API_URL=https://202.133.91.13/api
       - NEXT_PUBLIC_SITE_URL=https://202.133.91.13
+      
+      # Database Configuration
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public&connection_limit=50&pool_timeout=10&statement_timeout=30000&idle_timeout=60
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+      
+      # Redis Configuration
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      
+      # JWT Configuration
       - JWT_SECRET=${JWT_SECRET}
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
       - JWT_EXPIRATION=15m
       - JWT_REFRESH_EXPIRATION=7d
+      
+      # Security Configuration
       - FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY}
       - SESSION_SECRET=${SESSION_SECRET}
-      - SMS_API_KEY=${SMS_API_KEY}
-      - SMS_PROVIDER=sms-panel
-      - SMS_FROM=ayantaraz
-      - ADMIN_PHONE=09133374162,09134292329
+      - ENABLE_CSRF=false
       - ALLOW_ALL_ORIGINS=false
       - TRUSTED_ORIGINS=https://202.133.91.13,https://www.ayantaraz.com
+      
+      # Cookie Configuration
       - COOKIE_SECURE=true
       - COOKIE_HTTP_ONLY=true
       - COOKIE_SAME_SITE=lax
       - COOKIE_DOMAIN=202.133.91.13
+      
+      # Logging Configuration
       - LOG_LEVEL=info
       - TZ=Asia/Tehran
+      
+      # File Upload Configuration
       - MAX_FILE_SIZE=10485760
       - UPLOAD_DIR=/app/uploads
+      
+      # Rate Limiting Configuration
       - RATE_LIMIT_WINDOW_MS=900000
       - RATE_LIMIT_MAX_REQUESTS=100
       - RATE_LIMITER_FAIL_OPEN=true
+      
+      # OTP Configuration
       - OTP_EXPIRATION_SECONDS=300
       - OTP_MAX_ATTEMPTS=5
       - OTP_RESEND_LIMIT=3
       - OTP_RESEND_WINDOW_MINUTES=10
       - OTP_BLOCK_DURATION_MINUTES=30
+      
+      # Database Pool Configuration
       - DB_POOL_MAX_CONNECTIONS=50
       - DB_POOL_MIN_CONNECTIONS=10
       - DB_POOL_MAX_REQUESTS_PER_CONNECTION=100
       - DB_POOL_IDLE_TIMEOUT_MS=30000
       - DB_POOL_CONNECTION_TIMEOUT_MS=5000
+      
+      # Health Check Configuration
       - HEALTH_CHECK_INTERVAL=30000
     ports:
       - '3001:3001'
@@ -84,6 +110,9 @@ services:
     networks:
       - ayantaraz-network
 
+  # ==========================================
+  # Web Service (Next.js Frontend)
+  # ==========================================
   web:
     build:
       context: .
@@ -93,9 +122,12 @@ services:
     env_file:
       - .env.production
     environment:
+      # Server Configuration
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      
+      # API URLs
       - NEXT_PUBLIC_SITE_URL=https://202.133.91.13
       - NEXT_PUBLIC_API_URL=https://202.133.91.13/api
       - INTERNAL_API_URL=http://api:3001/api
@@ -116,8 +148,11 @@ services:
     networks:
       - ayantaraz-network
 
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: ayantaraz-postgres
     restart: unless-stopped
     environment:
@@ -140,6 +175,9 @@ services:
     networks:
       - ayantaraz-network
 
+  # ==========================================
+  # Redis Cache
+  # ==========================================
   redis:
     image: redis:7-alpine
     container_name: ayantaraz-redis
@@ -148,47 +186,62 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD-SHELL', 'redis-cli -a ${REDIS_PASSWORD} ping']
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 3s
+      retries: 3
     logging:
       driver: json-file
       options:
-        max-size: '100m'
-        max-file: '10'
+        max-size: '50m'
+        max-file: '5'
     networks:
       - ayantaraz-network
 
+  # ==========================================
+  # Nginx Reverse Proxy (Optional - for production)
+  # ==========================================
   nginx:
-    image: nginx:alpine
+    image: nginx:1.25-alpine
     container_name: ayantaraz-nginx
     restart: unless-stopped
     ports:
       - '80:80'
       - '443:443'
     volumes:
-      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./infra/nginx/ssl:/etc/nginx/ssl:ro
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/ssl:/etc/nginx/ssl
     depends_on:
-      api:
-        condition: service_healthy
-      web:
-        condition: service_started
+      - api
+      - web
     logging:
       driver: json-file
       options:
         max-size: '100m'
         max-file: '10'
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost']
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - ayantaraz-network
+    profiles:
+      - production
 
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  ayantaraz-network:
+    driver: bridge
+
+# ==========================================
+# Volumes
+# ==========================================
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
-
-networks:
-  ayantaraz-network:
-    driver: bridge

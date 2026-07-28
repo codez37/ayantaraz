@@ -1,0 +1,12 @@
+packages:
+  - 'src/app'
+  - 'src/web'
+
+# Allow Prisma to run build scripts
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  prisma: true
+  esbuild: true
+  unrs-resolver: true
+  '@scarf/scarf': true

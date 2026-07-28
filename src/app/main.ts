@@ -3,8 +3,9 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
-import * as csurf from 'csurf';
 import * as compression from 'compression';
+import * as rateLimit from 'express-rate-limit';
+import * as xss from 'xss-clean';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
@@ -20,21 +21,81 @@ async function bootstrap() {
 
   contextLogger.log('Starting application bootstrap...');
 
+  // ==========================================
   // Security Middlewares
-  app.use(helmet());
+  // ==========================================
+  
+  // Helmet - Security headers
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        fontSrc: ["'self'", "https:"],
+        connectSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
+    crossOriginResourcePolicy: { policy: 'same-origin' },
+    dnsPrefetchControl: { allow: false },
+    frameguard: { action: 'deny' },
+    hidePoweredBy: true,
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    ieNoOpen: true,
+    noSniff: true,
+    permittedCrossDomainPolicies: false,
+    referrerPolicy: { policy: 'same-origin' },
+    xssFilter: true,
+  }));
+  contextLogger.log('Helmet security headers enabled');
+
+  // Cookie Parser
   app.use(cookieParser());
+  contextLogger.log('Cookie parser enabled');
+
+  // Compression
   app.use(compression());
+  contextLogger.log('Response compression enabled');
 
-  // CSRF Protection (enable in production)
-  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_CSRF === 'true') {
-    app.use(csurf({ cookie: true }));
-    contextLogger.log('CSRF protection enabled');
-  }
+  // XSS Protection
+  app.use(xss());
+  contextLogger.log('XSS protection enabled');
 
-  // Enable CORS
+  // Rate Limiting
+  const rateLimiter = rateLimit({
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
+    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'), // limit each IP to 100 requests per windowMs
+    message: {
+      statusCode: 429,
+      message: 'Too many requests from this IP, please try again later.',
+      error: 'RateLimitExceeded',
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => {
+      // Skip rate limiting for health check
+      return req.path === '/api/health';
+    },
+  });
+  app.use(rateLimiter);
+  contextLogger.log('Rate limiting enabled');
+
+  // ==========================================
+  // CORS Configuration
+  // ==========================================
   app.enableCors({
-    origin: process.env.ALLOW_ALL_ORIGINS === 'true' 
-      ? true 
+    origin: process.env.ALLOW_ALL_ORIGINS === 'true'
+      ? true
       : process.env.TRUSTED_ORIGINS?.split(',') || [],
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -44,14 +105,18 @@ async function bootstrap() {
   });
   contextLogger.log('CORS enabled');
 
+  // ==========================================
   // API Versioning
+  // ==========================================
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
   contextLogger.log('API versioning enabled');
 
+  // ==========================================
   // Global Validation Pipe
+  // ==========================================
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -65,15 +130,21 @@ async function bootstrap() {
   );
   contextLogger.log('Global validation pipe enabled');
 
-  // Global exception filter
+  // ==========================================
+  // Global Exception Filter
+  // ==========================================
   app.useGlobalFilters(new AllExceptionsFilter(logger));
   contextLogger.log('Global exception filter enabled');
 
+  // ==========================================
   // API Prefix
+  # ==========================================
   app.setGlobalPrefix('api');
   contextLogger.log('API prefix set to /api');
 
+  // ==========================================
   // Health Check Endpoint
+  # ==========================================
   app.getHttpAdapter().get('/api/health', async (req, res) => {
     try {
       const dbHealth = await prismaService.checkHealth();
@@ -83,7 +154,7 @@ async function bootstrap() {
         uptime: process.uptime(),
         environment: process.env.NODE_ENV || 'development',
         database: dbHealth,
-        version: '2.0.0',
+        version: '2.1.0',
       });
     } catch (error) {
       contextLogger.error('Health check failed', error.message);
@@ -96,12 +167,14 @@ async function bootstrap() {
   });
   contextLogger.log('Health check endpoint registered');
 
+  // ==========================================
   // Swagger Documentation (only in development)
+  // ==========================================
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('آیان تراز - API Documentation')
+      .setTitle('آیانتاراز - API Documentation')
       .setDescription('API Documentation for Ayantaraz Accounting & Tax Consultation Platform')
-      .setVersion('2.0.0')
+      .setVersion('2.1.0')
       .addBearerAuth()
       .addServer('http://localhost:3001', 'Development')
       .addServer('http://202.133.91.13:3001', 'Production')
@@ -134,10 +207,10 @@ async function bootstrap() {
   console.log('\n' + '='.repeat(60));
   console.log('🚀 Ayantaraz Application Started Successfully');
   console.log('='.repeat(60));
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🌐 Server: http://0.0.0.0:${port}`);
-  console.log(`📖 API Docs: http://0.0.0.0:${port}/api/docs`);
-  console.log(`🔍 Health: http://0.0.0.0:${port}/api/health`);
+  console.log(`📚 API Docs: http://0.0.0.0:${port}/api/docs`);
+  console.log(`❤️ Health: http://0.0.0.0:${port}/api/health`);
   console.log('='.repeat(60) + '\n');
 }
 

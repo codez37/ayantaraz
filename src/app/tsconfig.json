@@ -1,17 +1,20 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "../../dist/app",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["*"],
-      "@app/*": ["../app/*"],
-      "@common/*": ["../common/*"],
-      "@modules/*": ["../modules/*"],
-      "@config/*": ["../config/*"]
+      "@/*": ["./*"],
+      "@app/*": ["./*"],
+      "@common/*": ["./common/*"],
+      "@modules/*": ["./modules/*"],
+      "@config/*": ["./config/*"],
+      "@core/*": ["./core/*"],
+      "@infrastructure/*": ["./infrastructure/*"],
+      "@prisma/*": ["./prisma/*"]
     }
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "node_modules", "dist"]
 }

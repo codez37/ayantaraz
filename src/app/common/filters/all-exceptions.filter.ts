@@ -3,6 +3,13 @@ import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { ApiException } from '../exceptions/http-exception';
 
+interface ExceptionResponse {
+  message: string;
+  code: string;
+  errors?: any[];
+  retryAfter?: number;
+}
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
@@ -20,7 +27,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (exception instanceof ApiException) {
       status = exception.getStatus();
-      const exceptionResponse = exception.getResponse() as any;
+      const exceptionResponse = exception.getResponse() as ExceptionResponse;
       message = exceptionResponse.message || message;
       code = exceptionResponse.code || code;
       errors = exceptionResponse.errors || errors;
@@ -30,9 +37,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const exceptionResponse = exception.getResponse();
       message = typeof exceptionResponse === 'string' 
         ? exceptionResponse 
-        : exceptionResponse['message'] || message;
-      code = exceptionResponse['code'] || code;
-      errors = exceptionResponse['errors'] || errors;
+        : (exceptionResponse as ExceptionResponse).message || message;
+      code = (exceptionResponse as ExceptionResponse).code || code;
+      errors = (exceptionResponse as ExceptionResponse).errors || errors;
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       status = 400;
       message = this.handlePrismaError(exception);
@@ -41,9 +48,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status = 400;
       message = 'Validation error';
       code = 'VALIDATION_ERROR';
-      errors = exception.errors.map(err => ({
-        field: err.path.join('.'),
-        message: err.message,
+      errors = exception.errors.map((err: any) => ({
+        field: err.path?.join('.') || '',
+        message: err.message || '',
       }));
     } else if (exception instanceof Error) {
       message = exception.message;
@@ -59,7 +66,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         body: request.body,
         query: request.query,
         params: request.params,
-        user: request.user?.id,
+        user: (request.user as any)?.id,
       }
     );
 
@@ -99,9 +106,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       case 'P2017':
         return 'Records not connected';
       case 'P2018':
-        return 'Connected records were not found';
+        return 'Another operation is in progress';
       case 'P2019':
-        return 'Input error';
+        return 'Row not found';
       case 'P2020':
         return 'Value out of range';
       case 'P2021':
@@ -111,13 +118,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
       case 'P2023':
         return 'Inconsistent column data';
       case 'P2024':
-        return 'Timed out fetching a new connection from the connection pool';
+        return 'Timed out fetching a new connection';
       case 'P2026':
-        return 'The current database provider does not support a feature';
+        return 'Connected to database but connection was closed';
       case 'P2027':
-        return 'Multiple errors occurred';
+        return 'Multiple databases not supported';
+      case 'P2028':
+        return 'Transaction API error';
+      case 'P2030':
+        return 'Provided query is not a valid query';
+      case 'P2031':
+        return 'Prisma needs to perform transactions';
+      case 'P2033':
+        return 'A number used in the query did not fit into a 64 bit signed integer';
       default:
-        return error.message;
+        return `Database error: ${error.code}`;
     }
   }
 }

@@ -580,7 +580,7 @@ export class TaxEngineService {
     // Look for digit patterns
     const countMatch = input.match(/(\d+)\s*(نفر\s*)?شریک/);
     if (countMatch) {
-      return parseInt(countMatch[1], 10);
+      return countMatch ? parseInt(countMatch[1], 10) : 0;
     }
 
     return 0;

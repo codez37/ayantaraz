@@ -7,31 +7,19 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   constructor() {
     super({
-      log: process.env.NODE_ENV === 'development' 
-        ? ['query', 'info', 'warn', 'error'] 
+      log: process.env.NODE_ENV === 'development'
+        ? ['query', 'info', 'warn', 'error']
         : ['error'],
       errorFormat: 'pretty',
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL,
-          pool: {
-            max_connections: parseInt(process.env.DB_POOL_MAX_CONNECTIONS || '50'),
-            min_connections: parseInt(process.env.DB_POOL_MIN_CONNECTIONS || '10'),
-            max_requests_per_connection: parseInt(process.env.DB_POOL_MAX_REQUESTS_PER_CONNECTION || '100'),
-            idle_timeout_ms: parseInt(process.env.DB_POOL_IDLE_TIMEOUT_MS || '30000'),
-            connection_timeout_ms: parseInt(process.env.DB_POOL_CONNECTION_TIMEOUT_MS || '5000'),
-          },
-        },
-      },
     });
   }
 
   async onModuleInit() {
     try {
       await this.$connect();
-      this.logger.log('✅ Database connection established');
+      this.logger.log('Database connection established');
     } catch (error) {
-      this.logger.error('❌ Database connection failed', error);
+      this.logger.error('Database connection failed', error as Error);
       throw error;
     }
   }
@@ -39,9 +27,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async onModuleDestroy() {
     try {
       await this.$disconnect();
-      this.logger.log('✅ Database connection closed');
+      this.logger.log('Database connection closed');
     } catch (error) {
-      this.logger.error('❌ Error closing database connection', error);
+      this.logger.error('Error closing database connection', error as Error);
     }
   }
 
@@ -69,7 +57,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     try {
       return await this.$executeRawUnsafe(query, ...(params || []));
     } catch (error) {
-      this.logger.error('❌ Raw query execution failed', error);
+      this.logger.error('Raw query execution failed', error as Error);
       throw error;
     }
   }
@@ -79,8 +67,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       await this.$queryRaw`SELECT 1`;
       return { status: 'healthy', database: 'connected' };
     } catch (error) {
-      this.logger.error('❌ Database health check failed', error);
-      return { status: 'unhealthy', database: 'disconnected', error: error.message };
+      this.logger.error('Database health check failed', error as Error);
+      return { 
+        status: 'unhealthy', 
+        database: 'disconnected', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      };
     }
   }
 
