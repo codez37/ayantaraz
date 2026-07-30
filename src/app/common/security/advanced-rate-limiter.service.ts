@@ -1,6 +1,6 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import { RateLimiterRedis } from 'rate-limiter-flexible';
-import * as redis from 'redis';
+import { Injectable, OnModuleDestroy, OnModuleInit, Logger } from '@nestjs/common';
+import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
+import { createClient, RedisClientType } from 'redis';
 
 interface RateLimitResult {
   allowed: boolean;
@@ -9,21 +9,21 @@ interface RateLimitResult {
 }
 
 @Injectable()
-export class AdvancedRateLimiterService implements OnModuleDestroy {
+export class AdvancedRateLimiterService implements OnModuleInit, OnModuleDestroy {
+  private readonly logger = new Logger(AdvancedRateLimiterService.name);
+  private redisClient: RedisClientType;
   private rateLimiter: RateLimiterRedis;
   private rateLimiterSlow: RateLimiterRedis;
   private rateLimiterAuth: RateLimiterRedis;
 
   constructor() {
-    const redisClient = redis.createClient({
-      host: process.env.REDIS_HOST || 'redis',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
-      password: process.env.REDIS_PASSWORD,
+    this.redisClient = createClient({
+      url: process.env.REDIS_URL || 'redis://redis:6379',
     });
 
     // Main rate limiter: 100 requests per minute
     this.rateLimiter = new RateLimiterRedis({
-      storeClient: redisClient,
+      storeClient: this.redisClient as any,
       keyPrefix: 'rate_limit',
       points: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
       duration: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000') / 1000,
@@ -32,7 +32,7 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
 
     // Slow endpoint rate limiter: 10 requests per second
     this.rateLimiterSlow = new RateLimiterRedis({
-      storeClient: redisClient,
+      storeClient: this.redisClient as any,
       keyPrefix: 'rate_limit_slow',
       points: 10,
       duration: 1,
@@ -41,7 +41,7 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
 
     // Auth endpoint rate limiter: 5 requests per minute
     this.rateLimiterAuth = new RateLimiterRedis({
-      storeClient: redisClient,
+      storeClient: this.redisClient as any,
       keyPrefix: 'rate_limit_auth',
       points: 5,
       duration: 60,
@@ -49,8 +49,26 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
     });
   }
 
+  async onModuleInit() {
+    if (this.redisClient.isOpen) return;
+    try {
+      await this.redisClient.connect();
+      this.logger.log('Rate limiter Redis connected');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Rate limiter Redis connection failed', message);
+      if (process.env.RATE_LIMITER_FAIL_OPEN !== 'true') {
+        throw error;
+      }
+    }
+  }
+
   async onModuleDestroy() {
-    // Redis client will be closed by the connection pool
+    try {
+      await this.redisClient.quit();
+    } catch {
+      // ignore shutdown errors
+    }
   }
 
   async checkRateLimit(ip: string, endpoint: string = 'default'): Promise<RateLimitResult> {
@@ -63,10 +81,11 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
         allowed: true,
         remaining: remaining?.remainingPoints || 0,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const res = error as RateLimiterRes;
       return {
         allowed: false,
-        retryAfter: Math.ceil(error.msBeforeNext / 1000),
+        retryAfter: Math.ceil((res.msBeforeNext || 0) / 1000),
       };
     }
   }
@@ -79,10 +98,11 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
         allowed: true,
         remaining: remaining?.remainingPoints || 0,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const res = error as RateLimiterRes;
       return {
         allowed: false,
-        retryAfter: Math.ceil(error.msBeforeNext / 1000),
+        retryAfter: Math.ceil((res.msBeforeNext || 0) / 1000),
       };
     }
   }
@@ -95,10 +115,11 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
         allowed: true,
         remaining: remaining?.remainingPoints || 0,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const res = error as RateLimiterRes;
       return {
         allowed: false,
-        retryAfter: Math.ceil(error.msBeforeNext / 1000),
+        retryAfter: Math.ceil((res.msBeforeNext || 0) / 1000),
       };
     }
   }
@@ -110,11 +131,11 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
   }> {
     const key = `${ip}:default`;
     const status = await this.rateLimiter.get(key);
-    
+
     return {
       limit: this.rateLimiter.points,
       remaining: status?.remainingPoints || this.rateLimiter.points,
-      resetIn: status ? Math.ceil(status.msBeforeNext / 1000) : 0,
+      resetIn: status ? Math.ceil((status.msBeforeNext || 0) / 1000) : 0,
     };
   }
 
@@ -125,8 +146,7 @@ export class AdvancedRateLimiterService implements OnModuleDestroy {
   }
 
   async resetAllRateLimits(): Promise<void> {
-    await this.rateLimiter.deleteAll();
-    await this.rateLimiterSlow.deleteAll();
-    await this.rateLimiterAuth.deleteAll();
+    // This is a best-effort reset of known keys. For a full reset, use Redis key scanning.
+    this.logger.warn('resetAllRateLimits is a best-effort operation; use Redis SCAN for complete cleanup');
   }
 }

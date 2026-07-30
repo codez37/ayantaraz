@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ConsultationStatus, Prisma } from '@prisma/client';
-import { formatPersianTimestamp } from '@ayantaraz/shared';
+import { formatPersianTimestamp } from '../../shared/utils';
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   pending: ['contacted', 'scheduled', 'canceled', 'rejected'],

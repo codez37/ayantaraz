@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { IUserRepository } from '../../../core/repositories/user.repository.interface';
 import { User } from '../../../core/domain/user.entity';
 import { UserRole } from '@prisma/client';
@@ -28,6 +28,7 @@ export class PrismaUserRepository implements IUserRepository {
       user.updatedAt,
       user.lastLoginAt,
       user.isStaff,
+      user.password,
     );
   }
 
@@ -50,11 +51,12 @@ export class PrismaUserRepository implements IUserRepository {
       user.updatedAt,
       user.lastLoginAt,
       user.isStaff,
+      user.password,
     );
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: { email },
     });
 
@@ -72,6 +74,7 @@ export class PrismaUserRepository implements IUserRepository {
       user.updatedAt,
       user.lastLoginAt,
       user.isStaff,
+      user.password,
     );
   }
 
@@ -92,7 +95,7 @@ export class PrismaUserRepository implements IUserRepository {
       this.prisma.user.count({ where }),
     ]);
 
-    const result = users.map(user =>
+    const result = users.map((user: any) =>
       new User(
         user.id,
         user.phone,
@@ -105,6 +108,7 @@ export class PrismaUserRepository implements IUserRepository {
         user.updatedAt,
         user.lastLoginAt,
         user.isStaff,
+      user.password,
       )
     );
 
@@ -142,6 +146,7 @@ export class PrismaUserRepository implements IUserRepository {
       user.updatedAt,
       user.lastLoginAt,
       user.isStaff,
+      user.password,
     );
   }
 
@@ -171,6 +176,7 @@ export class PrismaUserRepository implements IUserRepository {
       user.updatedAt,
       user.lastLoginAt,
       user.isStaff,
+      user.password,
     );
   }
 
@@ -218,6 +224,7 @@ export class PrismaUserRepository implements IUserRepository {
       user.updatedAt,
       user.lastLoginAt,
       user.isStaff,
+      user.password,
     );
   }
 }

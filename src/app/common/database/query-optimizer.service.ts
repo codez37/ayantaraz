@@ -125,9 +125,9 @@ export class QueryOptimizerService {
 
     for (let i = 0; i < items.length; i += batchSize) {
       const batch = items.slice(i, i + batchSize);
-      const batchResults = await this.prisma.$transaction(
-        batch.map(item => fn(item, this.prisma)),
-      );
+      const batchResults = await this.prisma.$transaction(async (tx) => {
+        return Promise.all(batch.map(item => fn(item, tx)));
+      });
       results.push(...batchResults);
     }
 

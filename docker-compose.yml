@@ -11,7 +11,7 @@ services:
     container_name: ayantaraz-api
     restart: unless-stopped
     env_file:
-      - .env.production
+      - .env
     environment:
       # Server Configuration
       - NODE_ENV=production
@@ -19,73 +19,73 @@ services:
       - HOST=0.0.0.0
       
       # API URLs
-      - API_URL=https://202.133.91.13/api
-      - FRONTEND_URL=https://202.133.91.13
-      - SITE_URL=https://202.133.91.13
-      - INTERNAL_API_URL=http://api:3001/api
-      - NEXT_PUBLIC_API_URL=https://202.133.91.13/api
-      - NEXT_PUBLIC_SITE_URL=https://202.133.91.13
+      - API_URL=${API_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - SITE_URL=${SITE_URL}
+      - INTERNAL_API_URL=${INTERNAL_API_URL}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
       
       # Database Configuration
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public&connection_limit=50&pool_timeout=10&statement_timeout=30000&idle_timeout=60
+      - DATABASE_URL=${DATABASE_URL}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       
       # Redis Configuration
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - REDIS_URL=${REDIS_URL}
       
       # JWT Configuration
       - JWT_SECRET=${JWT_SECRET}
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-      - JWT_EXPIRATION=15m
-      - JWT_REFRESH_EXPIRATION=7d
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
       
       # Security Configuration
       - FILE_ENCRYPTION_KEY=${FILE_ENCRYPTION_KEY}
       - SESSION_SECRET=${SESSION_SECRET}
       - ENABLE_CSRF=false
-      - ALLOW_ALL_ORIGINS=false
-      - TRUSTED_ORIGINS=https://202.133.91.13,https://www.ayantaraz.com
+      - ALLOW_ALL_ORIGINS=${ALLOW_ALL_ORIGINS}
+      - TRUSTED_ORIGINS=${TRUSTED_ORIGINS}
       
       # Cookie Configuration
       - COOKIE_SECURE=true
       - COOKIE_HTTP_ONLY=true
       - COOKIE_SAME_SITE=lax
-      - COOKIE_DOMAIN=202.133.91.13
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN}
       
       # Logging Configuration
-      - LOG_LEVEL=info
+      - LOG_LEVEL=${LOG_LEVEL}
       - TZ=Asia/Tehran
       
       # File Upload Configuration
-      - MAX_FILE_SIZE=10485760
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE}
       - UPLOAD_DIR=/app/uploads
       
       # Rate Limiting Configuration
-      - RATE_LIMIT_WINDOW_MS=900000
-      - RATE_LIMIT_MAX_REQUESTS=100
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS}
       - RATE_LIMITER_FAIL_OPEN=true
       
       # OTP Configuration
-      - OTP_EXPIRATION_SECONDS=300
-      - OTP_MAX_ATTEMPTS=5
-      - OTP_RESEND_LIMIT=3
-      - OTP_RESEND_WINDOW_MINUTES=10
-      - OTP_BLOCK_DURATION_MINUTES=30
+      - OTP_EXPIRATION_SECONDS=${OTP_EXPIRATION_SECONDS}
+      - OTP_MAX_ATTEMPTS=${OTP_MAX_ATTEMPTS}
+      - OTP_RESEND_LIMIT=${OTP_RESEND_LIMIT}
+      - OTP_RESEND_WINDOW_MINUTES=${OTP_RESEND_WINDOW_MINUTES}
+      - OTP_BLOCK_DURATION_MINUTES=${OTP_BLOCK_DURATION_MINUTES}
       
       # Database Pool Configuration
-      - DB_POOL_MAX_CONNECTIONS=50
-      - DB_POOL_MIN_CONNECTIONS=10
-      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=100
-      - DB_POOL_IDLE_TIMEOUT_MS=30000
-      - DB_POOL_CONNECTION_TIMEOUT_MS=5000
+      - DB_POOL_MAX_CONNECTIONS=${DB_POOL_MAX_CONNECTIONS}
+      - DB_POOL_MIN_CONNECTIONS=${DB_POOL_MIN_CONNECTIONS}
+      - DB_POOL_MAX_REQUESTS_PER_CONNECTION=${DB_POOL_MAX_REQUESTS_PER_CONNECTION}
+      - DB_POOL_IDLE_TIMEOUT_MS=${DB_POOL_IDLE_TIMEOUT_MS}
+      - DB_POOL_CONNECTION_TIMEOUT_MS=${DB_POOL_CONNECTION_TIMEOUT_MS}
       
       # Health Check Configuration
-      - HEALTH_CHECK_INTERVAL=30000
+      - HEALTH_CHECK_INTERVAL=${HEALTH_CHECK_INTERVAL}
     ports:
       - '3001:3001'
     volumes:
@@ -120,7 +120,7 @@ services:
     container_name: ayantaraz-web
     restart: unless-stopped
     env_file:
-      - .env.production
+      - .env
     environment:
       # Server Configuration
       - NODE_ENV=production
@@ -128,9 +128,9 @@ services:
       - HOSTNAME=0.0.0.0
       
       # API URLs
-      - NEXT_PUBLIC_SITE_URL=https://202.133.91.13
-      - NEXT_PUBLIC_API_URL=https://202.133.91.13/api
-      - INTERNAL_API_URL=http://api:3001/api
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - INTERNAL_API_URL=${INTERNAL_API_URL}
     depends_on:
       api:
         condition: service_healthy
@@ -186,7 +186,7 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ['CMD-SHELL', 'redis-cli -a "$REDIS_PASSWORD" ping']
       interval: 10s
       timeout: 3s
       retries: 3
@@ -209,9 +209,9 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./infra/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       - api
       - web

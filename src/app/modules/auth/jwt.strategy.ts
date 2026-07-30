@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ]),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET') || '',
-      algorithms: [TOKEN_ALGORITHM],
+      algorithms: [TOKEN_ALGORITHM as any],
       issuer: TOKEN_ISSUER,
       audience: TOKEN_AUDIENCE_ACCESS,
     });

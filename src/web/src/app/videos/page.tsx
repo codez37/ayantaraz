@@ -103,9 +103,9 @@ export default function VideosPage() {
                   <svg className="w-16 h-16 text-[#C9A227]/50 relative z-10" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
-                  {video.duration > 0 && (
+                  {(video.duration ?? 0) > 0 && (
                     <span className="absolute bottom-3 left-3 bg-black/70 text-gray-200 text-xs px-2 py-1 rounded font-mono z-10">
-                      {formatDuration(video.duration)}
+                      {formatDuration(video.duration ?? 0)}
                     </span>
                   )}
                   {video.categoryName && (
@@ -130,7 +130,7 @@ export default function VideosPage() {
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        {formatDuration(video.duration)}
+                        {formatDuration(video.duration ?? 0)}
                       </span>
                     )}
                     <span className="flex items-center gap-1">

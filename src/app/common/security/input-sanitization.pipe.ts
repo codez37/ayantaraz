@@ -1,14 +1,14 @@
-import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
+import { PipeTransform, Injectable, BadRequestException, ArgumentMetadata } from '@nestjs/common';
 import { validate, ValidationError } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import * as sanitizeHtml from 'sanitize-html';
-import * as xss from 'xss';
+import sanitizeHtml from 'sanitize-html';
+import { FilterXSS, getDefaultWhiteList } from 'xss';
 
 @Injectable()
 export class InputSanitizationPipe implements PipeTransform<any> {
-  private readonly xssFilter = new xss.FilterXSS({
+  private readonly xssFilter = new FilterXSS({
     whiteList: {
-      ...xss.getDefaultWhiteList(),
+      ...getDefaultWhiteList(),
       a: ['href', 'title', 'target'],
       img: ['src', 'alt', 'width', 'height'],
       p: ['class', 'style'],
@@ -19,7 +19,7 @@ export class InputSanitizationPipe implements PipeTransform<any> {
     stripIgnoreTagBody: ['script', 'style'],
   });
 
-  async transform(value: any, { metatype }: any) {
+  async transform(value: any, { metatype }: ArgumentMetadata) {
     if (!metatype || !this.toValidate(metatype)) {
       return this.sanitizeValue(value);
     }
@@ -28,7 +28,6 @@ export class InputSanitizationPipe implements PipeTransform<any> {
     const errors: ValidationError[] = await validate(object, {
       whitelist: true,
       forbidNonWhitelisted: true,
-      transform: true,
     });
 
     if (errors.length > 0) {

@@ -1,6 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { RiskLevel, UserRole } from '@prisma/client';
+import { RiskLevel } from '@prisma/client';
+import { CreateKnowledgeDto } from './dto/create-knowledge.dto';
+import { UpdateKnowledgeDto } from './dto/update-knowledge.dto';
 
 const PERSIAN_DIGITS = '\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9';
 const ARABIC_DIGITS = '\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669';
@@ -58,7 +60,7 @@ const HIGH_RISK_KEYWORDS = [
 const MEDIUM_RISK_KEYWORDS = [
   '\u0645\u0627\u0644\u06cc\u0627\u062a',
   '\u062f\u0633\u0627\u0628',
-  '\u0627\u0632 \u0637\u0642\u0627\u0644\u0627\u062a',
+  '\u0627\u0632 \u0637\u0631\u0642\u0627\u0644\u0627\u062a',
   '\u0627\u0642\u0627\u0645\u062a',
   '\u0628\u0627\u0646\u0643',
   '\u0628\u06cc\u0645\u0647',
@@ -69,11 +71,79 @@ const MEDIUM_RISK_KEYWORDS = [
 export class ChatbotService {
   constructor(private prisma: PrismaService) {}
 
+  async query(question: string, userId?: number): Promise<{
+    response: string;
+    riskLevel: RiskLevel;
+    confidence: number;
+    suggestions?: string[];
+    sessionId?: string;
+  }> {
+    const result = await this.processMessage(userId ?? 0, question);
+    return result;
+  }
+
+  async getConversation(sessionId: string, userId: number, _role: string) {
+    const messages = await this.prisma.chatMessage.findMany({
+      where: {
+        sessionId,
+        OR: [{ userId }, { userId: null }],
+      },
+      orderBy: { createdAt: 'asc' },
+      take: 100,
+    });
+    return {
+      sessionId,
+      messages: messages.map((m: any) => ({
+        role: m.role,
+        content: m.content,
+        createdAt: m.createdAt,
+      })),
+    };
+  }
+
+  async getKnowledgeBase(page = 1, limit = 20) {
+    const [items, total] = await Promise.all([
+      this.prisma.knowledgeBase.findMany({
+        orderBy: { priority: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.knowledgeBase.count(),
+    ]);
+    return { items, total, page, limit };
+  }
+
+  async createKnowledgeEntry(dto: CreateKnowledgeDto, _userId: number) {
+    return this.prisma.knowledgeBase.create({
+      data: {
+        question: dto.question,
+        answer: dto.answer,
+        category: dto.category ?? '',
+        riskLevel: dto.riskLevel ?? RiskLevel.low,
+        keywords: [],
+        priority: 0,
+      },
+    });
+  }
+
+  async updateKnowledgeEntry(id: number, dto: UpdateKnowledgeDto, _userId: number) {
+    return this.prisma.knowledgeBase.update({
+      where: { id },
+      data: {
+        question: dto.question,
+        answer: dto.answer,
+        category: dto.category,
+        riskLevel: dto.riskLevel,
+      },
+    });
+  }
+
   async processMessage(userId: number, message: string): Promise<{
     response: string;
     riskLevel: RiskLevel;
     confidence: number;
     suggestions?: string[];
+    sessionId?: string;
   }> {
     // Normalize the message
     const normalizedMessage = this.normalizeMessage(message);
@@ -188,13 +258,13 @@ export class ChatbotService {
 
     switch (riskLevel) {
       case RiskLevel.forbidden:
-        suggestions.push('\u0644\u0637\u0641\u0638\u0627 \u0628\u0627 \u0648\u06a9\u0644\u0627\u0646 \u0627\u0637\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628 \u062f\u0631 \u0627\u06cc\u0646 \u0627\u0637\u0645\u0627\u0644\u0627\u062a\u06cc');
+        suggestions.push('\u0644\u0637\u0641\u0627\u064b \u0628\u0627 \u0648\u06a9\u06cc\u0644 \u0627\u0639\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628 \u062f\u0631 \u0627\u06cc\u0646 \u0627\u0645\u0648\u0631 \u062a\u062f\u0627\u0648\u0644 \u06a9\u0646\u06cc\u062f');
         break;
       case RiskLevel.high:
-        suggestions.push('\u0644\u0637\u0641\u0638\u0627 \u0628\u0627 \u0648\u06a9\u0644\u0627\u0646 \u0627\u0637\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628 \u062f\u0631 \u0627\u06cc\u0646 \u0627\u0637\u0645\u0627\u0644\u062a\u06cc');
+        suggestions.push('\u0644\u0637\u0641\u0627\u064b \u0628\u0627 \u0648\u06a9\u06cc\u0644 \u0627\u0639\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628 \u062f\u0631 \u0627\u06cc\u0646 \u0627\u0645\u0648\u0631 \u062a\u062f\u0627\u0648\u0644 \u06a9\u0646\u06cc\u062f');
         break;
       default:
-        suggestions.push('\u0644\u0637\u0641\u0638\u0627 \u0628\u0627 \u0648\u06a9\u0644\u0627\u0646 \u0627\u0637\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628');
+        suggestions.push('\u0644\u0637\u0641\u0627\u064b \u0633\u0626\u0648\u0627\u0644 \u062e\u0648\u062f \u0631\u0627 \u0631\u0648\u0634\u0646\u200c\u062a\u0631 \u0628\u067e\u0631\u0633\u06cc\u062f');
     }
 
     return suggestions;
@@ -202,9 +272,9 @@ export class ChatbotService {
 
   private getFallbackAnswer(topic: string | null): string {
     const fallbackResponses = [
-      '\u0645\u062a\u0627\u0633\u0641\u0627\u0646\u0647 \u062f\u0631 \u0627\u06cc\u0646\u062c\u0627 \u062f\u0627\u0631\u06cc\u0645\u060c \u062c\u0648\u0627\u0628 \u062f\u0647\u06cc\u062f \u062f\u0631 \u0633\u0627\u0644 \u0627\u0634\u062a\u0631\u0627\u06a9 \u0628\u062f\u0647\u06cc\u0645.',
-      '\u062f\u0631 \u062d\u0627\u0644 \u0627\u0633\u062a\u0641\u0627\u062f\u0627 \u0628\u0627 \u0648\u06a9\u0644\u0627\u0646 \u0627\u0637\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628 \u062f\u0631 \u0627\u06cc\u0646\u062c\u0627 \u062c\u0648\u0627\u0628 \u062f\u0647\u06cc\u062f.',
-      '\u0627\u0632 \u0627\u06cc\u0646\u062c\u0627 \u062f\u0631 \u0633\u0627\u0644 \u0627\u0634\u062a\u0631\u0627\u06a9 \u062f\u0647\u06cc\u062f \u0628\u0647 \u0648\u06a9\u0644\u0627\u0646 \u0627\u0637\u062a\u0628\u0627\u0631 \u0645\u0646\u0627\u0633\u0628 \u062c\u0648\u0627\u0628 \u062f\u0647\u06cc\u062d.',
+      '\u0645\u062a\u0627\u0633\u0641\u0627\u0646\u0647 \u062f\u0631 \u0627\u06cc\u0646\u0628\u0627\u0631\u0647 \u0628\u0647 \u0633\u0626\u0648\u0627\u0644 \u0634\u0645\u0627 \u067e\u0627\u0633\u062e \u062f\u0642\u06cc\u0642\u06cc \u0646\u062f\u0627\u0631\u0645. \u0644\u0637\u0641\u0627\u064b \u0628\u0627 \u0648\u06a9\u06cc\u0644 \u0627\u0639\u062a\u0628\u0627\u0631 \u06cc\u0627 \u0645\u0634\u0627\u0648\u0631 \u062a\u0645\u0627\u0633 \u0628\u06af\u06cc\u0631\u06cc\u062f.',
+      '\u0628\u0647\u0632\u0648\u062f\u06cc \u0627\u0632 \u0633\u0626\u0648\u0627\u0644 \u0634\u0645\u0627 \u0645\u062a\u0648\u062c\u0647 \u0634\u062f\u0645. \u0627\u06af\u0631 \u0633\u0626\u0648\u0627\u0644 \u0645\u0627\u0644\u06cc \u062f\u0627\u0631\u06cc\u062f\u060c \u0628\u0647 \u0635\u0648\u0631\u062a \u062f\u0642\u06cc\u0642\u200c\u062a\u0631 \u0628\u067e\u0631\u0633\u06cc\u062f.',
+      '\u0627\u0637\u0644\u0627\u0639\u0627\u062a \u0628\u06cc\u0634\u062a\u0631\u06cc \u0644\u0627\u0632\u0645 \u0645\u06cc\u200c\u0628\u0627\u0634\u062f \u062a\u0627 \u0628\u0647 \u0633\u0626\u0648\u0627\u0644 \u0634\u0645\u0627 \u067e\u0627\u0633\u062e \u062f\u0647\u06cc\u062f. \u0644\u0637\u0641\u0627\u064b \u0633\u0626\u0648\u0627\u0644 \u0631\u0627 \u0628\u0627 \u062c\u0632\u0626\u06cc\u0627\u062a \u0628\u06cc\u0634\u062a\u0631 \u0628\u067e\u0631\u0633\u06cc\u062f.',
     ];
 
     return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
