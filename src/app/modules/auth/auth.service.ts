@@ -290,6 +290,32 @@ export class AuthService {
     return { tokens, user: this.sanitizeUser(user) };
   }
 
+  async validateAccessToken(token: string): Promise<{ sub: number; phone: string; role: string }> {
+    try {
+      return this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+        algorithms: [TOKEN_ALGORITHM as any],
+        issuer: TOKEN_ISSUER,
+        audience: TOKEN_AUDIENCE_ACCESS,
+      });
+    } catch {
+      throw new HttpException('Invalid access token', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  async validateRefreshToken(token: string): Promise<{ sub: number }> {
+    try {
+      return this.jwtService.verify(token, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        algorithms: [TOKEN_ALGORITHM as any],
+        issuer: TOKEN_ISSUER,
+        audience: TOKEN_AUDIENCE_REFRESH,
+      });
+    } catch {
+      throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
   async getSessionInfo(userId: number) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -331,13 +357,13 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload, {
         secret: JWT_SECRET,
-        expiresIn: JWT_EXPIRATION,
+        expiresIn: JWT_EXPIRATION as any,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_ACCESS,
       }),
       refreshToken: this.jwtService.sign(payload, {
         secret: process.env.JWT_REFRESH_SECRET || '',
-        expiresIn: JWT_REFRESH_EXPIRATION,
+        expiresIn: JWT_REFRESH_EXPIRATION as any,
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE_REFRESH,
       }),

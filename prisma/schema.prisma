@@ -100,9 +100,11 @@ enum EscalationStatus {
 model User {
   id            Int      @id @default(autoincrement())
   phone         String   @unique
+  email         String?  @map("email")
   firstName     String   @default("") @map("first_name")
   lastName      String   @default("") @map("last_name")
   role          UserRole @default(user)
+  password      String?  @map("password")
   isActive      Boolean  @default(true) @map("is_active")
   isStaff       Boolean   @default(false) @map("is_staff")
   lastLoginAt   DateTime? @map("last_login_at")
@@ -317,6 +319,8 @@ model KnowledgeBase {
   question    String
   answer      String
   category    String    @default("")
+  keywords    String[]  @default([])
+  priority    Int       @default(0)
   riskLevel   RiskLevel @default(low)
   confidence  Float     @default(0.5) // 0.0 to 1.0
   isActive    Boolean   @default(true)

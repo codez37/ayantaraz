@@ -33,7 +33,7 @@ export class LoginUseCase {
     // Validate password
     const isPasswordValid = await this.authService.validatePassword(
       input.password,
-      user.password,
+      user.password ?? '',
     );
 
     if (!isPasswordValid) {

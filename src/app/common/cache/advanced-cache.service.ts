@@ -53,7 +53,7 @@ export class AdvancedCacheService implements OnModuleDestroy {
   }
 
   async clear(): Promise<void> {
-    await this.cacheManager.reset();
+    await this.cacheManager.clear();
   }
 
   async has(key: string): Promise<boolean> {

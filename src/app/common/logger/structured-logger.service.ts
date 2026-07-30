@@ -1,9 +1,10 @@
 import { Injectable, LoggerService, OnModuleDestroy } from '@nestjs/common';
 import * as winston from 'winston';
-import * as DailyRotateFile from 'winston-daily-rotate-file';
-import * as { combine, timestamp, printf, colorize, json, errors } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 import * as path from 'path';
 import * as fs from 'fs';
+
+const { combine, timestamp, printf, colorize, json, errors } = winston.format;
 
 @Injectable()
 export class StructuredLoggerService implements LoggerService, OnModuleDestroy {
@@ -22,7 +23,8 @@ export class StructuredLoggerService implements LoggerService, OnModuleDestroy {
   }
 
   private createLogger(): winston.Logger {
-    const logFormat = printf(({ level, message, timestamp, stack, context, ...meta }) => {
+    const logFormat = printf((info: any) => {
+      const { level, message, timestamp, stack, context, ...meta } = info;
       return JSON.stringify({
         timestamp,
         level,
@@ -117,8 +119,10 @@ export class StructuredLoggerService implements LoggerService, OnModuleDestroy {
     this.logger.verbose(message, { context });
   }
 
-  http(message: string, context?: string) {
-    this.logger.http(message, { context });
+  http(message: string, contextOrMeta?: string | Record<string, unknown>) {
+    const meta: Record<string, unknown> =
+      typeof contextOrMeta === 'string' ? { context: contextOrMeta } : contextOrMeta || {};
+    this.logger.http(message, meta);
   }
 
   createContextLogger(context: string) {
@@ -128,7 +132,7 @@ export class StructuredLoggerService implements LoggerService, OnModuleDestroy {
       warn: (message: string) => this.warn(message, context),
       debug: (message: string) => this.debug?.(message, context),
       verbose: (message: string) => this.verbose?.(message, context),
-      http: (message: string) => this.http(message, context),
+      http: (message: string, meta?: Record<string, unknown>) => this.http(message, meta || context),
     };
   }
 

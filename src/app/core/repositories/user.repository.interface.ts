@@ -28,6 +28,7 @@ export interface IUserRepository {
     role: UserRole;
     isActive: boolean;
     isStaff: boolean;
+    password: string;
   }>): Promise<User>;
 
   // Delete operations

@@ -117,17 +117,17 @@ export default function AdminContentsPage() {
     setEditing(c);
     setForm({
       title: c.title,
-      summary: c.summary,
-      body: c.body,
+      summary: c.summary ?? '',
+      body: c.body ?? '',
       contentType: c.contentType,
       status: c.status,
       visibility: c.visibility,
-      mediaUrl: c.mediaUrl,
-      thumbnailUrl: c.thumbnailUrl,
-      duration: c.duration,
-      fileSize: c.fileSize,
-      pageCount: c.pageCount,
-      tags: c.tags,
+      mediaUrl: c.mediaUrl ?? '',
+      thumbnailUrl: c.thumbnailUrl ?? '',
+      duration: c.duration ?? 0,
+      fileSize: c.fileSize ?? 0,
+      pageCount: c.pageCount ?? 0,
+      tags: c.tags ?? '',
     });
     setShowForm(true);
   };

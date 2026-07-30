@@ -10,7 +10,6 @@ const nextConfig = {
   
   // Enable React Strict Mode in production
   experimental: {
-    runtime: 'nodejs',
     serverComponentsExternalPackages: ['@prisma/client'],
   },
   
@@ -75,21 +74,10 @@ const nextConfig = {
     ];
   },
   
-  // Redirects
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/home',
-        permanent: true,
-      },
-    ];
-  },
-  
   // Environment variables
   env: {
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://ayantaraz.ir',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || '/api',
   },
   
   // Webpack optimizations

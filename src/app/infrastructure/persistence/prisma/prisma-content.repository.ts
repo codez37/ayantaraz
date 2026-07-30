@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { IContentRepository } from '../../../core/repositories/content.repository.interface';
 import { Content } from '../../../core/domain/content.entity';
 import { ContentType, ContentStatus, ContentVisibility } from '@prisma/client';
@@ -111,7 +111,7 @@ export class PrismaContentRepository implements IContentRepository {
       this.prisma.content.count({ where }),
     ]);
 
-    const result = contents.map(content =>
+    const result = contents.map((content: any) =>
       new Content(
         content.id,
         content.contentType,

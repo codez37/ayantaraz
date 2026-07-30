@@ -48,10 +48,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status = 400;
       message = 'Validation error';
       code = 'VALIDATION_ERROR';
-      errors = exception.errors.map((err: any) => ({
-        field: err.path?.join('.') || '',
-        message: err.message || '',
-      }));
+      errors = [{ message: exception.message }];
     } else if (exception instanceof Error) {
       message = exception.message;
       code = 'UNHANDLED_ERROR';

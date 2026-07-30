@@ -13,6 +13,7 @@ export class User {
     public readonly updatedAt: Date,
     public lastLoginAt?: Date | null,
     public isStaff: boolean = false,
+    public password?: string | null,
   ) {}
 
   get fullName(): string {

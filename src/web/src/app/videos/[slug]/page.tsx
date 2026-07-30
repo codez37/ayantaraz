@@ -134,7 +134,7 @@ export default function VideoDetailPage() {
                 {video.categoryName}
               </span>
             )}
-            {video.duration > 0 && (
+            {(video.duration ?? 0) > 0 && (
               <span className="text-gray-400 text-xs flex items-center gap-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -144,7 +144,7 @@ export default function VideoDetailPage() {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                {formatDuration(video.duration)}
+                {formatDuration(video.duration ?? 0)}
               </span>
             )}
             <span className="text-gray-500 text-xs">{formatDate(video.createdAt)}</span>

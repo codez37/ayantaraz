@@ -4,14 +4,14 @@ import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { createClient } from 'redis';
+import Keyv from 'keyv';
+import KeyvRedis from '@keyv/redis';
 
 import { PrismaModule } from './prisma/prisma.module';
 
 // Infrastructure Module
 import { PrismaUserRepository } from './infrastructure/persistence/prisma/prisma-user.repository';
 import { PrismaContentRepository } from './infrastructure/persistence/prisma/prisma-content.repository';
-import { AuthService } from './infrastructure/services/auth.service';
 
 // Common Module
 import { AdvancedCacheService } from './common/cache/advanced-cache.service';
@@ -42,12 +42,13 @@ import { CoursesModule } from './modules/courses/courses.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { SeoModule } from './modules/seo/seo.module';
+import { TaxEngineModule } from './modules/tax-engine/tax-engine.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.production', '.env'],
+      envFilePath: ['.env'],
       validationOptions: {
         allowUnknown: false,
         abortEarly: true,
@@ -64,36 +65,13 @@ import { SeoModule } from './modules/seo/seo.module';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => {
-        const redisClient = createClient({
-          socket: {
-            host: process.env.REDIS_HOST || 'redis',
-            port: parseInt(process.env.REDIS_PORT || '6379'),
-            reconnectStrategy: (retries: number) =>
-              Math.min(retries * 100, 5000),
-          },
-          password: process.env.REDIS_PASSWORD,
-          database: parseInt(process.env.REDIS_DB || '0'),
-        });
-
-        await redisClient.connect();
-
-        try {
-          const pong = await redisClient.ping();
-          if (pong !== 'PONG') {
-            throw new Error('Redis connection failed: invalid response');
-          }
-        } catch (err) {
-          await redisClient.quit();
-          throw new Error(
-            'Redis connection failed: ' +
-              (err instanceof Error ? err.message : 'Unknown error'),
-          );
-        }
-
+        const redisUrl = process.env.REDIS_URL;
+        const store = redisUrl
+          ? new Keyv(new KeyvRedis(redisUrl, { namespace: 'cache', useUnlink: true }))
+          : undefined;
         return {
-          store: redisClient,
+          stores: store ? [store] : undefined,
           ttl: 300,
-          max: 1000,
         };
       },
     }),
@@ -119,33 +97,31 @@ import { SeoModule } from './modules/seo/seo.module';
     AdminModule,
     AuditModule,
     SeoModule,
+    TaxEngineModule,
   ],
   controllers: [],
   providers: [
     // Repository bindings
     PrismaUserRepository,
     PrismaContentRepository,
-    
-    // Service bindings
-    AuthService,
-    
+
     // Common services
     AdvancedCacheService,
     QueryOptimizerService,
     AdvancedRateLimiterService,
     StructuredLoggerService,
-    
+
     // Guards
     JwtAuthGuard,
     RolesGuard,
     { provide: APP_GUARD, useClass: CombinedAuthGuard },
-    
+
     // Pipes
     InputSanitizationPipe,
-    
+
     // Filters
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
-    
+
     // Interceptors
     { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
@@ -153,7 +129,6 @@ import { SeoModule } from './modules/seo/seo.module';
   exports: [
     PrismaUserRepository,
     PrismaContentRepository,
-    AuthService,
     AdvancedCacheService,
     QueryOptimizerService,
     AdvancedRateLimiterService,

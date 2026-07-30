@@ -11,7 +11,7 @@ const SITE_URL = 'https://ayantaraz.ir';
 
 // Safe HTML renderer - strips all HTML tags and returns plain text
 // This is the most secure approach for production
-function SafeHtmlRenderer({ html }: { html: string }) {
+function SafeHtmlRenderer({ html }: { html?: string | null }) {
   if (!html) return null;
 
   // Remove all HTML tags and return plain text

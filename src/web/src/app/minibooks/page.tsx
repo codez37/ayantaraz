@@ -39,7 +39,7 @@ export default function MinibooksPage() {
   const filtered = minibooks.filter(
     (b) =>
       b.title.toLowerCase().includes(search.trim().toLowerCase()) ||
-      b.summary.toLowerCase().includes(search.trim().toLowerCase()) ||
+      (b.summary || '').toLowerCase().includes(search.trim().toLowerCase()) ||
       (b.categoryName || '').toLowerCase().includes(search.trim().toLowerCase()),
   );
 
@@ -117,14 +117,14 @@ export default function MinibooksPage() {
                     )}
 
                     <div className="flex items-center gap-3 mt-3 text-gray-500 text-xs">
-                      {book.pageCount > 0 && <span>{formatPageCount(book.pageCount)} صفحه</span>}
-                      {book.pageCount > 0 && book.fileSize > 0 && <span className="text-[#C9A227]/60">•</span>}
-                      {book.fileSize > 0 && <span>{formatFileSize(book.fileSize)}</span>}
+                      {(book.pageCount ?? 0) > 0 && <span>{formatPageCount(book.pageCount ?? 0)} صفحه</span>}
+                      {(book.pageCount ?? 0) > 0 && (book.fileSize ?? 0) > 0 && <span className="text-[#C9A227]/60">•</span>}
+                      {(book.fileSize ?? 0) > 0 && <span>{formatFileSize(book.fileSize ?? 0)}</span>}
                     </div>
 
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#C9A227]/10">
                       <span className="text-gray-500 text-xs">
-                        ▲ {book.pageCount > 0 ? formatPageCount(book.pageCount) : '۰'}
+                        ▲ {(book.pageCount ?? 0) > 0 ? formatPageCount(book.pageCount ?? 0) : '۰'}
                       </span>
                       {book.mediaUrl ? (
                         <a

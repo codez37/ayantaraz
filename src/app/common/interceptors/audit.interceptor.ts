@@ -2,7 +2,6 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CurrentUser } from '../decorators/current-user.decorator';
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
@@ -27,19 +26,22 @@ export class AuditInterceptor implements NestInterceptor {
           await this.prisma.auditLog.create({
             data: {
               action: `${request.method} ${request.url}`,
-              userId: request.user?.id,
-              ipAddress: request.ip,
-              userAgent: request.headers['user-agent'],
-              statusCode,
-              requestBody: this.sanitizeRequestBody(request.body),
-              responseBody: this.sanitizeResponseBody(data),
-              duration: duration,
-              metadata: {
-                path: request.url,
-                method: request.method,
-                params: request.params,
-                query: request.query,
+              actorId: request.user?.id,
+              entityType: 'http',
+              newValue: {
+                statusCode,
+                duration,
+                userAgent: request.headers['user-agent'],
+                requestBody: this.sanitizeRequestBody(request.body),
+                responseBody: this.sanitizeResponseBody(data),
+                metadata: {
+                  path: request.url,
+                  method: request.method,
+                  params: request.params,
+                  query: request.query,
+                },
               },
+              ipAddress: request.ip,
             },
           });
         } catch (error) {
@@ -52,9 +54,9 @@ export class AuditInterceptor implements NestInterceptor {
 
   private sanitizeRequestBody(body: any): any {
     if (!body) return null;
-    
+
     const sensitiveFields = ['password', 'token', 'refreshToken', 'accessToken', 'oldPassword', 'newPassword'];
-    
+
     if (typeof body === 'object') {
       const sanitized: any = {};
       for (const key in body) {
@@ -66,15 +68,15 @@ export class AuditInterceptor implements NestInterceptor {
       }
       return sanitized;
     }
-    
+
     return body;
   }
 
   private sanitizeResponseBody(data: any): any {
     if (!data) return null;
-    
+
     const sensitiveFields = ['password', 'token', 'refreshToken', 'accessToken'];
-    
+
     if (typeof data === 'object') {
       const sanitized: any = {};
       for (const key in data) {
@@ -88,7 +90,7 @@ export class AuditInterceptor implements NestInterceptor {
       }
       return sanitized;
     }
-    
+
     return data;
   }
 }
